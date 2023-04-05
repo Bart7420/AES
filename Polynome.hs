@@ -47,7 +47,7 @@ instance Corps Z_sur_256Z where
 
 
 instance Anneau a => Anneau (Polynome a) where
-  -- unitadd = Poly [0]
+  unitadd = Poly [ unitadd ]
   unitmul = Poly [ unitmul ]
   -- inverseadd = oppose2
   operationadd = addPoly
@@ -250,7 +250,7 @@ divPoly_aux q r b a | (degre r) >= (degre b) = divPoly_aux (addPoly (q) (createP
 
 
 euclide :: (Anneau a, Num a) => Polynome a -> Polynome a -> (Polynome a, Polynome a, Polynome a)
-euclide a b | (b==unitmul) =(a, unitadd, unitmul)
+euclide a b | ((removeZeros b)==unitmul) =(a, unitadd, unitmul)
             | otherwise = (x, z, (subPoly (y) (multPoly (divPoly a b) (z) ) ))
                   where (x,y,z) = euclide b (modPoly a b)
 
