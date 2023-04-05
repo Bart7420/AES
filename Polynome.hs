@@ -15,7 +15,7 @@ newtype Polynome a = Poly [a]    deriving (Eq, Show, Ord)
 
 instance Anneau a => Anneau (Polynome a) where
   -- unitadd = Poly [0]
-  -- unitmul = Poly [1]
+  unitmul = Poly [ unitmul ]
   -- inverseadd = oppose2
   operationadd = addPoly
   -- inversemul = inverse2
@@ -199,5 +199,9 @@ multAES :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a
 multAES pol1 pol2 = (modPoly (multPoly pol1 pol2) polyIrr)
         where polyIrr = Poly [unitmul, unitmul, unitadd, unitmul, unitmul, unitadd, unitadd, unitadd, unitmul]
 
+
+
+euclide :: Polynome a -> Polynome a -> (Polynome a, Polynome a, Polynome a)
+euclide a b | (b== unitmul)
 
 
