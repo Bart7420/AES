@@ -202,6 +202,8 @@ multAES pol1 pol2 = (modPoly (multPoly pol1 pol2) polyIrr)
 
 
 euclide :: Polynome a -> Polynome a -> (Polynome a, Polynome a, Polynome a)
-euclide a b | (b== unitmul)
+euclide a b | (b==unitmul) =(a, unitadd, unitmul)
+            | otherwise = (x, z, y-)
+                  where (x,y,z) = euclide b (a mod b)
 
 
