@@ -71,7 +71,7 @@ addMod2 :: Z_sur_2Z -> Z_sur_2Z -> Z_sur_2Z
 addMod2 (Z2Z a) (Z2Z b) = Z2Z $ addModP 2 a b
 
 oppose2 :: Z_sur_2Z -> Z_sur_2Z
-oppose2 (Z2Z n) = Z2Z $ oppose 2 n
+oppose2 (Z2Z n) = Z2Z $ mod (oppose 2 n) 2
 
 multMod2 :: Z_sur_2Z -> Z_sur_2Z -> Z_sur_2Z
 multMod2 (Z2Z a) (Z2Z b) = Z2Z $ multModP 2 a b

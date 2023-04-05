@@ -203,8 +203,9 @@ subPolyNeg (Poly p1@(x:xs)) (Poly p2@(y:ys))
 
 subPoly :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a
 subPoly a b = Poly (removeNeg (subPolyNeg a b))
-              where removeNeg (Poly (x:xs)) | (x < unitadd) = unitadd:removeNeg (Poly xs)
+              where removeNeg (Poly (x:xs)) | (x < unitadd) = (inverseadd x):removeNeg (Poly xs)
                                             | otherwise = x:removeNeg (Poly xs)
+                    removeNeg (Poly []) = []
 
 
 -- Forme : <p1> [p2]
