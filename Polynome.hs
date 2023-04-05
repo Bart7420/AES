@@ -238,9 +238,13 @@ multAES pol1 pol2 = (modPoly (multPoly pol1 pol2) polyIrr)
 
 
 
-divPoly :: Polynome a -> Polynome a -> Polynome a -> Polynome a -> Polynome a -> Polynome a
-divPoly q r b a | (degre r) >= (degre b) = div (addPoly (q) (createPoly ((degre r) -(degre b)))) (subPoly (r) (multPoly b (createPoly ((degre r) -(degre b))) )) b a
-                | otherwise = q r
+divPoly :: Polynome a -> Polynome a -> Polynome a
+divPoly pol1 pol2 = (fst (divPoly_aux (createPoly 0) (a) (b) (a)))
+
+divPoly_aux :: Polynome a -> Polynome a -> Polynome a -> Polynome a -> (Polynome a, Polynome a)
+divPoly_aux q r b a | (degre r) >= (degre b) = div (addPoly (q) (createPoly ((degre r) -(degre b)))) (subPoly (r) (multPoly b (createPoly ((degre r) -(degre b))) )) b a
+                | otherwise = (q, r)
+
 
 
 
@@ -253,3 +257,5 @@ euclide a b | (b==unitmul) =(a, unitadd, unitmul)
 inverse :: Polynome a -> Polynome a
 inverse pol = modPoly (head (snd (euclide (pol) (polyIrr)))) (polyIrr)
       where polyIrr = Poly [unitmul, unitmul, unitadd, unitmul, unitmul, unitadd, unitadd, unitadd, unitmul]
+
+

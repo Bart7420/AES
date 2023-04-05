@@ -8,6 +8,18 @@ Etapes :
   - Implémenter l'encodage AES en Haskell
   - Porter cette implémentation en C
   
+
+
+## Planing
+
+Séance 1, 2, 3 -> Haskell, algèbre et doc
+
+Séances 4, 5 -> début d'appropriation des tâches liées au c
+
+
+
+
+
 ## Jalons
 
 |no |  action   |                                        nom                                                 |
