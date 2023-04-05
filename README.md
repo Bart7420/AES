@@ -19,6 +19,16 @@ Etapes :
 | 5 |    ok     |  implémentation du calcul modulo un polynôme (+,-,x)                                       |
 | 6 |    ok     |  tests de 5) avec le polynôme m d'AES                                                      |
 | 7 |           |  implémentation de l'inverse modulo m dans F2[X]                                           |
+| 8 |           |                                                                                            |
+| 9 |           |                                                                                            |
+| 10|           |                                                                                            |
+| 11|           |                                                                                            |
+| 12|           |                                                                                            |
+| 13|           |                                                                                            |
+| 14|           |                                                                                            |
+| 15|           |                                                                                            |
+| 16|           |                                                                                            |
+| 17|           |                                                                                            |
 
 
 
@@ -41,3 +51,19 @@ Pour finir, nous avons commencé à réfléchir à comment implémenter des anne
     - Faire les tests du 5)
 
 
+## Séance 2 (5/04/2023)
+
+Dans cette deuxième séance, nous avons continué l'implémentation en haskell, notamanet en commencant l'inverse module m dans un corps.
+Nous avons aussi résolu les nombreux bugs des fonctions déja existantes.
+Nous avons ré-étudié la documentation de AES, en se focalisant sur le fonctionnement global du système AES, por avoir une vue plus globale du projet.
+
+
+**Objectifs avant la prochaine séance :**
+- Ronan :
+    - Finir l'implémentation du 3)
+    - Faire les tests du 3)
+    - Réfléchir à une implémentation du calcul modulo un polynôme
+    
+- Etienne
+    - Réfléchir à une implémentation du calcul modulo un polynôme
+    - Faire les tests du 5)
