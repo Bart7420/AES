@@ -4,6 +4,7 @@
 {-# HLINT ignore "Eta reduce" #-}
 {-# HLINT ignore "Redundant /=" #-}
 {-# HLINT ignore "Use foldr" #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
 module Polynome where
 
@@ -235,5 +236,18 @@ multAES :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a
 multAES pol1 pol2 = (modPoly (multPoly pol1 pol2) polyIrr)
         where polyIrr = Poly [unitmul, unitmul, unitadd, unitmul, unitmul, unitadd, unitadd, unitadd, unitmul]
 
+
+
+divPoly :: Polynome a -> Polynome a -> Polynome a -> Polynome a -> Polynome a -> Polynome a
+divPoly q r b a | (degre r) >= (degre b) = div (addPoly (q) (createPoly ((degre r) -(degre b)))) (subPoly (r) (multPoly b (createPoly ((degre r) -(degre b))) )) b a
+                | otherwise = q r
+
+
+
+
+euclide :: Polynome a -> Polynome a -> (Polynome a, Polynome a, Polynome a)
+euclide a b | (b==unitmul) =(a, unitadd, unitmul)
+            | otherwise = (x, z, (subPoly (y) (multPoly (divPoly a b) (z) ) ))
+                  where (x,y,z) = euclide b (modPoly a b)
 
 
