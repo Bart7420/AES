@@ -4,6 +4,7 @@ module ZsurNZ where
 
 import Group
 import Corps
+import Anneau
 
 ---------------------------------------------
 -- Fonctions génériques de calcul modulo p --
@@ -80,14 +81,14 @@ inverse2 (Z2Z n ) = Z2Z $ inverse n
                     where inverse n | (n `mod` 2) == 1 = 1
 
 
-
-
-instance Corps Z_sur_2Z where
+instance Anneau Z_sur_2Z where
   unitadd = Z2Z 0
   unitmul = Z2Z 1
   inverseadd = oppose2
   operationadd = addMod2
-  inversemul = inverse2
   operationmul = multMod2
+instance Corps Z_sur_2Z where
+  inversemul = inverse2
+  
 
 

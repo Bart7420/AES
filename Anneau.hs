@@ -1,6 +1,6 @@
 module Anneau where
 
-class Anneau a where
+class (Eq a, Ord a) => Anneau a where
   unitadd :: a
   inverseadd :: a -> a
   operationadd :: a -> a -> a

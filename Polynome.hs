@@ -9,11 +9,11 @@ module Polynome where
 
 import Corps
 import ZsurNZ
-
+import Anneau
 
 newtype Polynome a = Poly [a]    deriving (Eq, Show, Ord)
 
-instance Corps a => Corps (Polynome a) where
+instance Anneau a => Anneau (Polynome a) where
   -- unitadd = Poly [0]
   -- unitmul = Poly [1]
   -- inverseadd = oppose2
@@ -68,18 +68,18 @@ xor :: Z_sur_2Z -> Z_sur_2Z -> Z_sur_2Z
 xor x y | x==y = Z2Z 0
         | otherwise = Z2Z 1
 
-prepend :: Corps a => a -> Polynome a -> Polynome a
+prepend :: Anneau a => a -> Polynome a -> Polynome a
 prepend a (Poly l) = Poly (a:l)
 
 
 -- Applique une operation entre deux listes (ex: + [1,2,3] [2,1,4] = [3,3,7])
 -- ATTENTION LES LISTES DOIVENT ETRE DE LA MEME TAILLE
-opWithAllElement :: Corps a => (a -> a -> a) -> Polynome a -> Polynome a -> Polynome a
+opWithAllElement :: Anneau a => (a -> a -> a) -> Polynome a -> Polynome a -> Polynome a
 opWithAllElement f (Poly []) (Poly []) = Poly []
 opWithAllElement f (Poly (x:xs)) (Poly (y:ys)) = prepend (f x y) (opWithAllElement f (Poly xs) (Poly ys))
 
 
-degre :: Corps a => Polynome a -> Int
+degre :: Anneau a => Polynome a -> Int
 degre (Poly []) = 0
 degre (Poly (x:xs)) | (x/=unitadd) = length xs
                     | otherwise = degre (Poly xs)
@@ -94,12 +94,12 @@ degre (Poly (x:xs)) | (x/=unitadd) = length xs
 --addPoly (Poly liste1) (Poly liste2) =  Poly (addListZnZ liste1 liste2)
 
 
-opListZnZ :: Corps a => (a -> a -> a) -> [a] -> [a] -> [a]
+opListZnZ :: Anneau a => (a -> a -> a) -> [a] -> [a] -> [a]
 opListZnZ f [] [] = []
 opListZnZ f (x:xs) (y:ys) = (f x y) : (opListZnZ f xs ys)
 
 
-addPoly :: Corps a => Polynome a -> Polynome a -> Polynome a
+addPoly :: Anneau a => Polynome a -> Polynome a -> Polynome a
 addPoly (Poly []) p2 = p2
 addPoly p1 (Poly []) = p1
 addPoly (Poly p1@(x:xs)) (Poly p2@(y:ys))
@@ -110,57 +110,57 @@ addPoly (Poly p1@(x:xs)) (Poly p2@(y:ys))
 
 -- toPoly :: [Integer] -> Polynome a
 
-addDegre :: Corps a => Int -> [a] -> [a]
+addDegre :: Anneau a => Int -> [a] -> [a]
 addDegre 0 l = l
 addDegre v l = addDegre (v-1) (l ++ [unitadd])
 
 -- Multiplication des polynomes
 
-multPoly :: Corps a => Polynome a -> Polynome a -> Polynome a
+multPoly :: Anneau a => Polynome a -> Polynome a -> Polynome a
 multPoly _ (Poly []) = Poly []
 multPoly (Poly []) _ = Poly []
 multPoly (Poly (x:xs)) (Poly (y:ys)) = addPoly (Poly (addDegre (degre (Poly (x:xs))) (mult2 x (y:ys)))) (multPoly (Poly xs) (Poly (y:ys)))
 
-mult2 :: Corps a => a -> [a] -> [a]
+mult2 :: Anneau a => a -> [a] -> [a]
 mult2 x ys = map (operationmul x) ys
 
 
 
-isPolynull :: Corps a => Polynome a -> Bool
+isPolynull :: Anneau a => Polynome a -> Bool
 isPolynull (Poly []) = True
 isPolynull (Poly (x:xs))   | x == unitadd = isPolynull (Poly xs)
                            | otherwise = False
 
 
 -- Enlève les coefs de degrés supérieurs nuls : [0,0,1,0,1,0] -> [1,0,1,0]
-removeZeros :: Corps a => Polynome a -> Polynome a
+removeZeros :: Anneau a => Polynome a -> Polynome a
 removeZeros (Poly []) = Poly []
 removeZeros (Poly (x:xs)) | x == unitadd = removeZeros (Poly xs)
                           | otherwise = Poly (x:xs)
 
 
 -- Crée un polynome nul de "degré" x : [0,0,0,0,0] avec x=4
-createPolyNul :: Corps a => Int -> Polynome a
+createPolyNul :: Anneau a => Int -> Polynome a
 createPolyNul 0 = Poly [unitadd]
 createPolyNul x = prepend unitadd (createPolyNul (x-1))
 
 
 -- Crée un polynome de la forme X^x : [1,0,0,...]
 -- Si x = 0, [Z2Z 1] est retourné
-createPoly :: Corps a => Int -> Polynome a
+createPoly :: Anneau a => Int -> Polynome a
 createPoly 0 = Poly [unitmul]
 createPoly x = prepend unitmul (createPolyNul (x-1))
 
 
 -- Vérifie si le polynome n'a pas de coef négatifs
-validPoly :: Corps a => Polynome a -> Bool
+validPoly :: Anneau a => Polynome a -> Bool
 validPoly (Poly []) = True
 validPoly (Poly (x:xs)) = (x >= unitadd) && validPoly (Poly xs)
 
 
 -- Soustraction de deux polynomes dans un anneau Z/2Z qui crée des coefs négatifs
 -- Si les polynomes sont de meme degré, on soustrait les coefs un a un, sinon on tronque celui de degré supérieur
-subPolyNeg :: (Corps a, Num a) => Polynome a -> Polynome a -> Polynome a
+subPolyNeg :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a
 subPolyNeg (Poly []) p2 = p2
 subPolyNeg p1 (Poly []) = p1
 subPolyNeg (Poly p1@(x:xs)) (Poly p2@(y:ys))
@@ -175,10 +175,10 @@ subPolyNeg (Poly p1@(x:xs)) (Poly p2@(y:ys))
 -- Si il est de degré inférieur on le ramène au degré du polynome a moduloter en le multipliant par X^a
 -- Puis on recommence en faisant décroite X^a de degré en degré jusqu'a son degré initial
 -- Pour vérifier qu'on peut soustraire le polynome 2 on regarde si la fonction subPolyPos ne retourne pas de coefs négatifs avec la fonction validPoly
-modPoly :: (Corps a, Num a) => Polynome a -> Polynome a -> Polynome a
+modPoly :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a
 modPoly (Poly []) (Poly []) = Poly [unitadd]
 modPoly pol1 pol2 = f ((degre pol1)-(degre pol2)) pol1 pol2
-                  where f :: (Corps a, Num a) => Int -> Polynome a -> Polynome a -> Polynome a
+                  where f :: (Anneau a, Num a) => Int -> Polynome a -> Polynome a -> Polynome a
                         f v p1 p2 
                             | (v>=0) = if(validPoly (subPolyNeg p1 mulX)) then (f v (subPolyNeg p1 mulX) p2) else (f (v-1) p1 p2)         
                             | otherwise = p1
@@ -195,6 +195,6 @@ poly4 = Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0]
 poly_irr = Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1]
 
 
-multAES :: (Corps a, Num a) => Polynome a -> Polynome a -> Polynome a
+multAES :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a
 multAES pol1 pol2 = (modPoly (multPoly pol1 pol2) polyIrr)
         where polyIrr = Poly [unitmul, unitmul, unitadd, unitmul, unitmul, unitadd, unitadd, unitadd, unitmul]
