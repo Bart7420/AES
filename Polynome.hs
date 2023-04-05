@@ -48,7 +48,7 @@ instance Corps Z_sur_256Z where
 
 instance Anneau a => Anneau (Polynome a) where
   -- unitadd = Poly [0]
-  -- unitmul = Poly [1]
+  unitmul = Poly [ unitmul ]
   -- inverseadd = oppose2
   operationadd = addPoly
   -- inversemul = inverse2
@@ -231,3 +231,10 @@ poly_irr = Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1]
 multAES :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a
 multAES pol1 pol2 = (modPoly (multPoly pol1 pol2) polyIrr)
         where polyIrr = Poly [unitmul, unitmul, unitadd, unitmul, unitmul, unitadd, unitadd, unitadd, unitmul]
+
+
+
+euclide :: Polynome a -> Polynome a -> (Polynome a, Polynome a, Polynome a)
+euclide a b | (b== unitmul)
+
+
