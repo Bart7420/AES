@@ -15,7 +15,7 @@ import Anneau
 newtype Polynome a = Poly [a]    deriving (Eq, Show, Ord)
 
 
-newtype Z_sur_256Z = Z256Z (Polynome Z_sur_2Z) deriving (Show, Eq, Ord, Num)
+newtype Z_sur_256Z = Z256Z (Polynome Z_sur_2Z) deriving (Show, Eq, Ord)
 
 addMod256 :: Z_sur_256Z -> Z_sur_256Z -> Z_sur_256Z
 addMod256 (Z256Z a) (Z256Z b) = Z256Z $ modPoly (addPoly a b) (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])
@@ -26,8 +26,8 @@ oppose256 (Z256Z n) = Z256Z $ subPoly n (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1
 multMod256 :: Z_sur_256Z -> Z_sur_256Z -> Z_sur_256Z
 multMod256 (Z256Z a) (Z256Z b) = Z256Z $ modPoly (multPoly a b) (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])
 
---inverse256 :: Z_sur_256Z -> Z_sur_256Z
---inverse256 (Z256Z n) = Z256Z $ 
+inverse256 :: Z_sur_256Z -> Z_sur_256Z
+inverse256 (Z256Z n) = Z256Z $ inverse n 
 
 
 instance Anneau Z_sur_256Z where
@@ -251,8 +251,9 @@ divPoly_aux q r b a | (degre r) >= (degre b) = div (addPoly (q) (createPoly ((de
 
 euclide :: Polynome a -> Polynome a -> (Polynome a, Polynome a, Polynome a)
 euclide a b | (b==unitmul) =(a, unitadd, unitmul)
-            | otherwise = (x, z, (subPoly (y) (multPoly (divPoly a b) (z) ) ))
+            | otherwise = (x, z, (subPoly (y) (multPoly (fst (divPoly a b)) (z) ) ))
                   where (x,y,z) = euclide b (modPoly a b)
+
 
 inverse :: Polynome a -> Polynome a
 inverse pol = modPoly (head (snd (euclide (pol) (polyIrr)))) (polyIrr)
