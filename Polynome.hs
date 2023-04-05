@@ -213,16 +213,17 @@ subPoly a b = Poly (removeNeg (subPolyNeg a b))
 -- Si il est de degré inférieur on le ramène au degré du polynome a moduloter en le multipliant par X^a
 -- Puis on recommence en faisant décroite X^a de degré en degré jusqu'a son degré initial
 -- Pour vérifier qu'on peut soustraire le polynome 2 on regarde si la fonction subPolyPos ne retourne pas de coefs négatifs avec la fonction validPoly
+-- modPoly :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a
+--modPoly (Poly []) (Poly []) = Poly [unitadd]
+--modPoly pol1 pol2 = f ((degre pol1)-(degre pol2)) pol1 pol2
+--                  where f :: (Anneau a, Num a) => Int -> Polynome a -> Polynome a -> Polynome a
+--                        f v p1 p2 
+--                            | (v>=0) = if(validPoly (subPolyNeg p1 mulX)) then (f v (subPolyNeg p1 mulX) p2) else (f (v-1) p1 p2)         
+--                            | otherwise = p1
+--                                where mulX = (multPoly (createPoly v) p2)
+
 modPoly :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a
-modPoly (Poly []) (Poly []) = Poly [unitadd]
-modPoly pol1 pol2 = f ((degre pol1)-(degre pol2)) pol1 pol2
-                  where f :: (Anneau a, Num a) => Int -> Polynome a -> Polynome a -> Polynome a
-                        f v p1 p2 
-                            | (v>=0) = if(validPoly (subPolyNeg p1 mulX)) then (f v (subPolyNeg p1 mulX) p2) else (f (v-1) p1 p2)         
-                            | otherwise = p1
-                                where mulX = (multPoly (createPoly v) p2)
-
-
+modPoly a b = snd (divPoly_aux unitadd a b a)
 
 poly1 = Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1]
 poly2 = Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]
@@ -230,35 +231,51 @@ poly2 = Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]
 poly3 = Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0]
 poly4 = Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0]
 
-poly_irr = Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1]
+
+a = Poly [Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1]
+c = Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0]
+
+
+poly_irr = Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1]
 
 
 multAES :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a
 multAES pol1 pol2 = (modPoly (multPoly pol1 pol2) polyIrr)
-        where polyIrr = Poly [unitmul, unitmul, unitadd, unitmul, unitmul, unitadd, unitadd, unitadd, unitmul]
+        where polyIrr = Poly [unitmul, unitadd, unitadd, unitadd, unitmul, unitmul, unitadd, unitmul, unitmul]
 
 
 
 divPoly :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a
-divPoly pol1 pol2 = (fst (divPoly_aux (createPoly 0) (pol1) (pol2) (pol1)))
+divPoly pol1 unitmul = pol1
+divPoly pol1 pol2 = (fst (divPoly_aux unitadd (pol1) (pol2) (pol1)))
 
 divPoly_aux :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a -> Polynome a -> (Polynome a, Polynome a)
 divPoly_aux q r b a | (degre r) >= (degre b) = divPoly_aux (addPoly (q) (createPoly ((degre r) -(degre b)))) (subPoly (r) (multPoly b (createPoly ((degre r) -(degre b))) )) b a
-                | otherwise = (q, r)
+                    | otherwise = (q, r)
 
 
 
 
 
-euclide :: (Anneau a, Num a) => Polynome a -> Polynome a -> (Polynome a, Polynome a, Polynome a)
-euclide a b | ((removeZeros b)==unitmul) =(a, unitadd, unitmul)
-            | otherwise = (x, z, (subPoly (y) (multPoly (divPoly a b) (z) ) ))
-                  where (x,y,z) = euclide b (modPoly a b)
+--euclide :: (Anneau a, Num a) => Polynome a -> Polynome a -> (Polynome a, Polynome a, Polynome a)
+--euclide a b | ((removeZeros b)==unitmul) =(a, unitadd, unitmul)
+--            | otherwise = (x, z, (subPoly (y) (multPoly (divPoly a b) (z) ) ))
+--                  where (x,y,z) = euclide b (modPoly a b)
 
 
 inverse :: (Anneau a, Num a) => Polynome a -> Polynome a
 inverse pol = modPoly b (polyIrr)
-      where polyIrr = Poly [unitmul, unitmul, unitadd, unitmul, unitmul, unitadd, unitadd, unitadd, unitmul]
+      where polyIrr = Poly [unitmul, unitadd, unitadd, unitadd, unitmul, unitmul, unitadd, unitmul, unitmul]
             (a, b, c) = euclide (pol) (polyIrr)
 
 
+
+
+-- NE FONCTIONNE PAS
+
+euclide2 :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a -> Polynome a -> Polynome a -> Polynome a -> (Polynome a , Polynome a , Polynome a)
+euclide2 r u v r2 u2 v2 | ((removeZeros r2) == unitadd)= (r, u, v)
+                        | otherwise =  euclide2 r2 u2 v2 (removeZeros (subPoly r (multPoly (divPoly r r2) (r2) )))  ((subPoly u (multPoly (divPoly r r2) (u2) )))  ((subPoly v (multPoly (divPoly r r2) (v2) )))
+
+euclide :: (Anneau a, Num a) => Polynome a -> Polynome a -> (Polynome a , Polynome a , Polynome a)
+euclide a b = euclide2 a unitadd unitmul b unitmul unitadd
