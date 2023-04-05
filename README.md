@@ -30,8 +30,8 @@ Séances 4, 5 -> début d'appropriation des tâches liées au c
 | 4 |    ok     |  tests de 3) sur des polynômes à coefficients dans F2                                      |
 | 5 |    ok     |  implémentation du calcul modulo un polynôme (+,-,x)                                       |
 | 6 |    ok     |  tests de 5) avec le polynôme m d'AES                                                      |
-| 7 |           |  implémentation de l'inverse modulo m dans F2[X]                                           |
-| 8 |           |                                                                                            |
+| 7 | en cours  |  implémentation de l'inverse modulo m dans F2[X]                                           |
+| 8 |           |  tests du 7                                                                                     |
 | 9 |           |                                                                                            |
 | 10|           |                                                                                            |
 | 11|           |                                                                                            |
@@ -72,10 +72,9 @@ Nous avons ré-étudié la documentation de AES, en se focalisant sur le fonctio
 
 **Objectifs avant la prochaine séance :**
 - Ronan :
-    - Finir l'implémentation du 3)
-    - Faire les tests du 3)
-    - Réfléchir à une implémentation du calcul modulo un polynôme
+    - Continuer l'étude de la documentation en général
+    - DOC
     
 - Etienne
-    - Réfléchir à une implémentation du calcul modulo un polynôme
-    - Faire les tests du 5)
+    - Faire les tests du 7)
+    - Continuer l'étude de la documentation notament en point 4.3
