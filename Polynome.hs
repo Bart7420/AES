@@ -4,6 +4,7 @@
 {-# HLINT ignore "Eta reduce" #-}
 {-# HLINT ignore "Redundant /=" #-}
 {-# HLINT ignore "Use foldr" #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
 module Polynome where
 
@@ -13,31 +14,6 @@ import Anneau
 
 newtype Polynome a = Poly [a]    deriving (Eq, Show, Ord)
 
-
-newtype Z_sur_256Z = Z256Z (Polynome Z_sur_2Z) deriving (Show, Eq, Ord, Num)
-
-addMod256 :: Z_sur_256Z -> Z_sur_256Z -> Z_sur_256Z
-addMod256 (Z256Z a) (Z256Z b) = Z256Z $ modPoly (addPoly a b) (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])
-
-oppose256 :: Z_sur_256Z -> Z_sur_256Z
-oppose256 (Z256Z n) = Z256Z $ oppose 256 n
-
-multMod256 :: Z_sur_256Z -> Z_sur_256Z -> Z_sur_256Z
-multMod256 (Z256Z a) (Z256Z b) = Z256Z $ modPoly (multPoly a b) (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])
-
-inverse256 :: Z_sur_256Z -> Z_sur_256Z
-inverse256 (Z256Z n) = Z256Z $ inverse n
-                    where inverse n | (modPoly n (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])) == (Poly [Z2Z 1]) = 1
-
-
-instance Anneau Z_sur_256Z where
-  unitadd = Z256Z 0
-  unitmul = Z256Z 1
-  inverseadd = oppose256
-  operationadd = addMod256
-  operationmul = multMod256
-instance Corps Z_sur_256Z where
-  inversemul = inverse256
 
 
 
@@ -234,9 +210,16 @@ multAES pol1 pol2 = (modPoly (multPoly pol1 pol2) polyIrr)
 
 
 
+divPoly :: Polynome a -> Polynome a -> Polynome a -> Polynome a -> Polynome a -> Polynome a
+divPoly q r b a | (degre r) >= (degre b) = div (addPoly (q) (createPoly ((degre r) -(degre b)))) (subPoly (r) (multPoly b (createPoly ((degre r) -(degre b))) )) b a
+                | otherwise = q r
+
+
+
+
 euclide :: Polynome a -> Polynome a -> (Polynome a, Polynome a, Polynome a)
 euclide a b | (b==unitmul) =(a, unitadd, unitmul)
-            | otherwise = (x, z, y-)
-                  where (x,y,z) = euclide b (a mod b)
+            | otherwise = (x, z, (subPoly (y) (multPoly (divPoly a b) (z) ) ))
+                  where (x,y,z) = euclide b (modPoly a b)
 
 
