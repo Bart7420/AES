@@ -250,4 +250,6 @@ euclide a b | (b==unitmul) =(a, unitadd, unitmul)
             | otherwise = (x, z, (subPoly (y) (multPoly (divPoly a b) (z) ) ))
                   where (x,y,z) = euclide b (modPoly a b)
 
-
+inverse :: Polynome a -> Polynome a
+inverse pol = modPoly (head (snd (euclide (pol) (polyIrr)))) (polyIrr)
+      where polyIrr = Poly [unitmul, unitmul, unitadd, unitmul, unitmul, unitadd, unitadd, unitadd, unitmul]
