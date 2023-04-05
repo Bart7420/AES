@@ -20,19 +20,18 @@ addMod256 :: Z_sur_256Z -> Z_sur_256Z -> Z_sur_256Z
 addMod256 (Z256Z a) (Z256Z b) = Z256Z $ modPoly (addPoly a b) (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])
 
 oppose256 :: Z_sur_256Z -> Z_sur_256Z
-oppose256 (Z256Z n) = Z256Z $ oppose 256 n
+oppose256 (Z256Z n) = Z256Z $ subPoly n (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])
 
 multMod256 :: Z_sur_256Z -> Z_sur_256Z -> Z_sur_256Z
 multMod256 (Z256Z a) (Z256Z b) = Z256Z $ modPoly (multPoly a b) (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])
 
-inverse256 :: Z_sur_256Z -> Z_sur_256Z
-inverse256 (Z256Z n) = Z256Z $ inverse n
-                    where inverse n | (modPoly n (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])) == (Poly [Z2Z 1]) = 1
+--inverse256 :: Z_sur_256Z -> Z_sur_256Z
+--inverse256 (Z256Z n) = Z256Z $ 
 
 
 instance Anneau Z_sur_256Z where
-  unitadd = Z256Z 0
-  unitmul = Z256Z 1
+  unitadd = Z256Z (Poly [Z2Z 0])
+  unitmul = Z256Z (Poly [Z2Z 1])
   inverseadd = oppose256
   operationadd = addMod256
   operationmul = multMod256
@@ -201,6 +200,10 @@ subPolyNeg (Poly p1@(x:xs)) (Poly p2@(y:ys))
   | (length p1 > length p2) = Poly ( (take (length p1 - length p2) p1) ++ (opListZnZ (-) (drop (length p1 - length p2) p1) p2) )
   | otherwise = Poly ( (take (length p2 - length p1) p2) ++ (opListZnZ (-) p1 (drop (length p2 - length p1) p2)) )
 
+subPoly :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a
+subPoly a b = Poly (removeNeg (subPolyNeg a b))
+              where removeNeg (Poly (x:xs)) | (x < unitadd) = unitadd:removeNeg (Poly xs)
+                                            | otherwise = x:removeNeg (Poly xs)
 
 
 -- Forme : <p1> [p2]
@@ -232,11 +235,5 @@ multAES :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a
 multAES pol1 pol2 = (modPoly (multPoly pol1 pol2) polyIrr)
         where polyIrr = Poly [unitmul, unitmul, unitadd, unitmul, unitmul, unitadd, unitadd, unitadd, unitmul]
 
-
-
-euclide :: Polynome a -> Polynome a -> (Polynome a, Polynome a, Polynome a)
-euclide a b | (b==unitmul) =(a, unitadd, unitmul)
-            | otherwise = (x, z, y-)
-                  where (x,y,z) = euclide b (a mod b)
 
 
