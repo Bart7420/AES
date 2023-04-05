@@ -200,5 +200,4 @@ multAES pol1 pol2 = (modPoly (multPoly pol1 pol2) polyIrr)
         where polyIrr = Poly [unitmul, unitmul, unitadd, unitmul, unitmul, unitadd, unitadd, unitadd, unitmul]
 
 
-coucou
 
