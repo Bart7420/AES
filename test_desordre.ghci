@@ -1,0 +1,22 @@
+subPoly (a) (multPoly (divPoly a b) (b))
+-- Poly [Z2Z 0,Z2Z 1,Z2Z 1,Z2Z 0,Z2Z 0,Z2Z 1,Z2Z 0,Z2Z 1,Z2Z 1]
+subPoly (unitmul ) (multPoly (divPoly a b) (unitadd))
+-- Poly [Z2Z 1]
+subPoly (unitadd ) (multPoly (divPoly a b) (unitmul))
+-- Poly [Z2Z 0]
+subPoly (b) (multPoly (divPoly b a) (a))
+-- Poly [Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 1,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 1,Z2Z 1,Z2Z 0]
+subPoly (unitadd ) (multPoly (divPoly b a) (unitmul))
+-- Poly [Z2Z 1,Z2Z 1]
+subPoly (unitmul ) (multPoly (divPoly b a) (unitadd))
+-- Poly [Z2Z 0,Z2Z 1]
+subPoly (a) (multPoly (divPoly a c ) (c))
+-- Poly [Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 1]
+subPoly (unitmul ) (multPoly (divPoly a c ) (Poly [Z2Z 1, Z2Z 1]))
+-- Poly [Z2Z 1,Z2Z 0,Z2Z 0]
+subPoly (unitadd ) (multPoly (divPoly a c ) (Poly [Z2Z 1]))
+-- Poly [Z2Z 1,Z2Z 1]
+subPoly (unitadd ) (multPoly (divPoly a c ) unitmul )
+-- Poly [Z2Z 1,Z2Z 1]
+subPoly (c ) (multPoly (divPoly c unitmul  ) (Poly [Z2Z 1]))
+-- Poly [Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 0]

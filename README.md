@@ -31,7 +31,7 @@ Séances 4, 5 -> début d'appropriation des tâches liées au c
 | 5 |    ok     |  implémentation du calcul modulo un polynôme (+,-,x)                                       |
 | 6 |    ok     |  tests de 5) avec le polynôme m d'AES                                                      |
 | 7 | en cours  |  implémentation de l'inverse modulo m dans F2[X]                                           |
-| 8 |           |  tests du 7                                                                                     |
+| 8 |           |  tests du 7                                                                                |
 | 9 |           |                                                                                            |
 | 10|           |                                                                                            |
 | 11|           |                                                                                            |

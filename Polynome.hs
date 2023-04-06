@@ -112,9 +112,11 @@ opWithAllElement f (Poly []) (Poly []) = Poly []
 opWithAllElement f (Poly (x:xs)) (Poly (y:ys)) = prepend (f x y) (opWithAllElement f (Poly xs) (Poly ys))
 
 
+-- ATTENTION (Poly [unitmul]) est un polynome de degré -1
 degre :: Anneau a => Polynome a -> Int
 degre (Poly []) = 0
-degre (Poly (x:xs)) | (x/=unitadd) = length xs
+degre (Poly (x:xs)) | (x == unitadd ) && (length xs == 0) = -1
+                    | (x/=unitadd) = length xs
                     | otherwise = degre (Poly xs)
 
 
@@ -143,9 +145,11 @@ addPoly (Poly p1@(x:xs)) (Poly p2@(y:ys))
 
 -- toPoly :: [Integer] -> Polynome a
 
+
+
 addDegre :: Anneau a => Int -> [a] -> [a]
-addDegre 0 l = l
-addDegre v l = addDegre (v-1) (l ++ [unitadd])
+addDegre v l | (v < 1) = l
+           | otherwise = addDegre (v-1) (l ++ [unitadd])
 
 -- Multiplication des polynomes
 
@@ -181,8 +185,8 @@ createPolyNul x = prepend unitadd (createPolyNul (x-1))
 -- Crée un polynome de la forme X^x : [1,0,0,...]
 -- Si x = 0, [Z2Z 1] est retourné
 createPoly :: Anneau a => Int -> Polynome a
-createPoly 0 = Poly [unitmul]
-createPoly x = prepend unitmul (createPolyNul (x-1))
+createPoly x | (x>0) = prepend unitmul (createPolyNul (x-1))
+              | otherwise = Poly [unitmul]
 
 
 -- Vérifie si le polynome n'a pas de coef négatifs
@@ -233,8 +237,10 @@ poly4 = Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0]
 
 
 a = Poly [Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1]
+b = Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1]
 c = Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0]
 
+pa = Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1]
 
 poly_irr = Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1]
 
@@ -246,11 +252,12 @@ multAES pol1 pol2 = (modPoly (multPoly pol1 pol2) polyIrr)
 
 
 divPoly :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a
-divPoly pol1 unitmul = pol1
-divPoly pol1 pol2 = (fst (divPoly_aux unitadd (pol1) (pol2) (pol1)))
+-- divPoly pol1 unitmul = pol1
+divPoly pol1 pol2 | (pol2 /= unitadd) = (fst (divPoly_aux unitadd (pol1) (pol2) (pol1)))
+                  | otherwise = (unitmul)
 
 divPoly_aux :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a -> Polynome a -> (Polynome a, Polynome a)
-divPoly_aux q r b a | (degre r) >= (degre b) = divPoly_aux (addPoly (q) (createPoly ((degre r) -(degre b)))) (subPoly (r) (multPoly b (createPoly ((degre r) -(degre b))) )) b a
+divPoly_aux q r b a | (degre r) >= (degre b) = divPoly_aux (removeZeros (addPoly (q) (createPoly ((degre r) -(degre b))))) (subPoly (r) ( removeZeros (multPoly b (createPoly ((degre r) -(degre b))) ))) b a
                     | otherwise = (q, r)
 
 
@@ -264,18 +271,19 @@ divPoly_aux q r b a | (degre r) >= (degre b) = divPoly_aux (addPoly (q) (createP
 
 
 inverse :: (Anneau a, Num a) => Polynome a -> Polynome a
-inverse pol = modPoly b (polyIrr)
+inverse pol = modPoly c (polyIrr)
       where polyIrr = Poly [unitmul, unitadd, unitadd, unitadd, unitmul, unitmul, unitadd, unitmul, unitmul]
             (a, b, c) = euclide (pol) (polyIrr)
 
 
 
 
--- NE FONCTIONNE PAS
 
 euclide2 :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a -> Polynome a -> Polynome a -> Polynome a -> (Polynome a , Polynome a , Polynome a)
-euclide2 r u v r2 u2 v2 | ((removeZeros r2) == unitadd)= (r, u, v)
+euclide2 r u v r2 u2 v2 | ((removeZeros r2) == (Poly []))= (r, u, v)
                         | otherwise =  euclide2 r2 u2 v2 (removeZeros (subPoly r (multPoly (divPoly r r2) (r2) )))  ((subPoly u (multPoly (divPoly r r2) (u2) )))  ((subPoly v (multPoly (divPoly r r2) (v2) )))
 
 euclide :: (Anneau a, Num a) => Polynome a -> Polynome a -> (Polynome a , Polynome a , Polynome a)
-euclide a b = euclide2 a unitadd unitmul b unitmul unitadd
+euclide a b = euclide2 a (unitadd) unitmul b unitmul unitadd
+
+
