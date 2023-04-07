@@ -30,6 +30,14 @@ inverse256 :: Z_sur_256Z -> Z_sur_256Z
 inverse256 (Z256Z n) = Z256Z $ inverse n 
 
 
+
+
+
+
+
+
+
+
 instance Anneau Z_sur_256Z where
   unitadd = Z256Z (Poly [Z2Z 0])
   unitmul = Z256Z (Poly [Z2Z 1])
@@ -42,17 +50,14 @@ instance Corps Z_sur_256Z where
 
 
 
-
-
-
-
 instance Anneau a => Anneau (Polynome a) where
   unitadd = Poly [ unitadd ]
   unitmul = Poly [ unitmul ]
   -- inverseadd = oppose2
   operationadd = addPoly
+  operationsub = subPoly
   -- inversemul = inverse2
-  -- a faire operationmul = multMod2
+  operationmul = multPoly
 
 -- addPoly :: [Integer] -> [Integer] -> [Integer]
 -- addPoly [] [] = []
@@ -171,7 +176,7 @@ isPolynull (Poly (x:xs))   | x == unitadd = isPolynull (Poly xs)
 
 -- Enlève les coefs de degrés supérieurs nuls : [0,0,1,0,1,0] -> [1,0,1,0]
 removeZeros :: Anneau a => Polynome a -> Polynome a
-removeZeros (Poly []) = Poly []
+removeZeros (Poly []) = Poly [unitadd]
 removeZeros (Poly (x:xs)) | x == unitadd = removeZeros (Poly xs)
                           | otherwise = Poly (x:xs)
 
@@ -197,15 +202,15 @@ validPoly (Poly (x:xs)) = (x >= unitadd) && validPoly (Poly xs)
 
 -- Soustraction de deux polynomes dans un anneau Z/2Z qui crée des coefs négatifs
 -- Si les polynomes sont de meme degré, on soustrait les coefs un a un, sinon on tronque celui de degré supérieur
-subPolyNeg :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a
+subPolyNeg :: (Anneau a) => Polynome a -> Polynome a -> Polynome a
 subPolyNeg (Poly []) p2 = p2
 subPolyNeg p1 (Poly []) = p1
 subPolyNeg (Poly p1@(x:xs)) (Poly p2@(y:ys))
-  | (length p1 == length p2) = opWithAllElement (-) (Poly p1) (Poly p2)
-  | (length p1 > length p2) = Poly ( (take (length p1 - length p2) p1) ++ (opListZnZ (-) (drop (length p1 - length p2) p1) p2) )
-  | otherwise = Poly ( (take (length p2 - length p1) p2) ++ (opListZnZ (-) p1 (drop (length p2 - length p1) p2)) )
+  | (length p1 == length p2) = opWithAllElement (operationsub) (Poly p1) (Poly p2)
+  | (length p1 > length p2) = Poly ( (take (length p1 - length p2) p1) ++ (opListZnZ (operationsub) (drop (length p1 - length p2) p1) p2) )
+  | otherwise = Poly ( (take (length p2 - length p1) p2) ++ (opListZnZ (operationsub) p1 (drop (length p2 - length p1) p2)) )
 
-subPoly :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a
+subPoly :: (Anneau a) => Polynome a -> Polynome a -> Polynome a
 subPoly a b = Poly (removeNeg (subPolyNeg a b))
               where removeNeg (Poly (x:xs)) | (x < unitadd) = (inverseadd x):removeNeg (Poly xs)
                                             | otherwise = x:removeNeg (Poly xs)
@@ -226,7 +231,7 @@ subPoly a b = Poly (removeNeg (subPolyNeg a b))
 --                            | otherwise = p1
 --                                where mulX = (multPoly (createPoly v) p2)
 
-modPoly :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a
+modPoly :: (Anneau a) => Polynome a -> Polynome a -> Polynome a
 modPoly a b = snd (divPoly_aux unitadd a b a)
 
 poly1 = Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1]
@@ -239,24 +244,27 @@ poly4 = Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0]
 a = Poly [Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1]
 b = Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1]
 c = Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0]
+d = Poly [Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0]
 
 pa = Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1]
 
 poly_irr = Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1]
 
 
-multAES :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a
+
+-- Multiplication d'AES avec la réduction modulo le polynome irréductible
+multAES :: (Anneau a) => Polynome a -> Polynome a -> Polynome a
 multAES pol1 pol2 = (modPoly (multPoly pol1 pol2) polyIrr)
         where polyIrr = Poly [unitmul, unitadd, unitadd, unitadd, unitmul, unitmul, unitadd, unitmul, unitmul]
 
 
-
-divPoly :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a
+-- division de Polynomes 
+divPoly :: (Anneau a) => Polynome a -> Polynome a -> Polynome a
 -- divPoly pol1 unitmul = pol1
 divPoly pol1 pol2 | (pol2 /= unitadd) = (fst (divPoly_aux unitadd (pol1) (pol2) (pol1)))
                   | otherwise = (unitmul)
 
-divPoly_aux :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a -> Polynome a -> (Polynome a, Polynome a)
+divPoly_aux :: (Anneau a) => Polynome a -> Polynome a -> Polynome a -> Polynome a -> (Polynome a, Polynome a)
 divPoly_aux q r b a | (degre r) >= (degre b) = divPoly_aux (removeZeros (addPoly (q) (createPoly ((degre r) -(degre b))))) (subPoly (r) ( removeZeros (multPoly b (createPoly ((degre r) -(degre b))) ))) b a
                     | otherwise = (q, r)
 
@@ -270,7 +278,8 @@ divPoly_aux q r b a | (degre r) >= (degre b) = divPoly_aux (removeZeros (addPoly
 --                  where (x,y,z) = euclide b (modPoly a b)
 
 
-inverse :: (Anneau a, Num a) => Polynome a -> Polynome a
+-- Inverse 
+inverse :: (Anneau a) => Polynome a -> Polynome a
 inverse pol = modPoly c (polyIrr)
       where polyIrr = Poly [unitmul, unitadd, unitadd, unitadd, unitmul, unitmul, unitadd, unitmul, unitmul]
             (a, b, c) = euclide (pol) (polyIrr)
@@ -278,12 +287,12 @@ inverse pol = modPoly c (polyIrr)
 
 
 
-
-euclide2 :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a -> Polynome a -> Polynome a -> Polynome a -> (Polynome a , Polynome a , Polynome a)
-euclide2 r u v r2 u2 v2 | ((removeZeros r2) == (Poly []))= (r, u, v)
+-- Théorème d'euclide étendu aux polynomes
+euclide2 :: (Anneau a) => Polynome a -> Polynome a -> Polynome a -> Polynome a -> Polynome a -> Polynome a -> (Polynome a , Polynome a , Polynome a)
+euclide2 r u v r2 u2 v2 | ((removeZeros r2) == (Poly [unitadd]))= (r, u, v)
                         | otherwise =  euclide2 r2 u2 v2 (removeZeros (subPoly r (multPoly (divPoly r r2) (r2) )))  ((subPoly u (multPoly (divPoly r r2) (u2) )))  ((subPoly v (multPoly (divPoly r r2) (v2) )))
 
-euclide :: (Anneau a, Num a) => Polynome a -> Polynome a -> (Polynome a , Polynome a , Polynome a)
+euclide :: (Anneau a) => Polynome a -> Polynome a -> (Polynome a , Polynome a , Polynome a)
 euclide a b = euclide2 a (unitadd) unitmul b unitmul unitadd
 
 

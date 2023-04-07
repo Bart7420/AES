@@ -80,12 +80,15 @@ inverse2 :: Z_sur_2Z -> Z_sur_2Z
 inverse2 (Z2Z n ) = Z2Z $ inverse n
                     where inverse n | (n `mod` 2) == 1 = 1
 
+sub2 :: Z_sur_2Z -> Z_sur_2Z -> Z_sur_2Z
+sub2 x y =  addMod2 x (oppose2 y)
 
 instance Anneau Z_sur_2Z where
   unitadd = Z2Z 0
   unitmul = Z2Z 1
   inverseadd = oppose2
   operationadd = addMod2
+  operationsub = sub2
   operationmul = multMod2
 instance Corps Z_sur_2Z where
   inversemul = inverse2
