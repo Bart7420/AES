@@ -54,13 +54,13 @@ Pour finir, nous avons commencé à réfléchir à comment implémenter des anne
 
 **Objectifs avant la prochaine séance :**
 - Ronan :
-    - Finir l'implémentation du 3)
-    - Faire les tests du 3)
-    - Réfléchir à une implémentation du calcul modulo un polynôme
+    - [x] Finir l'implémentation du 3)
+    - [x] Faire les tests du 3)
+    - [x] Réfléchir à une implémentation du calcul modulo un polynôme
     
 - Etienne
-    - Réfléchir à une implémentation du calcul modulo un polynôme
-    - Faire les tests du 5)
+    - [x] Réfléchir à une implémentation du calcul modulo un polynôme
+    - [x] Faire les tests du 5)
 
 
 ## Séance 2 (5/04/2023)
@@ -72,9 +72,9 @@ Nous avons ré-étudié la documentation de AES, en se focalisant sur le fonctio
 
 **Objectifs avant la prochaine séance :**
 - Ronan :
-    - Continuer l'étude de la documentation en général
-    - DOC
+    - [] Continuer l'étude de la documentation en général
+    - [] DOC
     
 - Etienne
-    - Faire les tests du 7)
-    - Continuer l'étude de la documentation notament en point 4.3
+    - [] Faire les tests du 7)
+    - [] Continuer l'étude de la documentation notament en point 4.3
