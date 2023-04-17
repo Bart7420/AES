@@ -1,4 +1,4 @@
-# Fonctionnement de AES (vu en première lecture par Etienne)
+# Fonctionnement de AES
 
 AES-128
 
