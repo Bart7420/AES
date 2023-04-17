@@ -29,13 +29,8 @@ multMod256 (Z256Z a) (Z256Z b) = Z256Z $ modPoly (multPoly a b) (Poly [Z2Z 1, Z2
 inverse256 :: Z_sur_256Z -> Z_sur_256Z
 inverse256 (Z256Z n) = Z256Z $ inverse n 
 
-
-
-
-
-
-
-
+sub256 :: Z_sur_256Z -> Z_sur_256Z -> Z_sur_256Z
+sub256 (Z256Z x) (Z256Z y) = Z256Z $ modPoly (subPoly x y) (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])
 
 
 instance Anneau Z_sur_256Z where
@@ -44,6 +39,8 @@ instance Anneau Z_sur_256Z where
   inverseadd = oppose256
   operationadd = addMod256
   operationmul = multMod256
+  operationsub = sub256
+
 instance Corps Z_sur_256Z where
   inversemul = inverse256
 
