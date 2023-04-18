@@ -8,6 +8,7 @@ module AesFunctions where
 import Polynome
 import ZsurNZ
 import Data.Bits (Bits(rotate))
+import Anneau (Anneau(operationmul, operationadd))
 
 
 
@@ -17,12 +18,17 @@ getEl (Z256Z (Poly tab)) x = tab!!x
 concatZ256Z :: Z_sur_256Z -> Z_sur_256Z -> Z_sur_256Z
 concatZ256Z (Z256Z (Poly a)) (Z256Z (Poly b)) = Z256Z (Poly (a ++ b))
 
+scalProduct :: Polynome Z_sur_2Z -> Polynome Z_sur_2Z -> Z_sur_2Z
+scalProduct (Poly (x:xs)) (Poly (y:ys)) = operationadd (operationmul x y) (scalProduct (Poly xs) (Poly ys))
+
 
 shiftRows :: [Z_sur_256Z] -> [Z_sur_256Z]
-shiftRows (x:y:xs) = shiftRows_aux (y:xs)
+shiftRows (x:y:xs) = x:shiftRows_aux (y:xs)
+shiftRows (x:xs) = x:shiftRows_aux (xs)
 
 
 shiftRows_aux :: [Z_sur_256Z] -> [Z_sur_256Z]
+shiftRows_aux [] = []
 shiftRows_aux ((Z256Z (Poly tab)):xs) = (Z256Z (Poly (rotateLeft (rotateLeft (rotateLeft tab))))):(shiftRows_aux xs)
 
 rotateLeft :: [Z_sur_2Z] -> [Z_sur_2Z]
