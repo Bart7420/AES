@@ -1,3 +1,7 @@
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Use camelCase" #-}
+{-# HLINT ignore "Redundant bracket" #-}
+{-# HLINT ignore "Use head" #-}
 
 
 module AesFunctions where
@@ -14,6 +18,21 @@ getEl (Z256Z (Poly tab)) x = tab!!x
 concatZ256Z :: Z_sur_256Z -> Z_sur_256Z -> Z_sur_256Z
 concatZ256Z (Z256Z (Poly a)) (Z256Z (Poly b)) = Z256Z (Poly (a ++ b))
 
+scalProduct :: Polynome Z_sur_2Z -> Polynome Z_sur_2Z -> Z_sur_2Z
+scalProduct (Poly (x:xs)) (Poly (y:ys)) = operationadd (operationmul x y) (scalProduct (Poly xs) (Poly ys))
+
+
+shiftRows :: [Z_sur_256Z] -> [Z_sur_256Z]
+shiftRows (x:y:xs) = x:shiftRows_aux (y:xs)
+shiftRows (x:xs) = x:shiftRows_aux (xs)
+
+
+shiftRows_aux :: [Z_sur_256Z] -> [Z_sur_256Z]
+shiftRows_aux [] = []
+shiftRows_aux ((Z256Z (Poly tab)):xs) = (Z256Z (Poly (rotateLeft (rotateLeft (rotateLeft tab))))):(shiftRows_aux xs)
+
+rotateLeft :: [Z_sur_2Z] -> [Z_sur_2Z]
+rotateLeft tab = [(tab!!6), (tab!!5), (tab!!4), (tab!!3), (tab!!2), (tab!!1), (tab!!0), (tab!!7)]
 
 
 
