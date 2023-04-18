@@ -19,6 +19,7 @@ concatZ256Z :: Z_sur_256Z -> Z_sur_256Z -> Z_sur_256Z
 concatZ256Z (Z256Z (Poly a)) (Z256Z (Poly b)) = Z256Z (Poly (a ++ b))
 
 scalProduct :: Polynome Z_sur_2Z -> Polynome Z_sur_2Z -> Z_sur_2Z
+scalProduct (Poly []) (Poly []) = unitadd
 scalProduct (Poly (x:xs)) (Poly (y:ys)) = operationadd (operationmul x y) (scalProduct (Poly xs) (Poly ys))
 
 
@@ -54,12 +55,12 @@ subBytes [] = []
 subBytes (x:xs) = (subBytes_aux (inverse256 (x))) : (subBytes xs)
 
 subBytes_aux :: Z_sur_256Z ->Z_sur_256Z
-subBytes_aux (Z256Z (Poly [a,b,c,d,e,f,g,h])) = Z256Z (Poly [ab,bb,cb,db,eb,fb,gb,hb] )
-                        where   ab =  operationadd ( scalProduct (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1]) ((Poly [a,b,c,d,e,f,g,h]))) (unitmul)
-                                bb =  operationadd ( scalProduct (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1]) ((Poly [a,b,c,d,e,f,g,h]))) (unitmul)
-                                cb =  operationadd ( scalProduct (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]) ((Poly [a,b,c,d,e,f,g,h]))) (unitadd)
-                                db =  operationadd ( scalProduct (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1]) ((Poly [a,b,c,d,e,f,g,h]))) (unitadd)
-                                eb =  operationadd ( scalProduct (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0]) ((Poly [a,b,c,d,e,f,g,h]))) (unitadd)
-                                fb =  operationadd ( scalProduct (Poly [Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0]) ((Poly [a,b,c,d,e,f,g,h]))) (unitmul)
-                                gb =  operationadd ( scalProduct (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0]) ((Poly [a,b,c,d,e,f,g,h]))) (unitmul)
-                                hb =  operationadd ( scalProduct (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1]) ((Poly [a,b,c,d,e,f,g,h]))) (unitadd)
+subBytes_aux (Z256Z (Poly [a,b,c,d,e,f,g,h])) = Z256Z (Poly [hb,gb,fb,eb,db,cb,bb,ab] )
+                        where   ab =  operationadd ( scalProduct (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1]) ((Poly [h,g,f,e,d,c,b,a]))) (unitmul)
+                                bb =  operationadd ( scalProduct (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1]) ((Poly [h,g,f,e,d,c,b,a]))) (unitmul)
+                                cb =  operationadd ( scalProduct (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]) ((Poly [h,g,f,e,d,c,b,a]))) (unitadd)
+                                db =  operationadd ( scalProduct (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1]) ((Poly [h,g,f,e,d,c,b,a]))) (unitadd)
+                                eb =  operationadd ( scalProduct (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0]) ((Poly [h,g,f,e,d,c,b,a]))) (unitadd)
+                                fb =  operationadd ( scalProduct (Poly [Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0]) ((Poly [h,g,f,e,d,c,b,a]))) (unitmul)
+                                gb =  operationadd ( scalProduct (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0]) ((Poly [h,g,f,e,d,c,b,a]))) (unitmul)
+                                hb =  operationadd ( scalProduct (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1]) ((Poly [h,g,f,e,d,c,b,a]))) (unitadd)

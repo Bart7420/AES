@@ -78,3 +78,30 @@ Nous avons ré-étudié la documentation de AES, en se focalisant sur le fonctio
 - Etienne
     - [x] Faire les tests du 7)
     - [x] Continuer l'étude de la documentation notament en point 4.3
+
+
+## Séance 3 (18/04/2023)
+
+Dans cette séance, nous avons continué l'implémentation d'AES. Nous avons commencé les implémentations de SubBytes() et de ShiftRows(). 
+
+
+**Objectifs avant la prochaine séance :**
+- Ronan :
+    - [ ] MixColumn
+    - [ ] InvMixColums
+    - [ ] ShiftRow
+    - [ ] InvShiftRow
+    - [ ] KeyExpension
+    - [ ] tests
+    
+- Etienne
+    - [ ] SubBytes
+    - [ ] InvSubBytes
+    - [ ] AddRoundKey
+    - [ ] InvAddRoundKey
+    - [ ] KeyExpension
+    - [ ] tests
+
+
+
+3 mai prochaine séance
