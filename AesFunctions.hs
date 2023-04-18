@@ -32,7 +32,7 @@ shiftRows_aux [] = []
 shiftRows_aux ((Z256Z (Poly tab)):xs) = (Z256Z (Poly (rotateLeft (rotateLeft (rotateLeft tab))))):(shiftRows_aux xs)
 
 rotateLeft :: [Z_sur_2Z] -> [Z_sur_2Z]
-rotateLeft tab = [(tab!!6), (tab!!5), (tab!!4), (tab!!3), (tab!!2), (tab!!1), (tab!!0), (tab!!7)]
+rotateLeft tab = [(tab!!1), (tab!!2), (tab!!3), (tab!!4), (tab!!5), (tab!!6), (tab!!7), (tab!!0)]
 
 
 
