@@ -177,6 +177,8 @@ removeZeros (Poly []) = Poly [unitadd]
 removeZeros (Poly (x:xs)) | x == unitadd = removeZeros (Poly xs)
                           | otherwise = Poly (x:xs)
 
+completeZeros :: Anneau a => Polynome a -> Int -> Polynome a
+completeZeros (Poly a) v | ((length a) < v) = Poly (unitadd:a) 
 
 -- Crée un polynome nul de "degré" x : [0,0,0,0,0] avec x=4
 createPolyNul :: Anneau a => Int -> Polynome a
