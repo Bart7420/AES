@@ -5,8 +5,14 @@ import Polynome
 import ZsurNZ
 
 
+
 getEl :: Z_sur_256Z -> Int -> Z_sur_2Z
 getEl (Z256Z (Poly tab)) x = tab!!x
+
+
+subBytes :: [Z_sur_256Z] -> [Z_sur_256Z]
+subBytes (x:xs) = subBytes_aux (inversePoly (x)) (x) (7)
+
 
 
 subBytes_aux :: Z_sur_256Z -> Z_sur_256Z -> Int ->Z_sur_256Z
