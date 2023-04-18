@@ -72,9 +72,9 @@ Nous avons ré-étudié la documentation de AES, en se focalisant sur le fonctio
 
 **Objectifs avant la prochaine séance :**
 - Ronan :
-    - [] Continuer l'étude de la documentation en général
-    - [] DOC
+    - [x] Continuer l'étude de la documentation en général
+    - [x] DOC
     
 - Etienne
-    - [] Faire les tests du 7)
-    - [] Continuer l'étude de la documentation notament en point 4.3
+    - [x] Faire les tests du 7)
+    - [x] Continuer l'étude de la documentation notament en point 4.3
