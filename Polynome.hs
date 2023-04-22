@@ -177,8 +177,15 @@ removeZeros (Poly []) = Poly [unitadd]
 removeZeros (Poly (x:xs)) | x == unitadd = removeZeros (Poly xs)
                           | otherwise = Poly (x:xs)
 
-completeZeros :: Anneau a => Polynome a -> Int -> Polynome a
-completeZeros (Poly a) v | ((length a) < v) = Poly (unitadd:a) 
+completeZeros :: Z_sur_256Z -> Int -> Z_sur_256Z
+completeZeros (Z256Z (Poly a)) v  | (length a) == v = Z256Z (Poly a)
+                          | ((length a) < v) = completeZeros (Z256Z(Poly (unitadd:a))) v
+                          | otherwise = Z256Z (Poly a) -- cas si le polynôme est deja trop grand
+
+
+
+
+
 
 -- Crée un polynome nul de "degré" x : [0,0,0,0,0] avec x=4
 createPolyNul :: Anneau a => Int -> Polynome a

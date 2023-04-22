@@ -52,7 +52,7 @@ rotateLeft tab = [(tab!!1), (tab!!2), (tab!!3), (tab!!4), (tab!!5), (tab!!6), (t
 
 subBytes :: [Z_sur_256Z] -> [Z_sur_256Z]
 subBytes [] = []
-subBytes (x:xs) = (subBytes_aux (inverse256 (x))) : (subBytes xs)
+subBytes (x:xs) = (subBytes_aux (completeZeros (inverse256 (x)) 8 )) : (subBytes xs)
 
 subBytes_aux :: Z_sur_256Z ->Z_sur_256Z
 subBytes_aux (Z256Z (Poly [a,b,c,d,e,f,g,h])) = Z256Z (Poly [hb,gb,fb,eb,db,cb,bb,ab] )
@@ -64,3 +64,5 @@ subBytes_aux (Z256Z (Poly [a,b,c,d,e,f,g,h])) = Z256Z (Poly [hb,gb,fb,eb,db,cb,b
                                 fb =  operationadd ( scalProduct (Poly [Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0]) ((Poly [h,g,f,e,d,c,b,a]))) (unitmul)
                                 gb =  operationadd ( scalProduct (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0]) ((Poly [h,g,f,e,d,c,b,a]))) (unitmul)
                                 hb =  operationadd ( scalProduct (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1]) ((Poly [h,g,f,e,d,c,b,a]))) (unitadd)
+
+
