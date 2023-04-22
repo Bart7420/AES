@@ -75,3 +75,25 @@ subBytes (x:xs) = (toGoodLenghtZ256 ((addMod256 (multMod256 (Z256Z (Poly [Z2Z 1,
 invsubBytes :: [Z_sur_256Z] -> [Z_sur_256Z]
 invsubBytes [] = []
 invsubBytes (x:xs) = (toGoodLenghtZ256 (inverse256(addMod256 (multMod256 (Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0])) (x) ) (Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1]))))) : subBytes xs
+
+
+
+pickColumn :: [Z_sur_256Z] -> Int -> [Z_sur_256Z]
+pickColumn liste nb = pickColumn_aux liste nb 1
+
+pickColumn_aux :: [Z_sur_256Z] -> Int -> Int -> [Z_sur_256Z]
+pickColumn_aux [] _ _ = []
+pickColumn_aux (x:xs) nb indice | (indice `mod` 4) == nb = x : pickColumn_aux xs nb (indice+1)
+                                | otherwise = pickColumn_aux xs nb (indice+1)
+
+
+
+
+putColumn :: [Z_sur_256Z] -> [Z_sur_256Z] -> Int -> [Z_sur_256Z]
+putColumn liste column nb = putColumn_aux liste nb 1 column
+
+putColumn_aux :: [Z_sur_256Z] -> Int -> Int -> [Z_sur_256Z] -> [Z_sur_256Z]
+putColumn_aux _ _ _ [] = []
+putColumn_aux [] _ _ _ = []
+putColumn_aux (x:xs) nb indice (y:ys) | (indice `mod` 4) == nb = y : putColumn_aux xs nb (indice + 1) ys
+                                        | otherwise = x : putColumn_aux xs nb (indice + 1) (y:ys)
