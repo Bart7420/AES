@@ -95,8 +95,8 @@ Dans cette séance, nous avons continué l'implémentation d'AES. Nous avons com
     - [ ] tests
     
 - Etienne
-    - [ ] SubBytes
-    - [ ] InvSubBytes
+    - [x] SubBytes
+    - [x] InvSubBytes
     - [ ] AddRoundKey
     - [ ] InvAddRoundKey
     - [ ] KeyExpension

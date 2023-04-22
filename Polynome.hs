@@ -18,19 +18,20 @@ newtype Polynome a = Poly [a]    deriving (Eq, Show, Ord)
 newtype Z_sur_256Z = Z256Z (Polynome Z_sur_2Z) deriving (Show, Eq, Ord)
 
 addMod256 :: Z_sur_256Z -> Z_sur_256Z -> Z_sur_256Z
-addMod256 (Z256Z a) (Z256Z b) = Z256Z $ modPoly (addPoly a b) (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])
+addMod256 (Z256Z a) (Z256Z b) = Z256Z $ modPoly (addPoly a b) (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1])
 
 oppose256 :: Z_sur_256Z -> Z_sur_256Z
 oppose256 (Z256Z n) = Z256Z $ subPoly n (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])
 
 multMod256 :: Z_sur_256Z -> Z_sur_256Z -> Z_sur_256Z
-multMod256 (Z256Z a) (Z256Z b) = Z256Z $ modPoly (multPoly a b) (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])
+multMod256 (Z256Z a) (Z256Z b) = Z256Z $ modPoly (multPoly a b) (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1])
 
 inverse256 :: Z_sur_256Z -> Z_sur_256Z
-inverse256 (Z256Z n) = Z256Z $ inverse n 
+inverse256 (Z256Z n) | (isPolynull n) = Z256Z $ (Poly [Z2Z 0])
+                      | otherwise = Z256Z $ inverse n 
 
 sub256 :: Z_sur_256Z -> Z_sur_256Z -> Z_sur_256Z
-sub256 (Z256Z x) (Z256Z y) = Z256Z $ modPoly (subPoly x y) (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])
+sub256 (Z256Z x) (Z256Z y) = Z256Z $ modPoly (subPoly x y) (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1])
 
 
 instance Anneau Z_sur_256Z where
@@ -177,11 +178,22 @@ removeZeros (Poly []) = Poly [unitadd]
 removeZeros (Poly (x:xs)) | x == unitadd = removeZeros (Poly xs)
                           | otherwise = Poly (x:xs)
 
-completeZeros :: Z_sur_256Z -> Int -> Z_sur_256Z
-completeZeros (Z256Z (Poly a)) v  | (length a) == v = Z256Z (Poly a)
-                          | ((length a) < v) = completeZeros (Z256Z(Poly (unitadd:a))) v
+
+
+removeZerosZ256 :: Z_sur_256Z -> Z_sur_256Z
+removeZerosZ256 (Z256Z (Poly (x:xs))) | (x == unitadd) = removeZerosZ256 (Z256Z (Poly (xs)))
+                                  | otherwise = (Z256Z (Poly (x:xs)))
+
+
+completeZerosZ256 :: Z_sur_256Z -> Int -> Z_sur_256Z
+completeZerosZ256 (Z256Z (Poly a)) v  | (length a) == v = Z256Z (Poly a)
+                          | ((length a) < v) = completeZerosZ256 (Z256Z(Poly (unitadd:a))) v
                           | otherwise = Z256Z (Poly a) -- cas si le polynôme est deja trop grand
 
+toGoodLenghtZ256 :: Z_sur_256Z -> Z_sur_256Z
+toGoodLenghtZ256 (Z256Z (Poly a)) | (length a) > 8 = removeZerosZ256 (Z256Z (Poly a))
+                                  | (length a ) < 8 = completeZerosZ256 (Z256Z (Poly a)) 8
+                                  | otherwise = (Z256Z (Poly a))
 
 
 
