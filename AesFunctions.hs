@@ -79,7 +79,7 @@ invsubBytes (x:xs) = (toGoodLenghtZ256 (inverse256(addMod256 (multMod256 (Z256Z 
 
 
 pickColumn :: [Z_sur_256Z] -> Int -> [Z_sur_256Z]
-pickColumn liste nb = pickColumn_aux liste nb 1
+pickColumn liste nb = pickColumn_aux liste nb 0
 
 pickColumn_aux :: [Z_sur_256Z] -> Int -> Int -> [Z_sur_256Z]
 pickColumn_aux [] _ _ = []
@@ -90,10 +90,29 @@ pickColumn_aux (x:xs) nb indice | (indice `mod` 4) == nb = x : pickColumn_aux xs
 
 
 putColumn :: [Z_sur_256Z] -> [Z_sur_256Z] -> Int -> [Z_sur_256Z]
-putColumn liste column nb = putColumn_aux liste nb 1 column
+putColumn liste column nb = putColumn_aux liste nb 0 column
 
 putColumn_aux :: [Z_sur_256Z] -> Int -> Int -> [Z_sur_256Z] -> [Z_sur_256Z]
-putColumn_aux _ _ _ [] = []
+putColumn_aux x _ _ [] = x
 putColumn_aux [] _ _ _ = []
 putColumn_aux (x:xs) nb indice (y:ys) | (indice `mod` 4) == nb = y : putColumn_aux xs nb (indice + 1) ys
                                         | otherwise = x : putColumn_aux xs nb (indice + 1) (y:ys)
+
+
+
+addRoundKey :: [Z_sur_256Z] -> [Z_sur_256Z] -> [Z_sur_256Z]
+addRoundKey state key = addRoundKey_aux state key 0
+
+addRoundKey_aux :: [Z_sur_256Z] -> [Z_sur_256Z] -> Int -> [Z_sur_256Z]
+addRoundKey_aux state _ 4 = state
+addRoundKey_aux state key col = addRoundKey_aux (putColumn state ( addLists (pickColumn state col) (pickColumn key col) ) col ) key (col+1)
+
+
+
+addLists :: Anneau a => [a] -> [a] -> [a]
+addLists x y = map add $ zip x y
+        where add (x, y) = operationadd x y
+
+
+texte = [Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1]),Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1]),Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1]),Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0])]
+cle = [Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1]),Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0]),Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1])]
