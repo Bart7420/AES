@@ -110,6 +110,25 @@ putColumn_aux (x:xs) nb indice (y:ys) | (indice `mod` 4) == nb = y : putColumn_a
                                         | otherwise = x : putColumn_aux xs nb (indice + 1) (y:ys)
 
 
+pickColumn_key :: [Z_sur_256Z] -> Int -> [Z_sur_256Z]
+pickColumn_key liste nb = pickColumn_aux_key liste nb 0
+
+pickColumn_aux_key :: [Z_sur_256Z] -> Int -> Int -> [Z_sur_256Z]
+pickColumn_aux_key [] _ _ = []
+pickColumn_aux_key (x:xs) nb indice | (indice `mod` 44) == nb = x : pickColumn_aux_key xs nb (indice+1)
+                                | otherwise = pickColumn_aux_key xs nb (indice+1)
+
+
+putColumn_key :: [Z_sur_256Z] -> [Z_sur_256Z] -> Int -> [Z_sur_256Z]
+putColumn_key liste column nb = putColumn_aux_key liste nb 0 column
+
+putColumn_aux_key :: [Z_sur_256Z] -> Int -> Int -> [Z_sur_256Z] -> [Z_sur_256Z]
+putColumn_aux_key x _ _ [] = x
+putColumn_aux_key [] _ _ _ = []
+putColumn_aux_key (x:xs) nb indice (y:ys) | (indice `mod` 44) == nb = y : putColumn_aux_key xs nb (indice + 1) ys
+                                        | otherwise = x : putColumn_aux_key xs nb (indice + 1) (y:ys)
+
+
 
 addRoundKey :: [Z_sur_256Z] -> [Z_sur_256Z] -> [Z_sur_256Z]
 addRoundKey state key = addRoundKey_aux state key 0
@@ -127,6 +146,52 @@ addLists x y = map add $ zip x y
 
 texte = [Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1]),Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1]),Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1]),Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0])]
 cle = [Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1]),Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0]),Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1])]
+
+
+cle_base = [Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]), Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]), Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1]), Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0]), Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0]), Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1]), Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1]), Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0]), Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0]), Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0]), Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]), Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0]), Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]), Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0]), Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1]), Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1])]
+
+extandKey :: [Z_sur_256Z] -> [Z_sur_256Z]
+extandKey cle = extandKey_aux cle [Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]) ] 0
+
+
+extandKey_aux :: [Z_sur_256Z] -> [Z_sur_256Z] -> Int -> [Z_sur_256Z]
+extandKey_aux _ output 43 = output
+extandKey_aux base output j | (j <= 3) = extandKey_aux base (putColumn_key output (pickColumn_key base j) j) (j+1)
+                            | ((j `mod` 4) == 0) = extandKey_aux base (putColumn_key output (op_spe output j 0) j) (j+1)
+                            | otherwise = extandKey_aux base (putColumn_key output (op_normal output j 0) j) (j+1)
+
+
+op_normal :: [Z_sur_256Z] -> Int -> Int -> [Z_sur_256Z]
+op_normal _ _ 4 = []
+op_normal output colonne ligne = ( (operationadd) ( (!!) (pickColumn_key output (colonne - 4))  ligne) ( (!!) (pickColumn_key output (colonne -1)) ligne ) ) : (op_normal output colonne (ligne+1))
+
+
+op_spe :: [Z_sur_256Z] -> Int -> Int -> [Z_sur_256Z]
+op_spe output colonne ligne | (ligne == 0) = ( (operationadd) ( (operationadd) ( (!!) (pickColumn_key output (colonne-4)) 0) ( (s) ( (!!) (pickColumn_key output (colonne-1)) 1)) ) ( rcon ((colonne `div` 4) -1) ) ) : op_spe output colonne (ligne+1)
+                            | otherwise = ( (operationadd) ((!!) (pickColumn_key output (colonne-4)) ligne) ((s) ((!!) (pickColumn_key output (colonne-1)) (ligne+1 `mod` 4)))) : (op_spe output colonne (ligne+1))
+
+
+
+s :: (Z_sur_256Z) -> (Z_sur_256Z)
+s x = (toGoodLenghtZ256 ((addMod256 (multMod256 (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])) (x) ) (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1])))))
+
+rcon :: Int -> Z_sur_256Z
+rcon x = Z256Z $ power (Poly [Z2Z 1, Z2Z 0]) x
+
+
+
+power :: Polynome Z_sur_2Z -> Int -> Polynome Z_sur_2Z
+power _ 0 = (Poly [Z2Z 1])
+power poly 1 = poly
+power poly i = (multAES poly (power poly (i-1)))
+
+
+
+
+
+
+
+
 
 shiftrow_in = [Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1]),
 Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0]),
@@ -147,38 +212,3 @@ Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1]),
 Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1]),
 Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1]),
 Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0])]
-
-extandKey :: [Z_sur_256Z] -> [Z_sur_256Z]
-extandKey cle = extandKey_aux cle [] 0
-
-
-extandKey_aux :: [Z_sur_256Z] -> [Z_sur_256Z] -> Int -> [Z_sur_256Z]
-extandKey_aux _ _ 40 = []
-extandKey_aux base output j | (j <= 3) = extandKey_aux base (putColumn output (pickColumn base j) j) (j+1)
-                            | ((j `mod` 4) == 0) = extandKey base (putColumn output (op_spe output j 0) j) (j+1)
-                            | otherwise = extandKey base (putColumn output (op_normal output j 0) j) (j+1)
-
-
-op_normal :: [Z_sur_256Z] -> Int -> Int -> [Z_sur_256Z]
-op_normal _ _ 4 = []
-op_normal output colonne ligne = ( (operationadd) ( (!!) (pickColumn output (colonne - 4))  i) ( (!!) (pickColumn output (colonne -1)) i ) )
-
-
-op_spe :: [Z_sur_256Z] -> Int -> [Z_sur_256Z]
-op_spe output colonne ligne | (ligne == 0) = ( (operationadd) ( (operationadd) ( (!!) (pickColumn output (colonne-4)) 0) ( (s) ( (!!) (pickColumn output (colonne-1)) 1)) ) ( rcon ((colonne / 4) -1) ) ) : op_spe output colonne (ligne+1)
-                            | otherwise = ( (operationadd) ((!!) (pickColumn output (colonne-4)) i) ((s) ((!!) (pickColumn output (colonne-1)) (i+1 `mod` 4)))) : op_spe output colonne (ligne+1)
-
-
-
-s :: (Z_sur_256Z) -> (Z_sur_256Z)
-s x = (toGoodLenghtZ256 ((addMod256 (multMod256 (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])) (x) ) (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1])))))
-
-rcon :: Int -> Z_sur_256Z
-rcon x 
-
-
-
-powerZ256Z :: Z_sur_256Z -> Int -> Z_sur_256Z
-powerZ256Z _ 0 = (Z256Z (Poly [Z2Z 1]))
-powerZ256Z poly 1 = poly
-powerZ256Z poly i = (multMod256 poly (powerZ256Z poly (i-1)))
