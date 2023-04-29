@@ -181,6 +181,7 @@ removeZeros (Poly (x:xs)) | x == unitadd = removeZeros (Poly xs)
 
 
 removeZerosZ256 :: Z_sur_256Z -> Z_sur_256Z
+removeZerosZ256 (Z256Z (Poly [])) =  (Z256Z (Poly []))
 removeZerosZ256 (Z256Z (Poly (x:xs))) | (x == unitadd) = removeZerosZ256 (Z256Z (Poly (xs)))
                                   | otherwise = (Z256Z (Poly (x:xs)))
 

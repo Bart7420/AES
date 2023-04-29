@@ -155,8 +155,8 @@ extandKey cle = extandKey_aux cle [Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z
 
 
 extandKey_aux :: [Z_sur_256Z] -> [Z_sur_256Z] -> Int -> [Z_sur_256Z]
-extandKey_aux _ output 43 = output
-extandKey_aux base output j | (j <= 3) = extandKey_aux base (putColumn_key output (pickColumn_key base j) j) (j+1)
+extandKey_aux _ output 44 = output
+extandKey_aux base output j | (j <= 3) = extandKey_aux base (putColumn_key output (pickColumn base j) j) (j+1)
                             | ((j `mod` 4) == 0) = extandKey_aux base (putColumn_key output (op_spe output j 0) j) (j+1)
                             | otherwise = extandKey_aux base (putColumn_key output (op_normal output j 0) j) (j+1)
 
@@ -167,13 +167,14 @@ op_normal output colonne ligne = ( (operationadd) ( (!!) (pickColumn_key output 
 
 
 op_spe :: [Z_sur_256Z] -> Int -> Int -> [Z_sur_256Z]
+op_spe _ _ 4 = []
 op_spe output colonne ligne | (ligne == 0) = ( (operationadd) ( (operationadd) ( (!!) (pickColumn_key output (colonne-4)) 0) ( (s) ( (!!) (pickColumn_key output (colonne-1)) 1)) ) ( rcon ((colonne `div` 4) -1) ) ) : op_spe output colonne (ligne+1)
-                            | otherwise = ( (operationadd) ((!!) (pickColumn_key output (colonne-4)) ligne) ((s) ((!!) (pickColumn_key output (colonne-1)) (ligne+1 `mod` 4)))) : (op_spe output colonne (ligne+1))
+                            | otherwise = ( (operationadd) ((!!) (pickColumn_key output (colonne-4)) ligne) ((s) ((!!) (pickColumn_key output (colonne-1)) ((ligne+1) `mod` 4)))) : (op_spe output colonne (ligne+1))
 
 
 
 s :: (Z_sur_256Z) -> (Z_sur_256Z)
-s x = (toGoodLenghtZ256 ((addMod256 (multMod256 (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])) (x) ) (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1])))))
+s x = (toGoodLenghtZ256 ((addMod256 (multMod256 (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])) (inverse256 x) ) (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1])))))
 
 rcon :: Int -> Z_sur_256Z
 rcon x = Z256Z $ power (Poly [Z2Z 1, Z2Z 0]) x
@@ -187,28 +188,9 @@ power poly i = (multAES poly (power poly (i-1)))
 
 
 
+test = [Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]) ]
 
 
 
+test_with_kes = [Z256Z (Poly [Z2Z 0,Z2Z 1,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 1,Z2Z 1]),Z256Z (Poly [Z2Z 0,Z2Z 0,Z2Z 1,Z2Z 1,Z2Z 0,Z2Z 0,Z2Z 1,Z2Z 1]),Z256Z (Poly [Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 1,Z2Z 1,Z2Z 1,Z2Z 0,Z2Z 1]),Z256Z (Poly [Z2Z 1,Z2Z 1,Z2Z 1,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 1,Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 1,Z2Z 1,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 1,Z2Z 1,Z2Z 0]),Z256Z (Poly [Z2Z 0,Z2Z 0,Z2Z 1,Z2Z 0,Z2Z 0,Z2Z 1,Z2Z 0,Z2Z 1]),Z256Z (Poly [Z2Z 0,Z2Z 0,Z2Z 1,Z2Z 0,Z2Z 1,Z2Z 0,Z2Z 1,Z2Z 1]),Z256Z (Poly [Z2Z 1,Z2Z 1,Z2Z 0,Z2Z 0,Z2Z 1,Z2Z 1,Z2Z 0,Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 1,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 1,Z2Z 0,Z2Z 0]),Z256Z (Poly [Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 1,Z2Z 1,Z2Z 0,Z2Z 0]),Z256Z (Poly [Z2Z 1,Z2Z 1,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 1,Z2Z 1]),Z256Z (Poly [Z2Z 0,Z2Z 1,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0,Z2Z 1,Z2Z 0,Z2Z 1,Z2Z 0,Z2Z 0,Z2Z 1,Z2Z 1]),Z256Z (Poly [Z2Z 1,Z2Z 0,Z2Z 1,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 0]),Z256Z (Poly [Z2Z 1,Z2Z 0,Z2Z 0,Z2Z 1,Z2Z 0,Z2Z 1,Z2Z 1,Z2Z 1]),Z256Z (Poly [Z2Z 1,Z2Z 0,Z2Z 1,Z2Z 1,Z2Z 0,Z2Z 0,Z2Z 1,Z2Z 1]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0])]
 
-
-
-shiftrow_in = [Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1]),
-Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0]),
-Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1]),
-Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1]),
--- here
-Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]),
-Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1]),
-Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1]),
-Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0]),
-
-Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0]),
-Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1]),
-Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]),
-Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0]),
-
-Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1]),
-Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1]),
-Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1]),
-Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0])]
