@@ -23,30 +23,109 @@ scalProduct (Poly []) (Poly []) = unitadd
 scalProduct (Poly (x:xs)) (Poly (y:ys)) = operationadd (operationmul x y) (scalProduct (Poly xs) (Poly ys))
 
 
-shiftRows :: [Z_sur_256Z] -> [Z_sur_256Z]
-shiftRows (x:y:xs) = x:shiftRows_aux (y:xs)
-shiftRows (x:xs) = x:shiftRows_aux (xs)
+-- ===============================
+-- ========== SHIFTROWS ==========
+-- ===============================
 
+shiftRows :: [Z_sur_256Z] -> [Z_sur_256Z]
+shiftRows liste = a ++ shiftRows_aux b
+                  where (a, b) = splitAt 4 liste
 
 shiftRows_aux :: [Z_sur_256Z] -> [Z_sur_256Z]
 shiftRows_aux [] = []
-shiftRows_aux ((Z256Z (Poly tab)):xs) = (Z256Z (Poly (rotateLeft (rotateLeft (rotateLeft tab))))):(shiftRows_aux xs)
+shiftRows_aux tab = (rotateLeft tab)
 
-rotateLeft :: [Z_sur_2Z] -> [Z_sur_2Z]
-rotateLeft tab = [(tab!!1), (tab!!2), (tab!!3), (tab!!4), (tab!!5), (tab!!6), (tab!!7), (tab!!0)]
+rotateLeft :: [Z_sur_256Z] -> [Z_sur_256Z]
+rotateLeft tab = [(tab!!1), (tab!!2), (tab!!3), (tab!!0), (tab!!6), (tab!!7), (tab!!4), (tab!!5), (tab!!11), (tab!!8), (tab!!9), (tab!!10)]
 
+
+shiftrow_in = [Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1]),
+              Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0]),
+              Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1]),
+              Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1]),
+
+              Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1]),
+              Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0]),
+              Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0]),
+              Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0]),
+
+              Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0]),
+              Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0]),
+              Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0]),
+              Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0]),
+
+              Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0]),
+              Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0]),
+              Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1]),
+              Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0])]
+
+
+-- ===============================
+-- ======== INV SHIFTROWS ========
+-- ===============================
+
+invShiftRows :: [Z_sur_256Z] -> [Z_sur_256Z]
+invShiftRows liste = a ++ invShiftRows_aux b
+                  where (a, b) = splitAt 4 liste
+
+invShiftRows_aux :: [Z_sur_256Z] -> [Z_sur_256Z]
+invShiftRows_aux [] = []
+invShiftRows_aux tab = (rotateRight tab)
+
+rotateRight :: [Z_sur_256Z] -> [Z_sur_256Z]
+rotateRight tab = [(tab!!3), (tab!!0), (tab!!1), (tab!!2), (tab!!6), (tab!!7), (tab!!4), (tab!!5), (tab!!9), (tab!!10), (tab!!11), (tab!!8)]
+
+
+-- ================================
 -- ========== MIXCOLUMNS ==========
+-- ================================
+
 mixColumns :: [Z_sur_256Z] -> [Z_sur_256Z]
 mixColumns state = mixColumns_aux state 0
 
 mixColumns_aux :: [Z_sur_256Z] -> Int -> [Z_sur_256Z]
-mixColumns_aux state i | i < 4 = putColumn state (polyToList (result state i)) i
+mixColumns_aux state i | i < 4 = mixColumns_aux (putColumn state (mixOpColumn (pickColumn state i)) i) (i+1)
                        | otherwise = state
 
-result state i = modPoly (operationmul (Poly (pickColumn state i)) (Poly [Z256Z (Poly [Z2Z 1, Z2Z 1]), Z256Z (Poly [Z2Z 1]), Z256Z (Poly [Z2Z 1]), Z256Z (Poly [Z2Z 1, Z2Z 0])])) (Poly [Z256Z (Poly [Z2Z 1]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 1])])
+mixOpColumn :: [Z_sur_256Z] -> [Z_sur_256Z]
+mixOpColumn [a, b, c, d] = [firstel, sndel, thirdel, fourthel]
+                          where firstel = (foldr operationadd unitadd [removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 0])) a), removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 1])) b), c, d])
+                                sndel = (foldr operationadd unitadd [a, removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 0])) b), removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 1])) c), d])
+                                thirdel = (foldr operationadd unitadd [a, b, removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 0])) c), removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 1])) d)])
+                                fourthel = (foldr operationadd unitadd [removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 1])) a), b, c, removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 0])) d)])
 
-polyToList :: Polynome Z_sur_256Z -> [Z_sur_256Z]
-polyToList (Poly liste) = liste
+-- ================================
+-- ======== INV MIXCOLUMNS ========
+-- ================================
+invMixColumns :: [Z_sur_256Z] -> [Z_sur_256Z]
+invMixColumns state = invMixColumns_aux state 0
+
+invMixColumns_aux :: [Z_sur_256Z] -> Int -> [Z_sur_256Z]
+invMixColumns_aux state i | i < 4 = invMixColumns_aux (putColumn state (invMixOpColumn (pickColumn state i)) i) (i+1)
+                       | otherwise = state
+
+invMixOpColumn :: [Z_sur_256Z] -> [Z_sur_256Z]
+invMixOpColumn [a, b, c, d] = [firstel, sndel, thirdel, fourthel]
+                          where firstel = (foldr operationadd unitadd [removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0])) a), removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1])) b), removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1])) c), removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1])) d)])
+                                sndel = (foldr operationadd unitadd [removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1])) a), removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0])) b), removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1])) c), removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1])) d)])
+                                thirdel = (foldr operationadd unitadd [removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1])) a), removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1])) b), removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0])) c), removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1])) d)])
+                                fourthel = (foldr operationadd unitadd [removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1])) a), removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1])) b), removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1])) c), removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0])) d)])
+
+
+-- Ne marche pas car modPoly est une boucle infinie avec des poly à coef dans Z256Z (à cause de divPoly_aux, du à la manière dont les opération + et - sont faites sur les coefs)
+
+--mixColumns_aux :: [Z_sur_256Z] -> Int -> [Z_sur_256Z]
+--mixColumns_aux state i | i < 4 = putColumn state (polyToList (result state (i+1))) (i+1)
+--                       | otherwise = state
+
+--result :: [Z_sur_256Z] -> Int -> Polynome Z_sur_256Z
+--result state i = modPoly (operationmul (Poly (pickColumn state i)) (Poly [Z256Z (Poly [Z2Z 1, Z2Z 1]), Z256Z (Poly [Z2Z 1]), Z256Z (Poly [Z2Z 1]), Z256Z (Poly [Z2Z 1, Z2Z 0])])) (Poly [Z256Z (Poly [Z2Z 1]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 1])])
+
+--polyToList :: Polynome Z_sur_256Z -> [Z_sur_256Z]
+--polyToList (Poly liste) = liste
+
+
+
 
 
 --subBytes :: [Z_sur_256Z] -> [Z_sur_256Z]
@@ -77,15 +156,24 @@ polyToList (Poly liste) = liste
               --                  hb =  operationadd ( scalProduct (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1]) ((Poly [h,g,f,e,d,c,b,a]))) (unitadd)
 
 
+-- ================================
+-- =========== SUBBYTES ===========
+-- ================================
+
 subBytes :: [Z_sur_256Z] -> [Z_sur_256Z]
 subBytes [] = []
-subBytes (x:xs) = (toGoodLenghtZ256 ((addMod256 (multMod256 (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])) (inverse256 x) ) (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]))))) : subBytes xs
+subBytes (x:xs) = (toGoodLengthZ256 ((addMod256 (multMod256 (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])) (inverse256 x) ) (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]))))) : subBytes xs
 
 
+-- ================================
+-- ========= INV SUBBYTES =========
+-- ================================
 
 invsubBytes :: [Z_sur_256Z] -> [Z_sur_256Z]
 invsubBytes [] = []
-invsubBytes (x:xs) = (toGoodLenghtZ256 (inverse256(addMod256 (multMod256 (Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0])) (x) ) (Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1]))))) : subBytes xs
+invsubBytes (x:xs) = (toGoodLengthZ256 (inverse256 (addMod256 (multMod256 (Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0])) (x) ) (Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1]))))) : subBytes xs
+
+
 
 
 
@@ -96,8 +184,6 @@ pickColumn_aux :: [Z_sur_256Z] -> Int -> Int -> [Z_sur_256Z]
 pickColumn_aux [] _ _ = []
 pickColumn_aux (x:xs) nb indice | (indice `mod` 4) == nb = x : pickColumn_aux xs nb (indice+1)
                                 | otherwise = pickColumn_aux xs nb (indice+1)
-
-
 
 
 putColumn :: [Z_sur_256Z] -> [Z_sur_256Z] -> Int -> [Z_sur_256Z]
@@ -130,6 +216,10 @@ putColumn_aux_key (x:xs) nb indice (y:ys) | (indice `mod` 44) == nb = y : putCol
 
 
 
+-- ================================
+-- ========== ADDROUNDKEY =========
+-- ================================
+
 addRoundKey :: [Z_sur_256Z] -> [Z_sur_256Z] -> [Z_sur_256Z]
 addRoundKey state key = addRoundKey_aux state key 0
 
@@ -149,6 +239,12 @@ cle = [Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]),Z25
 
 
 cle_base = [Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]), Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]), Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1]), Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0]), Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0]), Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1]), Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1]), Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0]), Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0]), Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0]), Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]), Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0]), Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]), Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0]), Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1]), Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1])]
+
+
+
+-- ================================
+-- ========== EXTANDKEY ===========
+-- ================================
 
 extandKey :: [Z_sur_256Z] -> [Z_sur_256Z]
 extandKey cle = extandKey_aux cle [Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]), Z256Z (Poly [Z2Z 0]) ] 0
@@ -174,7 +270,7 @@ op_spe output colonne ligne | (ligne == 0) = ( (operationadd) ( (operationadd) (
 
 
 s :: (Z_sur_256Z) -> (Z_sur_256Z)
-s x = (toGoodLenghtZ256 ((addMod256 (multMod256 (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])) (inverse256 x) ) (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1])))))
+s x = (toGoodLengthZ256 ((addMod256 (multMod256 (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])) (inverse256 x) ) (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1])))))
 
 rcon :: Int -> Z_sur_256Z
 rcon x = Z256Z $ power (Poly [Z2Z 1, Z2Z 0]) x

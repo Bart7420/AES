@@ -137,6 +137,10 @@ opListZnZ f [] [] = []
 opListZnZ f (x:xs) (y:ys) = (f x y) : (opListZnZ f xs ys)
 
 
+-- ================================
+-- ============ ADD POLY ==========
+-- ================================
+
 addPoly :: Anneau a => Polynome a -> Polynome a -> Polynome a
 addPoly (Poly []) p2 = p2
 addPoly p1 (Poly []) = p1
@@ -146,15 +150,14 @@ addPoly (Poly p1@(x:xs)) (Poly p2@(y:ys))
   | otherwise = Poly ( (take (length p2 - length p1) p2) ++ (opListZnZ operationadd p1 (drop (length p2 - length p1) p2)) )
 
 
--- toPoly :: [Integer] -> Polynome a
-
-
-
 addDegre :: Anneau a => Int -> [a] -> [a]
 addDegre v l | (v < 1) = l
            | otherwise = addDegre (v-1) (l ++ [unitadd])
 
--- Multiplication des polynomes
+
+-- ================================
+-- ========== MULT POLY ===========
+-- ================================
 
 multPoly :: Anneau a => Polynome a -> Polynome a -> Polynome a
 multPoly _ (Poly []) = Poly []
@@ -164,6 +167,8 @@ multPoly (Poly (x:xs)) (Poly (y:ys)) = addPoly (Poly (addDegre (degre (Poly (x:x
 mult2 :: Anneau a => a -> [a] -> [a]
 mult2 x ys = map (operationmul x) ys
 
+multAESZ256Z :: Z_sur_256Z -> Z_sur_256Z -> Z_sur_256Z
+multAESZ256Z (Z256Z a) (Z256Z b) = Z256Z $ modPoly (multPoly a b) (Poly [unitmul, unitadd, unitadd, unitadd, unitmul, unitmul, unitadd, unitmul, unitmul])
 
 
 isPolynull :: Anneau a => Polynome a -> Bool
@@ -191,8 +196,8 @@ completeZerosZ256 (Z256Z (Poly a)) v  | (length a) == v = Z256Z (Poly a)
                           | ((length a) < v) = completeZerosZ256 (Z256Z(Poly (unitadd:a))) v
                           | otherwise = Z256Z (Poly a) -- cas si le polynôme est deja trop grand
 
-toGoodLenghtZ256 :: Z_sur_256Z -> Z_sur_256Z
-toGoodLenghtZ256 (Z256Z (Poly a)) | (length a) > 8 = removeZerosZ256 (Z256Z (Poly a))
+toGoodLengthZ256 :: Z_sur_256Z -> Z_sur_256Z
+toGoodLengthZ256 (Z256Z (Poly a)) | (length a) > 8 = removeZerosZ256 (Z256Z (Poly a))
                                   | (length a ) < 8 = completeZerosZ256 (Z256Z (Poly a)) 8
                                   | otherwise = (Z256Z (Poly a))
 
@@ -250,6 +255,12 @@ subPoly a b = Poly (removeNeg (subPolyNeg a b))
 --                            | otherwise = p1
 --                                where mulX = (multPoly (createPoly v) p2)
 
+
+
+-- ================================
+-- =========== MOD POLY ===========
+-- ================================
+
 modPoly :: (Anneau a) => Polynome a -> Polynome a -> Polynome a
 modPoly a b = snd (divPoly_aux unitadd a b a)
 
@@ -284,9 +295,8 @@ divPoly pol1 pol2 | (pol2 /= unitadd) = (fst (divPoly_aux unitadd (pol1) (pol2) 
                   | otherwise = (unitmul)
 
 divPoly_aux :: (Anneau a) => Polynome a -> Polynome a -> Polynome a -> Polynome a -> (Polynome a, Polynome a)
-divPoly_aux q r b a | (degre r) >= (degre b) = divPoly_aux (removeZeros (addPoly (q) (createPoly ((degre r) -(degre b))))) (subPoly (r) ( removeZeros (multPoly b (createPoly ((degre r) -(degre b))) ))) b a
+divPoly_aux q r b a | (degre r) >= (degre b) = divPoly_aux (removeZeros (operationadd (q) (createPoly ((degre r) -(degre b))))) (operationsub (r) ( removeZeros (operationmul b (createPoly ((degre r) -(degre b))) ))) b a
                     | otherwise = (q, r)
-
 
 
 
@@ -297,7 +307,10 @@ divPoly_aux q r b a | (degre r) >= (degre b) = divPoly_aux (removeZeros (addPoly
 --                  where (x,y,z) = euclide b (modPoly a b)
 
 
--- Inverse 
+-- ================================
+-- ============ INVERSE ===========
+-- ================================
+ 
 inverse :: (Anneau a) => Polynome a -> Polynome a
 inverse pol = modPoly c (polyIrr)
       where polyIrr = Poly [unitmul, unitadd, unitadd, unitadd, unitmul, unitmul, unitadd, unitmul, unitmul]
