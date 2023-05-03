@@ -87,10 +87,10 @@ Dans cette séance, nous avons continué l'implémentation d'AES. Nous avons com
 
 **Objectifs avant la prochaine séance :**
 - Ronan :
-    - [ ] MixColumn
-    - [ ] InvMixColums
-    - [ ] ShiftRow
-    - [ ] InvShiftRow
+    - [x] MixColumn
+    - [x] InvMixColums
+    - [x] ShiftRow
+    - [x] InvShiftRow
     - [ ] KeyExpension
     - [ ] tests
     
