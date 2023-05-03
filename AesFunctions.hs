@@ -10,7 +10,8 @@ import ZsurNZ
 import Corps
 import Anneau
 
-
+keyLength = 4
+nbRound = 10
 
 getEl :: Z_sur_256Z -> Int -> Z_sur_2Z
 getEl (Z256Z (Poly tab)) x = tab!!x
@@ -201,7 +202,7 @@ pickColumn_key liste nb = pickColumn_aux_key liste nb 0
 
 pickColumn_aux_key :: [Z_sur_256Z] -> Int -> Int -> [Z_sur_256Z]
 pickColumn_aux_key [] _ _ = []
-pickColumn_aux_key (x:xs) nb indice | (indice `mod` 44) == nb = x : pickColumn_aux_key xs nb (indice+1)
+pickColumn_aux_key (x:xs) nb indice | (indice `mod` (nbRound*keyLength + keyLength)) == nb = x : pickColumn_aux_key xs nb (indice+1)
                                 | otherwise = pickColumn_aux_key xs nb (indice+1)
 
 
@@ -211,7 +212,7 @@ putColumn_key liste column nb = putColumn_aux_key liste nb 0 column
 putColumn_aux_key :: [Z_sur_256Z] -> Int -> Int -> [Z_sur_256Z] -> [Z_sur_256Z]
 putColumn_aux_key x _ _ [] = x
 putColumn_aux_key [] _ _ _ = []
-putColumn_aux_key (x:xs) nb indice (y:ys) | (indice `mod` 44) == nb = y : putColumn_aux_key xs nb (indice + 1) ys
+putColumn_aux_key (x:xs) nb indice (y:ys) | (indice `mod` (nbRound*keyLength + keyLength)) == nb = y : putColumn_aux_key xs nb (indice + 1) ys
                                         | otherwise = x : putColumn_aux_key xs nb (indice + 1) (y:ys)
 
 
