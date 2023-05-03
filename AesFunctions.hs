@@ -255,6 +255,7 @@ extandKey_aux :: [Z_sur_256Z] -> [Z_sur_256Z] -> Int -> [Z_sur_256Z]
 extandKey_aux _ output 44 = output
 extandKey_aux base output j | (j <= 3) = extandKey_aux base (putColumn_key output (pickColumn base j) j) (j+1)
                             | ((j `mod` 4) == 0) = extandKey_aux base (putColumn_key output (op_spe output j 0) j) (j+1)
+
                             | otherwise = extandKey_aux base (putColumn_key output (op_normal output j 0) j) (j+1)
 
 
@@ -293,3 +294,48 @@ test_with_kes = [Z256Z (Poly [Z2Z 0,Z2Z 1,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 0,Z2Z 1,Z2Z 1]),
 
 
 
+
+-- entree / cle / sotie
+cipher :: [Z_sur_256Z] -> [Z_sur_256Z] -> [Z_sur_256Z]
+cipher entree cle = cipher_aux entree cle (-1)
+
+
+cipher_aux :: [Z_sur_256Z] -> [Z_sur_256Z] -> Int -> [Z_sur_256Z]
+cipher_aux entree cle round  | (round == -1) = cipher_aux entree (extandKey cle) 0
+                          | (round == 0 ) = cipher_aux (addRoundKey entree (extract_key_from_key cle (0))) cle (round+1)
+                          | (round == nbRound) = addRoundKey (shiftRows(subBytes cle))  (extract_key_from_key cle (4*nbRound)) 
+                          | otherwise = cipher_aux (addRoundKey ( mixColumns(shiftRows(subBytes(entree))) ) ( extract_key_from_key cle (round*4) )  ) cle (round+1)
+  
+
+state_vide = [Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 1]),Z256Z (Poly [Z2Z 1]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 1]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 1]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 1]),Z256Z (Poly [Z2Z 1]),Z256Z (Poly [Z2Z 0])]
+
+
+extract_key_from_key :: [Z_sur_256Z] -> Int -> [Z_sur_256Z]
+extract_key_from_key cle t = extract_key_from_key_aux cle t state_vide 0 0
+  
+
+extract_key_from_key_aux :: [Z_sur_256Z] -> Int -> [Z_sur_256Z] -> Int -> Int -> [Z_sur_256Z]  
+extract_key_from_key_aux cle t out col isortie | (col==t) || (col==t+1) || (col==t+2) || (col==t+3) = extract_key_from_key_aux cle t (putColumn (out) (pickColumn_key cle col) isortie) (col+1) (isortie+1)
+                                                | (col == ((nbRound+1)*keyLength)) = out
+                                                | otherwise =extract_key_from_key_aux cle t out (col+1) isortie
+
+
+
+-- entree / cle / sotie
+invcipher :: [Z_sur_256Z] -> [Z_sur_256Z] -> [Z_sur_256Z]
+invcipher entree cle = invcipher_aux entree cle (nbRound)
+
+invcipher_aux :: [Z_sur_256Z] -> [Z_sur_256Z] -> Int -> [Z_sur_256Z]
+invcipher_aux entree cle round  | (round == nbRound) = invcipher_aux entree (extandKey cle) (round-1)
+                          | (round == (nbRound-1) ) = invcipher_aux (addRoundKey entree (extract_key_from_key cle (nbRound*4))) cle (round-1)
+                          | (round == (-1)) = addRoundKey (invsubBytes(invShiftRows cle))  (extract_key_from_key cle (0)) 
+                          | otherwise = invcipher_aux (invMixColumns(addRoundKey (invsubBytes(invShiftRows(entree))) ( extract_key_from_key cle (round*4) ))) cle (round-1)
+  
+
+-- (addRoundKey ( mixColumns(shiftRows(subBytes(entree))) ) ( extract_key_from_key cle (round*4) )  )
+
+
+
+
+test_plaintext = [Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1]),Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1]),Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0]),Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0]),Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])]
+test_cipher = [Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1]),Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])]
