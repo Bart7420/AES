@@ -210,7 +210,8 @@ subBytes (x:xs) = (toGoodLengthZ256 ((addMod256 (multMod256 (Z256Z (Poly [Z2Z 1,
 
 invsubBytes :: [Z_sur_256Z] -> [Z_sur_256Z]
 invsubBytes [] = []
-invsubBytes (x:xs) = (toGoodLengthZ256 (inverse256 (addMod256 (multMod256 (Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0])) (x) ) (Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1]))))) : subBytes xs
+invsubBytes (x:xs)  | (x == unitadd) =  x : subBytes xs
+                    | otherwise = (toGoodLengthZ256 (inverse256 (addMod256 (multMod256 (Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0])) (x) ) (Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1]))))) : invsubBytes xs
 
 
 
@@ -394,12 +395,12 @@ extract_key_from_key_aux cle t out col isortie | (col==t) || (col==t+1) || (col=
 
 -- entree / cle / sotie
 invcipher :: [Z_sur_256Z] -> [Z_sur_256Z] -> [Z_sur_256Z]
-invcipher entree cle = invcipher_aux entree cle (nbRound)
+invcipher entree cle = invcipher_aux entree cle (nbRound+1)
 
 invcipher_aux :: [Z_sur_256Z] -> [Z_sur_256Z] -> Int -> [Z_sur_256Z]
-invcipher_aux entree cle round  | (round == nbRound) = invcipher_aux entree (extandKey cle) (round-1)
-                          | (round == (nbRound-1) ) = invcipher_aux (addRoundKey entree (extract_key_from_key cle (nbRound*4))) cle (round-1)
-                          | (round == (-1)) = addRoundKey (invsubBytes(invShiftRows entree))  (extract_key_from_key cle (0)) 
+invcipher_aux entree cle round  | (round == (nbRound+1)) = invcipher_aux entree (extandKey cle) (round-1)
+                          | (round == (nbRound) ) = invcipher_aux (addRoundKey entree (extract_key_from_key cle (nbRound*4))) cle (round-1)
+                          | (round == (0)) = addRoundKey (invsubBytes(invShiftRows entree))  (extract_key_from_key cle (0)) 
                           | otherwise = invcipher_aux (invMixColumns(addRoundKey (invsubBytes(invShiftRows(entree))) ( extract_key_from_key cle (round*4) ))) cle (round-1)
   
 
