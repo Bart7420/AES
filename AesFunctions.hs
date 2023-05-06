@@ -36,15 +36,16 @@ scalProduct :: Polynome Z_sur_2Z -> Polynome Z_sur_2Z -> Z_sur_2Z
 scalProduct (Poly []) (Poly []) = unitadd
 scalProduct (Poly (x:xs)) (Poly (y:ys)) = operationadd (operationmul x y) (scalProduct (Poly xs) (Poly ys))
 
-binToHex :: [Z_sur_256Z] -> [String]
-binToHex [] = [""]
-binToHex (x:xs) = (convertToHex x):(binToHex xs)
+
+binToHex :: [Z_sur_256Z] -> String
+binToHex [] = ""
+binToHex (x:xs) = (convertToHex x) ++ " " ++ (binToHex xs)
 
 convertToHex :: Z_sur_256Z -> String
-convertToHex (Z256Z (Poly p)) = [(convertCara (take 4 (toGoodLengthZ256_4 p))), (convertCara (drop 4 (toGoodLengthZ256_4 p)))]
+convertToHex (Z256Z (Poly p)) = [(convertToCara (take 4 (toGoodLengthZ256_4 p))), (convertToCara (drop 4 (toGoodLengthZ256_4 p)))]
 
-convertCara :: [Z_sur_2Z] -> Char
-convertCara c | ([Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0] == c) = '0'
+convertToCara :: [Z_sur_2Z] -> Char
+convertToCara c | ([Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0] == c) = '0'
               | ([Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1] == c) = '1'
               | ([Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0] == c) = '2'
               | ([Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1] == c) = '3'
@@ -61,6 +62,37 @@ convertCara c | ([Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0] == c) = '0'
               | ([Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0] == c) = 'E'
               | ([Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1] == c) = 'F'
               | otherwise = '+'
+
+
+
+hexToBin :: String -> [Z_sur_256Z]
+hexToBin [] = []
+hexToBin [' '] = []
+hexToBin (x:y:xs) | (x == ' ') = hexToBin (y:xs)
+                         | otherwise = (convertCaraToBin (x:[y])) : (hexToBin xs)
+
+convertCaraToBin :: String -> Z_sur_256Z
+convertCaraToBin [x, y] = concatZ256Z (convertCaraToBin_aux x) (convertCaraToBin_aux y)
+
+convertCaraToBin_aux :: Char -> Z_sur_256Z
+convertCaraToBin_aux c | (c == '0') = Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0])
+                       | (c == '1') = Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1])
+                       | (c == '2') = Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0])
+                       | (c == '3') = Z256Z (Poly [Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1])
+                       | (c == '4') = Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0])
+                       | (c == '5') = Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1])
+                       | (c == '6') = Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 0])
+                       | (c == '7') = Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 1, Z2Z 1])
+                       | (c == '8') = Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0])
+                       | (c == '9') = Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1])
+                       | (c == 'A') = Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0])
+                       | (c == 'B') = Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1])
+                       | (c == 'C') = Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0])
+                       | (c == 'D') = Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1])
+                       | (c == 'E') = Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0])
+                       | (c == 'F') = Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])
+
+
 
 -- ===============================
 -- ========== SHIFTROWS ==========
@@ -375,18 +407,18 @@ cipher entree cle = cipher_aux entree cle (-1)
 cipher_aux :: [Z_sur_256Z] -> [Z_sur_256Z] -> Int -> [Z_sur_256Z]
 cipher_aux entree cle round  | (round == -1) = cipher_aux entree (extandKey cle) 0
                           | (round == 0 ) = cipher_aux (addRoundKey entree (extract_key_from_key cle (0))) cle (round+1)
-                          | (round == nbRound) = addRoundKey (shiftRows(subBytes entree))  (extract_key_from_key cle (4*nbRound)) 
-                          | otherwise = cipher_aux (addRoundKey ( mixColumns(shiftRows(subBytes(entree))) ) ( extract_key_from_key cle (round*4) )  ) cle (round+1)
-  
+                          | (round == nbRound) = addRoundKey (shiftRows (subBytes entree))  (extract_key_from_key cle (4*nbRound))
+                          | otherwise = cipher_aux (addRoundKey ( mixColumns (shiftRows (subBytes (entree))) ) ( extract_key_from_key cle (round*4) )  ) cle (round+1)
+
 
 state_vide = [Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 1]),Z256Z (Poly [Z2Z 1]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 1]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 1]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 0]),Z256Z (Poly [Z2Z 1]),Z256Z (Poly [Z2Z 1]),Z256Z (Poly [Z2Z 0])]
 
 
 extract_key_from_key :: [Z_sur_256Z] -> Int -> [Z_sur_256Z]
 extract_key_from_key cle t = extract_key_from_key_aux cle t state_vide 0 0
-  
 
-extract_key_from_key_aux :: [Z_sur_256Z] -> Int -> [Z_sur_256Z] -> Int -> Int -> [Z_sur_256Z]  
+
+extract_key_from_key_aux :: [Z_sur_256Z] -> Int -> [Z_sur_256Z] -> Int -> Int -> [Z_sur_256Z]
 extract_key_from_key_aux cle t out col isortie | (col==t) || (col==t+1) || (col==t+2) || (col==t+3) = extract_key_from_key_aux cle t (putColumn (out) (pickColumn_key cle col) isortie) (col+1) (isortie+1)
                                                 | (col == ((nbRound+1)*keyLength)) = out
                                                 | otherwise =extract_key_from_key_aux cle t out (col+1) isortie
@@ -400,9 +432,9 @@ invcipher entree cle = invcipher_aux entree cle (nbRound+1)
 invcipher_aux :: [Z_sur_256Z] -> [Z_sur_256Z] -> Int -> [Z_sur_256Z]
 invcipher_aux entree cle round  | (round == (nbRound+1)) = invcipher_aux entree (extandKey cle) (round-1)
                           | (round == (nbRound) ) = invcipher_aux (addRoundKey entree (extract_key_from_key cle (nbRound*4))) cle (round-1)
-                          | (round == (0)) = addRoundKey (invsubBytes(invShiftRows entree))  (extract_key_from_key cle (0)) 
-                          | otherwise = invcipher_aux (invMixColumns(addRoundKey (invsubBytes(invShiftRows(entree))) ( extract_key_from_key cle (round*4) ))) cle (round-1)
-  
+                          | (round == (0)) = addRoundKey (invsubBytes (invShiftRows entree))  (extract_key_from_key cle (0))
+                          | otherwise = invcipher_aux (invMixColumns (addRoundKey (invsubBytes (invShiftRows (entree))) ( extract_key_from_key cle (round*4) ))) cle (round-1)
+
 
 -- (addRoundKey ( mixColumns(shiftRows(subBytes(entree))) ) ( extract_key_from_key cle (round*4) )  )
 
