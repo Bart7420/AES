@@ -91,8 +91,8 @@ Dans cette séance, nous avons continué l'implémentation d'AES. Nous avons com
     - [x] InvMixColums
     - [x] ShiftRow
     - [x] InvShiftRow
-    - [ ] KeyExpension
-    - [ ] tests
+    - [x] KeyExpension
+    - [x] tests
     
 - Etienne
     - [x] SubBytes
@@ -100,8 +100,24 @@ Dans cette séance, nous avons continué l'implémentation d'AES. Nous avons com
     - [x] AddRoundKey
     - [x] InvAddRoundKey
     - [x] KeyExpension
+    - [x] tests
+
+
+## Séance 4 (3/05/2023)
+
+Dans cette séance, nous avons continué l'implémentation d'aes en haskell. Nous avons continué/fini l'implémentation de KeyExpension, puis nous avons mis en place Cipher et InvCipher. Nous avons eu quelques bugs a corriger. Nous avons aussi commencé l'extension de clé pour les autres versions de AES, 192 et 256.
+
+**Objectifs avant la prochaine séance :**
+- Ronan :
+    - [ ] Extension de clé pour les autres versions de AES (192, 256)
     - [ ] tests
+    - [ ] Rédaction d'une documentation
+    - Autre à définir
+    
+- Etienne
+    - [x] Corrections et vérification de Cipher et InvCipher
+    - [x] tests
+    - [ ] Rédaction d'une documentation
+    - Autre à définir
 
-
-
-3 mai prochaine séance
+17 mai prochaine séance, dernière du premier cycle du projet
