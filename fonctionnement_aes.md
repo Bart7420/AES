@@ -1,4 +1,22 @@
-# Fonctionnement de AES
+
+
+# Documentation projet AES en Haskell
+
+Dans ce document est présenté le fonctionnement des fonctions d'aes ainsi que les fonctions annexes.
+
+
+- [Documentation projet AES en Haskell](#documentation-projet-aes-en-haskell)
+  - [Fonctionnement de AES](#fonctionnement-de-aes)
+  - [Codage :](#codage-)
+    - [AddRoundKey(block, clé\_de\_tour : keySchedule\[nombre\])](#addroundkeyblock-clé_de_tour--keyschedulenombre)
+    - [SubBytes(block)](#subbytesblock)
+    - [ShiftRows()](#shiftrows)
+    - [MixColumns()](#mixcolumns)
+    - [Génération des clés de tour](#génération-des-clés-de-tour)
+
+
+
+## Fonctionnement de AES
 
 AES-128
 
@@ -31,14 +49,20 @@ Pour cette version (128) 10 tours composé de : init - 9 tours - tour final
 
 ### AddRoundKey(block, clé_de_tour : keySchedule[nombre])
 
+
+**Fonctionnement :** Applique XOR entre la clé et le message (init : Clé de l'utilisateur, tours : clés de tour générés avec la clé de l'utilisateur)
+
+
 ```
 Pour chaque colonne de block **col** (numéro de colonne **i** allant de 1 à 4):
     **col** = **col** XOR clé_de_tour[i]
 ```
 
-Pratique : Applique XOR entre la clé et le message (init : Clé de l'utilisateur, tours : clés de tour générés avec la clé de l'utilisateur)
-
 ### SubBytes(block)
+
+**Fonctionnement :**
+Arithmétique : inverse multiplicatif puis une transformation affine (5.1)
+Pratique : Utilisation de la boite de traduction (figure 7)
 
 ```
 octet **c** = 01100011 (63)
@@ -50,8 +74,7 @@ Pour chaque octet **oct**:
 ```
 
 
-Arithmétique : inverse multiplicatif puis une transformation affine (5.1)
-Pratique : Utilisation de la boite de traduction (figure 7)
+
 
 ### ShiftRows()
 
@@ -88,7 +111,90 @@ Pour chaque colonne **col** :
 Arithmétique : Multiplication des colonnes par le poly a donné (5.5) modulo l'irréductible dans Z256Z qui est x^4+1.
 Pratique : Multiplication de matrice (5.6) et les différentes formules sont données en dessous de (5.6)
 
-## Génération des clés de tour
+### Génération des clés de tour
+
+La génération des clés de tour se trouent avec un algorithme très précis.
+
+Dans notre implémentation, nous avons choisi de calculer l'entièreté des clés en même temps afon d'obtenir un tableau les contenant toutes, et ensuite choisir celle qui nous intéresse (cf. extract_round_key_from_key).
+
+Le format de la clé étentue est toujours un tableaux de polynomes de Z256Z. Pour AES 128, avec 10 clés de tours plus celle de base, nous obtenons donc une liste de 176 éléments, qui est représenté par 11 blocks de 4 colonnes (words).
+
+Explication de l'algorithme pour AES 128:
+
+--> Les 4 premières colonnes sont le copie de la clé de base.
+--> Les colonnes dont l'indice est multiple de 4 sont calculées à l'aide de op_spe
+--> Les autres colonnes sont calculées à l'aide de op_normal
+
+```
+--                                (2)
+--             (1)              op_spe
+--   valeurs de la clé de base    ||            (3)
+--    ||     ||     ||     ||     ||         op_normal
+--    ||     ||     ||     ||     ||     ||     ||     ||
+--    \/     \/     \/     \/     \/     \/     \/     \/
+-- ------------------------------------------------------------------------------------------------
+-- | c0,0 | c0,1 | c0,2 | c0,3 | c0,4 | c0,5 | c0,6 | c0,7 | .... | c0,41 | c0,42 | c0,43 | c0,44 |
+-- | c1,0 | c1,1 | c1,2 | c1,3 | c1,4 | c1,5 | c1,6 | c1,7 | .... | c1,41 | c1,42 | c1,43 | c1,44 |
+-- | c2,0 | c2,1 | c2,2 | c2,3 | c2,4 | c2,5 | c2,6 | c2,7 | .... | c2,41 | c2,42 | c2,43 | c2,44 |
+-- | c3,0 | c3,1 | c3,2 | c3,3 | c3,4 | c3,5 | c3,6 | c3,7 | .... | c3,41 | c3,42 | c3,43 | c3,44 |
+-- ------------------------------------------------------------------------------------------------
+-- 
+```
+
+Voici le fonctionnement des diffétentes sous-fonctions :
+
+**op_normal :**
+
+op_normal applique un xor entre le mot (la colonne) correspondante au tour précédant (colonne-keyLength) et celle immédiatement précédante.
+
+**op_spe :**
+
+op_spe applique un xor entre :
+
+
+    - la colonne correspondante au tour précédant (colonne-keyLength)
+    - Une transformation spéciale de la colonne immédiatement précedante qui est elle meme un xor entre deux éléments :
+        - l'application de la fonction s définie par la s-box appliquée sur les 4 éléments de la colonne plus une rotation de celle-ci
+        - une colonne formée du polynome {02} à la puissance du numéro de colonne divisé par la longueur de la clé (colonne /keyLenght) -1
+
+
+
+
+$$ 
+
+word[4] = word[0] xor op_spe(word[3])
+\newline
+
+en \space notant : word[3] = \begin{pmatrix}
+                                w30 \\
+                                w31 \\
+                                w32 \\
+                                w33
+                                \end{pmatrix}
+
+\newline
+
+op\_spe(word[3]) = \begin{pmatrix}
+                    s(w31)\\
+                    s(w32)\\
+                    s(w33)\\
+                    s(w30)\\
+                    \end{pmatrix}
+
+                    xor
+
+                    \begin{pmatrix}
+                    x^{(\frac{colonne}{keyLenght}) -1}\\
+                    0\\
+                    0\\
+                    0\\
+                    \end{pmatrix}
+
+$$
+
+
+**Pseudo code :**
+
 
 ```
 KeyExpansion(byte key[4*Nk], word w[Nb*(Nr+1)], Nk)
