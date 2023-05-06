@@ -202,7 +202,7 @@ toGoodLengthZ256 (Z256Z (Poly a)) | (length a) > 8 = removeZerosZ256 (Z256Z (Pol
                                   | otherwise = (Z256Z (Poly a))
 
 toGoodLengthZ256_4 :: [Z_sur_2Z] -> [Z_sur_2Z]
-toGoodLengthZ256_4 a | (length a) > 8 = extractPoly (removeZerosZ256 (Z256Z (Poly a)))
+toGoodLengthZ256_4 a | (length a) > 8 = extractPoly (completeZerosZ256 (removeZerosZ256 (Z256Z (Poly a))) 8)
                     | (length a ) < 8 = extractPoly (completeZerosZ256 (Z256Z (Poly a)) 8)
                     | otherwise = a
 
