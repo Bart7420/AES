@@ -5,32 +5,33 @@
 Dans ce document est présenté le fonctionnement des fonctions d'aes ainsi que les fonctions annexes.
 
 
-- [Documentation projet AES en Haskell](#documentation-projet-aes-en-haskell)
-  - [Fonctionnement de AES](#fonctionnement-de-aes)
-  - [Codage :](#codage-)
-    - [AddRoundKey(block, clé\_de\_tour : keySchedule\[nombre\])](#addroundkeyblock-clé_de_tour--keyschedulenombre)
-    - [SubBytes(block)](#subbytesblock)
-    - [ShiftRows()](#shiftrows)
-    - [MixColumns()](#mixcolumns)
-    - [Génération des clés de tour](#génération-des-clés-de-tour)
 
 
 
 ## Fonctionnement de AES
 
-AES-128
 
+AES est une méthode de cryptage de données par blocks, c'est a dire que l'information a coder est decoupée en morceaux de taille fixe. Dans AES, ils sont de taille 16 octets. Il y a trois principales versions d'AES, AES-128, AES-192 et AES-256. La principale différence est la taille de la clé.
+Pour AES-128, nous avons :
+```
 Length cipher key = 128
 Length text = 128
-
+```
+```
 Nb = 4 car 4*32bit (si un word = 32 bit) (taille des block (nb word))
 Nr = 10 (nombre de tours)
 Nk = 4 (key length)
+```
 
+### Codage :
 
-## Codage :
+Pour la version 128, il y a 10 tours de codage :
 
-Pour cette version (128) 10 tours composé de : init - 9 tours - tour final
+            --> 1x init
+            --> 9x tour classique
+            --> 1x tour final
+
+Voici le pseudo code du codage pour AES 128 :
 
 ```Cipher(clé_de_chiffrement, block (128 bits))
     keySchedule = keyExpension(clé_de_chiffrement)
@@ -40,7 +41,6 @@ Pour cette version (128) 10 tours composé de : init - 9 tours - tour final
         ShiftRows() // See Sec. 5.1.2
         MixColumns() // See Sec. 5.1.3
         AddRoundKey()
-
     SubBytes()
     ShiftRows()
     AddRoundKey()

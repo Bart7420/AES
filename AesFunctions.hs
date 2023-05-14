@@ -45,6 +45,10 @@ scalProduct (Poly []) (Poly []) = unitadd
 scalProduct (Poly (x:xs)) (Poly (y:ys)) = operationadd (operationmul x y) (scalProduct (Poly xs) (Poly ys))
 
 
+-- Fonction de conversion d'un tableau de polynomes de Z256Z
+-- en une chaine affichée
+-- la taille est le nombre d'éléments par ligne affichés
+--              tab         taille
 binToHex :: [Z_sur_256Z] -> Int -> IO()
 binToHex l m = putStr ((binToHex_aux l 0 m) ++ "\n\n")
 
@@ -52,6 +56,9 @@ binToHex_aux :: [Z_sur_256Z] -> Int -> Int -> String
 binToHex_aux [] _ _ = ""
 binToHex_aux (x:xs) i m = (if (i `mod` m) == 0 then "\n " else "") ++ (convertToHex x) ++ " " ++ (binToHex_aux xs (i+1) m)
 
+-- Foncfiotn de conversion d'UN polynome de Z256Z en chaine
+-- qui représente le nombre en hexadécimal
+--                 poly         doublet de caractere hexa
 convertToHex :: Z_sur_256Z -> String
 convertToHex (Z256Z (Poly p)) = [(convertToCara (take 4 (toGoodLengthZ256_4 p))), (convertToCara (drop 4 (toGoodLengthZ256_4 p)))]
 
@@ -75,7 +82,10 @@ convertToCara c | ([Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 0] == c) = '0'
               | otherwise = '+'
 
 
-
+-- Fonction de converison d'une string en chaine de poly de Z256Z
+-- Valeurs en entrée 0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F
+--    chaine de caractères hexa
+--           |            tabeau de Z256Z en sortie
 hexToBin :: String -> [Z_sur_256Z]
 hexToBin [] = []
 hexToBin [' '] = []
@@ -130,10 +140,16 @@ transpose_aux_4 (a:b:c:d:e:f:g:h:i:j:k:l:m:n:o:p:reste) output 3 = transpose_aux
 --transpose_aux_6 (a:b:c:d:e:f:g:h:i:j:k:l:m:n:o:p:q:r:s:t:u:v:w:x:reste) output 2 = transpose_aux_6 (a:b:c:d:e:f:g:h:i:j:k:l:m:n:o:p:q:r:s:t:u:v:w:x:reste) (putColumn_key (output) (i:j:k:l:reste) 2) (3)
 --transpose_aux_6 (a:b:c:d:e:f:g:h:i:j:k:l:m:n:o:p:q:r:s:t:u:v:w:x:reste) output 3 = transpose_aux_6 (a:b:c:d:e:f:g:h:i:j:k:l:m:n:o:p:q:r:s:t:u:v:w:x:reste) (putColumn_key (output) (m:n:o:p:reste) 3) (4)
 
-
+-- fonction utile de codage aes. Une chaine de longueur 32 est attendue
+-- pour le texte (1ere) et une autre chaine pour la clé
+-- Affiche le résultat du codage à l'utilisateur
 cipher_aes :: String -> String -> IO()
 cipher_aes text cle = binToHex (transpose (cipher (transpose (hexToBin text) 4) ( (transpose (hexToBin cle) 4))) 4) 30
 
+
+-- fonction utile décodage AES. Une chaine de longueur 32 est attendue
+-- pour le texte
+-- affiche le message décodé à l'utilisateur
 invcipher_aes :: String -> String -> IO()
 invcipher_aes text cle = binToHex (transpose (invcipher (transpose (hexToBin text) 4) (transpose (hexToBin cle)4)) 4) 30
 
@@ -275,6 +291,8 @@ invMixOpColumn [a, b, c, d] = [firstel, sndel, thirdel, fourthel]
 -- =========== SUBBYTES ===========
 -- ================================
 
+-- Fonction subBytes d'AES
+-- Applique la transformation de la s-box à la state passée en paramètre
 subBytes :: [Z_sur_256Z] -> [Z_sur_256Z]
 subBytes [] = []
 subBytes (x:xs) = (toGoodLengthZ256 ((addMod256 (multMod256 (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 1])) (inverse256 x) ) (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 1]))))) : subBytes xs
@@ -284,12 +302,12 @@ subBytes (x:xs) = (toGoodLengthZ256 ((addMod256 (multMod256 (Z256Z (Poly [Z2Z 1,
 -- ========= INV SUBBYTES =========
 -- ================================
 
+-- Fonction invsubBytes d'AES
+-- Applique la transformation de la reverse-s-box à la state passée en paramètre
 invsubBytes :: [Z_sur_256Z] -> [Z_sur_256Z]
 invsubBytes [] = []
 invsubBytes (x:xs)  | (x == unitadd) =  x : subBytes xs
                     | otherwise = (toGoodLengthZ256 (inverse256 (addMod256 (multMod256 (Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0])) (x) ) (Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1]))))) : invsubBytes xs
-
-
 
 
 
