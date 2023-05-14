@@ -118,6 +118,10 @@ Dans cette séance, nous avons continué l'implémentation d'aes en haskell. Nou
     - [x] Corrections et vérification de Cipher et InvCipher
     - [x] tests
     - [ ] Rédaction d'une documentation
+    - [x] Début du C, reflexion à la structure de donnée à utiliser
+    - [x] (en c) codage AddRoundKey
+    - [x] (en c) codage SubBytes
+    - [x] (en c) codzage InvSubBytes
     - Autre à définir
 
 17 mai prochaine séance, dernière du premier cycle du projet
