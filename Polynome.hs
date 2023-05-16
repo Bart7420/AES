@@ -232,6 +232,7 @@ validPoly (Poly (x:xs)) = (x >= unitadd) && validPoly (Poly xs)
 
 -- Soustraction de deux polynomes dans un anneau Z/2Z qui crée des coefs négatifs
 -- Si les polynomes sont de meme degré, on soustrait les coefs un a un, sinon on tronque celui de degré supérieur
+-- NE MARCHE PAS
 subPolyNeg :: (Anneau a) => Polynome a -> Polynome a -> Polynome a
 subPolyNeg (Poly []) p2 = p2
 subPolyNeg p1 (Poly []) = p1
@@ -252,9 +253,9 @@ subPoly a b = Poly (removeNeg (subPolyNeg a b))
 -- Si il est de degré inférieur on le ramène au degré du polynome a moduloter en le multipliant par X^a
 -- Puis on recommence en faisant décroite X^a de degré en degré jusqu'a son degré initial
 -- Pour vérifier qu'on peut soustraire le polynome 2 on regarde si la fonction subPolyPos ne retourne pas de coefs négatifs avec la fonction validPoly
--- modPoly :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a
---modPoly (Poly []) (Poly []) = Poly [unitadd]
---modPoly pol1 pol2 = f ((degre pol1)-(degre pol2)) pol1 pol2
+--modPoly2 :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a
+--modPoly2 (Poly []) (Poly []) = Poly [unitadd]
+--modPoly2 pol1 pol2 = f ((degre pol1)-(degre pol2)) pol1 pol2
 --                  where f :: (Anneau a, Num a) => Int -> Polynome a -> Polynome a -> Polynome a
 --                        f v p1 p2 
 --                            | (v>=0) = if(validPoly (subPolyNeg p1 mulX)) then (f v (subPolyNeg p1 mulX) p2) else (f (v-1) p1 p2)         
