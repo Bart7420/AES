@@ -109,10 +109,11 @@ Dans cette séance, nous avons continué l'implémentation d'aes en haskell. Nou
 
 **Objectifs avant la prochaine séance :**
 - Ronan :
-    - [ ] Extension de clé pour les autres versions de AES (192, 256)
-    - [ ] tests
+    - [x] Extension de clé pour les autres versions de AES (192, 256)
+    - [x] tests extension clé
+    - [x] test cipher 192 et 256
+    - [x] (en c) codage shiftRow et son inverse
     - [ ] Rédaction d'une documentation
-    - Autre à définir
     
 - Etienne
     - [x] Corrections et vérification de Cipher et InvCipher
@@ -122,6 +123,5 @@ Dans cette séance, nous avons continué l'implémentation d'aes en haskell. Nou
     - [x] (en c) codage AddRoundKey
     - [x] (en c) codage SubBytes
     - [x] (en c) codzage InvSubBytes
-    - Autre à définir
 
 17 mai prochaine séance, dernière du premier cycle du projet

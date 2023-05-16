@@ -32,11 +32,31 @@ void addRoundKey(unsigned char *state, unsigned char *key) {
 
 
 void shiftRows(unsigned char *state){
-
+    for (int i = 4, j = 1; i < 16; i+=4, j++)
+    {
+        for (int k = 0; k < j; k++)
+        {
+            unsigned char temp = state[i];
+            for (int l = 3; l >= 0; l--) {
+                state[i+l] = state[i+l+1];
+            }
+            state[i+3] = temp;
+        }
+    }
 }
 
 void invShiftRows(unsigned char *state){
-
+    for (int i = 4, j = 1; i < 16; i+=4, j++)
+    {
+        for (int k = 0; k < j; k++)
+        {
+            unsigned char temp = state[i+3];
+            for (int l = 3; l >= 0; l--) {
+                state[i+l] = state[i+l-1];
+            }
+            state[i] = temp;
+        }
+    }
 }
 
 void mixColumn(unsigned char *state){
