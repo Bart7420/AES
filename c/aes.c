@@ -61,6 +61,19 @@ void invShiftRows(unsigned char *state){
 }
 
 void mixColumn(unsigned char *state){
+    unsigned char output[16];
+
+    for (int i = 0; i < 4; i++) {
+        output[i*4] = (((2*state[i*4]) ^ (3*state[(i*4)+1]) ^ state[((i*4)+2)] ^ state[((i*4)+2)])% 17);
+        output[(i*4)+1] = (((state[i*4]) ^ (2*state[(i*4)+1]) ^ (3*state[(i*4+2)]) ^ (state[(i*4+2)]))% 17);
+        output[(i*4)+2] = (((state[i*4]) ^ (state[(i*4)+1]) ^ (2*state[(i*4+2)]) ^ (3*state[(i*4+2)]))% 17);
+        output[(i*4)+3] = (((3*state[i*4]) ^ (state[(i*4)+1]) ^ (state[(i*4+2)]) ^ (2*state[(i*4+2)]))% 17);
+    }
+    
+    for (int i = 0; i < 16; i++) {
+        state[i] = output[i];
+    }
+    
     
 }
 
