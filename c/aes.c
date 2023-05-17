@@ -43,6 +43,7 @@ void shiftRows(unsigned char *state){
             state[i+3] = temp;
         }
     }
+
 }
 
 void invShiftRows(unsigned char *state){
@@ -60,9 +61,35 @@ void invShiftRows(unsigned char *state){
 }
 
 void mixColumn(unsigned char *state){
-
+    
 }
 
 void invMixColumn(unsigned char *state){
 
 }
+
+/**
+void keyExpension(unsigned char *key, word w[4*(nbround+1)], int keyLenght) {
+    // keylenght
+    int i =0;
+    while ( i < keyLenght) {
+        w[i] = word(key[4*i], key[4*i+1], key[4*i+2], key[4*i+3]);
+        i++;
+    }
+    i=keylenght;
+
+    word temp;
+    while (i < 4 * (nbround+1))
+    {
+        temp = w[i-1]
+        if ((i % keyLenght) = 0)
+        {
+            temp = SubWord(RotWord(temp)) xor Rcon[i/keyLenght]
+        }
+        
+    }
+    
+
+}
+
+**/
