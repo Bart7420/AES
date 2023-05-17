@@ -1,0 +1,1 @@
+void afficher_state(unsigned char *state);

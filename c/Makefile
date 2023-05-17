@@ -2,7 +2,7 @@ main: main.o aes.o
 	gcc -o $@ $^ -Wall -Wextra -fsanitize=address
 
 
-main.o: main.c aes.h
+main.o: main.c aes.h main.h
 	gcc -c $<
 
 aes.o: aes.c aes.h

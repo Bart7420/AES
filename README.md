@@ -113,12 +113,12 @@ Dans cette séance, nous avons continué l'implémentation d'aes en haskell. Nou
     - [x] tests extension clé
     - [x] test cipher 192 et 256
     - [x] (en c) codage shiftRow et son inverse
-    - [ ] Rédaction d'une documentation
+    - [x] Rédaction d'une documentation
     
 - Etienne
     - [x] Corrections et vérification de Cipher et InvCipher
     - [x] tests
-    - [ ] Rédaction d'une documentation
+    - [x] Rédaction d'une documentation
     - [x] Début du C, reflexion à la structure de donnée à utiliser
     - [x] (en c) codage AddRoundKey
     - [x] (en c) codage SubBytes
