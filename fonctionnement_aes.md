@@ -1,8 +1,8 @@
 
 
-# Documentation projet AES en Haskell
+# AES en Haskell
 
-Dans ce document est présenté le fonctionnement des fonctions d'aes ainsi que les fonctions annexes.
+Dans ce document est présenté le fonctionnement des fonctions d'aes.
 
 
 
