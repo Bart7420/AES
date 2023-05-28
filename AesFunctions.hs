@@ -9,7 +9,6 @@ import Polynome
 import ZsurNZ
 import Corps
 import Anneau
-import System.Console.Terminfo (keyLeft)
 
 
 -- ===============================
@@ -61,7 +60,7 @@ binToHex_aux :: [Z_sur_256Z] -> Int -> Int -> String
 binToHex_aux [] _ _ = ""
 binToHex_aux (x:xs) i m = (if (i `mod` m) == 0 then "\n " else "") ++ (convertToHex x) ++ " " ++ (binToHex_aux xs (i+1) m)
 
--- Foncfiotn de conversion d'UN polynome de Z256Z en chaine
+-- Fonction de conversion d'UN polynome de Z256Z en chaine
 -- qui représente le nombre en hexadécimal
 --                 poly         doublet de caractere hexa
 convertToHex :: Z_sur_256Z -> String
@@ -338,7 +337,7 @@ invsubBytes (x:xs)  | (x == unitadd) =  x : subBytes xs
                     | otherwise = (toGoodLengthZ256 (inverse256 (addMod256 (multMod256 (Z256Z (Poly [Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0])) (x) ) (Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1]))))) : invsubBytes xs
 
 
-
+-- Permet d'extraire un word de la matrice d'état
 pickColumn :: [Z_sur_256Z] -> Int -> [Z_sur_256Z]
 pickColumn liste nb = pickColumn_aux liste nb 0
 
@@ -347,7 +346,7 @@ pickColumn_aux [] _ _ = []
 pickColumn_aux (x:xs) nb indice | (indice `mod` 4) == nb = x : pickColumn_aux xs nb (indice+1)
                                 | otherwise = pickColumn_aux xs nb (indice+1)
 
-
+-- Permet de mettre un word dans la matrice d'état
 putColumn :: [Z_sur_256Z] -> [Z_sur_256Z] -> Int -> [Z_sur_256Z]
 putColumn liste column nb = putColumn_aux liste nb 0 column
 
@@ -357,7 +356,7 @@ putColumn_aux [] _ _ _ = []
 putColumn_aux (x:xs) nb indice (y:ys) | (indice `mod` 4) == nb = y : putColumn_aux xs nb (indice + 1) ys
                                         | otherwise = x : putColumn_aux xs nb (indice + 1) (y:ys)
 
-
+-- Permet d'extraire un word de la matrice représentant la clé étendue
 pickColumn_key :: [Z_sur_256Z] -> Int -> [Z_sur_256Z]
 pickColumn_key liste nb = pickColumn_aux_key liste nb 0
 
@@ -366,7 +365,7 @@ pickColumn_aux_key [] _ _ = []
 pickColumn_aux_key (x:xs) nb indice | (indice `mod` (4*(nbRound+1))) == nb = x : pickColumn_aux_key xs nb (indice+1)
                                 | otherwise = pickColumn_aux_key xs nb (indice+1)
 
-
+-- Permet de mettre un word dans la matrice représentant la clé étendue
 putColumn_key :: [Z_sur_256Z] -> [Z_sur_256Z] -> Int -> [Z_sur_256Z]
 putColumn_key liste column nb = putColumn_aux_key liste nb 0 column
 
@@ -376,7 +375,7 @@ putColumn_aux_key [] _ _ _ = []
 putColumn_aux_key (x:xs) nb indice (y:ys) | (indice `mod` (4*(nbRound+1))) == nb = y : putColumn_aux_key xs nb (indice + 1) ys
                                         | otherwise = x : putColumn_aux_key xs nb (indice + 1) (y:ys)
 
-
+-- Permet d'extraire un word de la matrice utilisée lors de la génération des clés de tour
 pickColumn_extandKey :: [Z_sur_256Z] -> Int -> [Z_sur_256Z]
 pickColumn_extandKey liste nb = pickColumn_extandKey_aux liste nb 0
 
