@@ -40,7 +40,7 @@ Nous avons ré-étudié la documentation de AES, en se focalisant sur le fonctio
 
 ## Séance 3 (18/04/2023)
 
-Dans cette séance, nous avons continué l'implémentation d'AES. Nous avons commencé les implémentations de SubBytes() et de ShiftRows(). 
+Dans cette séance, nous avons continué l'implémentation d'AES. Nous avons commencé les implémentations de SubBytes() et de ShiftRows() d'aes.
 
 
 **Objectifs avant la prochaine séance :**
@@ -86,14 +86,14 @@ Dans cette séance, nous avons continué l'implémentation d'aes en haskell. Nou
 <br>
 
 ## Séance 5 (17/05/2023)
-Durant la séance nous avons débuggé les version aes 192 et 256 qui sont maintenant fonctionnelles et avons rédigés des tests pour celles-ci.
+Durant la séance nous avons débuggé les version aes 192 et 256 qui sont maintenant fonctionnelles et avons rédigés des tests pour celles-ci. Nous avons aussi réorganisé le code et commenter les focntions.
 Nous avons continuer l'implémentation d'aes en C.
 
 **Objectifs avant la prochaine séance :**
 - Ronan :
-    - [] Continuer la documentation
-    - [] Nettoyer le code
-    - [] Continuer le C
+    - [x] Continuer la documentation
+    - [x] Nettoyer le code
+    - [x] Continuer le C
 
 - Etienne :
-    - [] Continuer la documentation
+    - [x] Continuer et finir la documentation

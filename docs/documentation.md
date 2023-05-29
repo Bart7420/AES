@@ -33,6 +33,7 @@ Pour changer de mode, il faut commenter et décommenter les bonnes lignes de con
 > 33 34 35 36 
 > 37 38 39 30
 >```
+**Note :** les "lettres" représentant les caractères hedadécimaux doivent êtres en majuscules
 
 ## Choix de la représentation des données
 
