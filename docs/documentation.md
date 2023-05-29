@@ -91,7 +91,7 @@ Premet d'extraire une clé de trour de la clé étendue
 <br>
 
 ### binToHex
-Permet de transformer une liste de polynomes de Z256Z en une liste de caractères hexadécimaux
+Permet de transformer une liste de polynomes de Z256Z en une liste de caractères hexadécimaux. La fonction prend en plus un entier en paramètre qui reprèsente le nombre de word contenu dans la liste.
 
 ### hexToBin
 Permet de transformer une chaine de caractères hexacécimaux en liste de polynomes de Z256Z à l'aide de la fonction convertCaraToBin qui converti un char en polynôme

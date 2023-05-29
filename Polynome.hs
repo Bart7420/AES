@@ -57,44 +57,6 @@ instance Anneau a => Anneau (Polynome a) where
   -- inversemul = inverse2
   operationmul = multPoly
 
--- addPoly :: [Integer] -> [Integer] -> [Integer]
--- addPoly [] [] = []
---addPoly (x:xs) (y:ys) = (operationadd x y):(addPoly xs ys)
-
---subPoly :: [Integer] -> [Integer] -> [Integer]
---subPoly [] [] = []
---subPoly (x:xs) (y:ys) = (operationadd x (inverseadd y)):(addPoly xs ys)
-
-
---newtype Polynome = Poly [Z_sur_2Z]
-
---class Polynome a where
---    addP :: a -> a -> a
---    subP :: a -> a -> a
---    multP :: a -> a -> a
---    moduloP :: a -> a -> a
-
-
---instance Corps a => Polynome [a] where
---    addP = addPoly
---    subP = subPolyPos
---    multP = multPoly
---    moduloP = modPoly
-
-
-
--- L'idée ne serait-elle pas que les nombre de Z/6Z par exemple soit encodés en binaire par des polynomes de Z/2Z ?
--- Puis faire les meme opération mais au lieu d'ajouter des coefs de polynomes, on ajoute des polynomes "binaires"
--- Avant d'appliquer un modulo afin que les coefs restent dans Z/6Z : mod le polynome qui encode 6 donc [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0]
--- On aurait pour l'addition dans Z/6Z, par exemple si on ajoute 5X²+3X+2 à 2X²+5
--- [5, 3, 2] + [2, 0, 5]
--- Qui donnerait en binaire:
--- [[Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0], [Z2Z 1, Z2Z 1], [Z2Z 1, Z2Z 0]]     +     [[Z2Z 1, Z2Z 0], [Z2Z 0], [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0]]
--- [7, 3, 7] = [[Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0], [Z2Z 1, Z2Z 1], [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 0]]
--- On applique le modulo de Z/6Z c'est à dire P mod [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 0] à chaque coef
--- On a donc [1, 3, 1]
--- = [[Z2Z 1], [Z2Z 1, Z2Z 1], [Z2Z 1]]
-
 
 -----------------------------------------------------------------
 -- Dans Z/nZ
@@ -122,14 +84,6 @@ degre (Poly (x:xs)) | (x == unitadd ) && (length xs == 0) = -1
                     | (x/=unitadd) = length xs
                     | otherwise = degre (Poly xs)
 
-
--- Addition des polynomes
-
---addPoly :: Corps a => Polynome a -> Polynome a -> Polynome a
---addPoly (Poly []) (Poly [])  = Poly []
---addPoly (Poly x) (Poly []) =  Poly x
---addPoly (Poly []) (Poly x)  = Poly x
---addPoly (Poly liste1) (Poly liste2) =  Poly (addListZnZ liste1 liste2)
 
 
 opListZnZ :: Anneau a => (a -> a -> a) -> [a] -> [a] -> [a]
@@ -184,13 +138,13 @@ removeZeros (Poly (x:xs)) | x == unitadd = removeZeros (Poly xs)
                           | otherwise = Poly (x:xs)
 
 
-
 removeZerosZ256 :: Z_sur_256Z -> Z_sur_256Z
 removeZerosZ256 (Z256Z (Poly [])) =  (Z256Z (Poly []))
 removeZerosZ256 (Z256Z (Poly (x:xs))) | (x == unitadd) = removeZerosZ256 (Z256Z (Poly (xs)))
                                   | otherwise = (Z256Z (Poly (x:xs)))
 
 
+-- Ajoute des 0 en tête du polynôme pour qu'il soit de taille v 
 completeZerosZ256 :: Z_sur_256Z -> Int -> Z_sur_256Z
 completeZerosZ256 (Z256Z (Poly a)) v  | (length a) == v = Z256Z (Poly a)
                           | ((length a) < v) = completeZerosZ256 (Z256Z(Poly (unitadd:a))) v
@@ -241,26 +195,13 @@ subPolyNeg (Poly p1@(x:xs)) (Poly p2@(y:ys))
   | (length p1 > length p2) = Poly ( (take (length p1 - length p2) p1) ++ (opListZnZ (operationsub) (drop (length p1 - length p2) p1) p2) )
   | otherwise = Poly ( (take (length p2 - length p1) p2) ++ (opListZnZ (operationsub) p1 (drop (length p2 - length p1) p2)) )
 
+
+-- Soustraction de polynomes
 subPoly :: (Anneau a) => Polynome a -> Polynome a -> Polynome a
 subPoly a b = Poly (removeNeg (subPolyNeg a b))
               where removeNeg (Poly (x:xs)) | (x < unitadd) = (inverseadd x):removeNeg (Poly xs)
                                             | otherwise = x:removeNeg (Poly xs)
                     removeNeg (Poly []) = []
-
-
--- Forme : <p1> [p2]
--- Idée : on enlève le polynome 2 autant de fois que l'on peut au polynome 1
--- Si il est de degré inférieur on le ramène au degré du polynome a moduloter en le multipliant par X^a
--- Puis on recommence en faisant décroite X^a de degré en degré jusqu'a son degré initial
--- Pour vérifier qu'on peut soustraire le polynome 2 on regarde si la fonction subPolyPos ne retourne pas de coefs négatifs avec la fonction validPoly
---modPoly2 :: (Anneau a, Num a) => Polynome a -> Polynome a -> Polynome a
---modPoly2 (Poly []) (Poly []) = Poly [unitadd]
---modPoly2 pol1 pol2 = f ((degre pol1)-(degre pol2)) pol1 pol2
---                  where f :: (Anneau a, Num a) => Int -> Polynome a -> Polynome a -> Polynome a
---                        f v p1 p2 
---                            | (v>=0) = if(validPoly (subPolyNeg p1 mulX)) then (f v (subPolyNeg p1 mulX) p2) else (f (v-1) p1 p2)         
---                            | otherwise = p1
---                                where mulX = (multPoly (createPoly v) p2)
 
 
 
@@ -306,12 +247,6 @@ divPoly_aux q r b a | (degre r) >= (degre b) = divPoly_aux (removeZeros (operati
                     | otherwise = (q, r)
 
 
-
-
---euclide :: (Anneau a, Num a) => Polynome a -> Polynome a -> (Polynome a, Polynome a, Polynome a)
---euclide a b | ((removeZeros b)==unitmul) =(a, unitadd, unitmul)
---            | otherwise = (x, z, (subPoly (y) (multPoly (divPoly a b) (z) ) ))
---                  where (x,y,z) = euclide b (modPoly a b)
 
 
 -- ================================

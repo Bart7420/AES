@@ -270,7 +270,7 @@ invMixOpColumn [a, b, c, d] = [firstel, sndel, thirdel, fourthel]
                                 fourthel = (foldr operationadd unitadd [removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 1, Z2Z 1])) a), removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 0, Z2Z 1])) b), removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 0, Z2Z 0, Z2Z 1])) c), removeZerosZ256 (multAESZ256Z (Z256Z (Poly [Z2Z 1, Z2Z 1, Z2Z 1, Z2Z 0])) d)])
 
 
--- Ne marche pas car modPoly est une boucle infinie avec des poly à coef dans Z256Z (à cause de divPoly_aux, du à la manière dont les opération + et - sont faites sur les coefs)
+-- Ne marche pas car modPoly est une boucle infinie avec des poly à coef dans Z256Z (à cause de divPoly_aux, peut etre du à la manière dont les opération + et - sont faites sur les coefs)
 
 --mixColumns_aux :: [Z_sur_256Z] -> Int -> [Z_sur_256Z]
 --mixColumns_aux state i | i < 4 = putColumn state (polyToList (result state (i+1))) (i+1)

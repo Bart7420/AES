@@ -93,7 +93,7 @@ Nous avons continuer l'implémentation d'aes en C.
 - Ronan :
     - [x] Continuer la documentation
     - [x] Nettoyer le code
-    - [x] Continuer le C
+    - [ ] Continuer le C
 
 - Etienne :
     - [x] Continuer et finir la documentation
