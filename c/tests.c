@@ -3,7 +3,69 @@
 #include <stdio.h>
 #include "aes.h"
 
+void strToState(unsigned char *str, unsigned char *state) {
 
+    unsigned char transform(unsigned char in) {
+        unsigned char out;
+        switch (in)
+        {
+        case '0':
+            out = 0x00;
+            break;
+        case '1':
+            out = 0x01;
+            break;
+        case '2':
+            out = 0x02;
+            break;
+        case '3':
+            out = 0x03;
+            break;
+        case '4':
+            out = 0x04;
+            break;
+        case '5':
+            out = 0x05;
+            break;
+        case '6':
+            out = 0x06;
+            break;
+        case '7':
+            out = 0x07;
+            break;
+        case '8':
+            out = 0x08;
+            break;
+        case '9':
+            out = 0x09;
+            break;
+        case 'a':
+            out = 0x0a;
+            break;
+        case 'b':
+            out = 0x0b;
+            break;
+        case 'c':
+            out = 0x0c;
+            break;
+        case 'd':
+            out = 0x0d;
+            break;
+        case 'e':
+            out = 0x0e;
+            break;
+        case 'f':
+            out = 0x0f;
+            break;
+        }
+        return out;
+    }
+
+    for (int i=0, j=0; i<32;i=i+2, j++) {
+        state[j] = (transform(str[i])<<4) ^ transform(str[i+1]);
+    }
+
+}
 
 void stateToStr(unsigned char *state, unsigned char *output) {
 
@@ -77,7 +139,7 @@ void stateToStr(unsigned char *state, unsigned char *output) {
 
 void verifier_test(char *name, char *test, char *verif) {
     if (strcmp(test, verif) == 0) {
-        printf(" \033[0;32m");
+        printf("\033[0;32m");
         printf("%s : ok\n", name);
         printf("ATTENDU : %s\n", verif);
         printf("RESULT  : %s\n", test);
@@ -221,7 +283,9 @@ void test_invShiftRows() {
     char attendu1[] = "3e175076b61c04678dfc2295f6a8bfc0";
 
     /*      Entrée du test :          */
-    unsigned char test1[16] = {0x3e, 0x1c, 0x22, 0xc0, 0xb6, 0xfc, 0xbf, 0x76, 0x8d, 0xa8, 0x50, 0x67, 0xf6, 0x17, 0x04, 0x95};
+    char test1bis[] = "3e1c22c0b6fcbf768da85067f6170495";
+    unsigned char test1[16];// = {0x3e, 0x1c, 0x22, 0xc0, 0xb6, 0xfc, 0xbf, 0x76, 0x8d, 0xa8, 0x50, 0x67, 0xf6, 0x17, 0x04, 0x95};
+    strToState(test1bis, test1);
 
     /*      Commande a tester :       */
     invShiftRows(test1);
@@ -231,6 +295,25 @@ void test_invShiftRows() {
     stateToStr(test1, result1);
     /*      Véfification du test      */
     verifier_test("invShiftRows test1", result1, attendu1);
+
+
+    /*              TEST 2            */
+    /*      Attendu :                 */
+    char attendu2[] = "5411f4b56bd9700e96a0902fa1bb9aa1";
+
+    /*      Entrée du test :          */
+    char test2bis[] = "54d990a16ba09ab596bbf40ea111702f";
+    unsigned char test2[16];
+    strToState(test2bis, test2);
+
+    /*      Commande a tester :       */
+    invShiftRows(test2);
+
+    /*     Conversion(NE PAS MODIFIER)*/
+    char result2[32] = "";
+    stateToStr(test2, result2);
+    /*      Véfification du test      */
+    verifier_test("invShiftRows test2", result2, attendu2);
 }
 
 void all_tests() {

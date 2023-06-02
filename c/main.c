@@ -55,6 +55,11 @@ int main(int argc,char *argv[])
     
     all_tests();
 
+    unsigned char statee[16];
+    char attendu1[] = "046681e5e0cb199a48f8d37a2806264c";
+    strToState(attendu1, statee);
+    afficher_state(statee);
+
     return 0;
 }
 

@@ -32,6 +32,7 @@ void addRoundKey(unsigned char *state, unsigned char *key) {
 
 
 void shiftRows(unsigned char *state){
+    /*
     for (int i = 4, j = 1; i < 16; i+=4, j++)
     {
         for (int k = 0; k < j; k++)
@@ -43,10 +44,21 @@ void shiftRows(unsigned char *state){
             state[i+3] = temp;
         }
     }
+    */
+    for (int i=0; i<4; i++) { // la ligne
+        for (int k = 0; k<i;k++) { // nombres de décalages selon i la ligne
+            unsigned char temp = state[i];
+            for (int j = 0; j<11; j+=4) { // la colonne
+                state[i+j] = state[i+j+4];
+            }
+            state[i+12] = temp;        
+        }
+    }
 
 }
 
 void invShiftRows(unsigned char *state){
+    /*
     for (int i = 4, j = 1; i < 16; i+=4, j++)
     {
         for (int k = 0; k < j; k++)
@@ -56,6 +68,16 @@ void invShiftRows(unsigned char *state){
                 state[i+l] = state[i+l-1];
             }
             state[i] = temp;
+        }
+    }
+    */
+   for (int i=12; i<16; i++) { // la ligne
+        for (int k = 0; k<i-12;k++) { // nombres de décalages selon i la ligne
+            unsigned char temp = state[i];
+            for (int j = 0; j<11; j+=4) { // la colonne
+                state[i-j] = state[i-j-4];
+            }
+            state[i-12] = temp;        
         }
     }
 }
