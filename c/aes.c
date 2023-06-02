@@ -60,25 +60,67 @@ void invShiftRows(unsigned char *state){
     }
 }
 
-void mixColumn(unsigned char *state){
-    unsigned char output[16];
 
-    for (int i = 0; i < 4; i++) {
-        output[i*4] = (((2*state[i*4]) ^ (3*state[(i*4)+1]) ^ state[((i*4)+2)] ^ state[((i*4)+2)])% 17);
-        output[(i*4)+1] = (((state[i*4]) ^ (2*state[(i*4)+1]) ^ (3*state[(i*4+2)]) ^ (state[(i*4+2)]))% 17);
-        output[(i*4)+2] = (((state[i*4]) ^ (state[(i*4)+1]) ^ (2*state[(i*4+2)]) ^ (3*state[(i*4+2)]))% 17);
-        output[(i*4)+3] = (((3*state[i*4]) ^ (state[(i*4)+1]) ^ (state[(i*4+2)]) ^ (2*state[(i*4+2)]))% 17);
+unsigned char multPoly(unsigned char poly1, unsigned char poly2) {
+
+    unsigned char result = 0;
+    int poidFort = 0;
+    for (int i = 0; i < 8; i++) {
+        if ((poly2 & 1) == 1) {
+            result = result ^ poly1;
+        }
+        // on sauvgarde l'état du bit de poid fort
+        if ((poly1 & 0x80) == 0x80) {
+            poidFort = 1;
+        } else {
+            poidFort = 0;
+        }
+        poly1<<=1;
+        if (poidFort == 1) {
+            poly1 = poly1 ^ 0x1b; // on multiplie (xor dans l'ensemble fini) par l'élément irréductible
+        }
+        
+        poly2 >>= 1; // on décale b pour obtenir le prochain bit en position la plus faible
+
+        
     }
-    
-    for (int i = 0; i < 16; i++) {
-        state[i] = output[i];
-    }
-    
+    return result;
     
 }
 
-void invMixColumn(unsigned char *state){
 
+void mixColumn(unsigned char *state){
+    unsigned char output[16];
+
+    // application de l'opétation décrite dans FIPS 197
+    for (int i = 0; i < 4; i++) {
+        output[i*4] = multPoly(0x02, state[i*4]) ^ multPoly(0x03, state[(i*4)+1]) ^ state[((i*4)+2)] ^ state[((i*4)+3)];
+        output[(i*4)+1] = (state[i*4]) ^ multPoly(0x02, state[(i*4)+1]) ^ multPoly(0x03, state[(i*4+2)]) ^ (state[(i*4+3)]);
+        output[(i*4)+2] = (((state[i*4]) ^ (state[(i*4)+1]) ^ multPoly(0x02, state[(i*4+2)]) ^ multPoly(0x03, state[(i*4+3)])));
+        output[(i*4)+3] = ((multPoly(0x03, state[i*4]) ^ (state[(i*4)+1]) ^ (state[(i*4+2)]) ^ multPoly(0x02, state[(i*4+3)])));
+    }
+
+    // copie du resultat obtenu dans output à la sortie   
+    for (int i = 0; i < 16; i++) {
+        state[i] = output[i];
+    } 
+}
+
+void invMixColumn(unsigned char *state){
+    unsigned char output[16];
+
+    // application de l'opétation décrite dans FIPS 197
+    for (int i = 0; i < 4; i++) {
+        output[i*4] = multPoly(0x0e, state[i*4]) ^ multPoly(0x0b, state[(i*4)+1]) ^ multPoly(0x0d, state[((i*4)+2)]) ^ multPoly(0x09, state[((i*4)+3)]);
+        output[(i*4)+1] = multPoly(0x09, state[i*4]) ^ multPoly(0x0e, state[(i*4)+1]) ^ multPoly(0x0b, state[(i*4+2)]) ^ multPoly(0x0d, state[(i*4+3)]);
+        output[(i*4)+2] = multPoly(0x0d, state[i*4]) ^ multPoly(0x09, state[(i*4)+1]) ^ multPoly(0x0e, state[(i*4+2)]) ^ multPoly(0x0b, state[(i*4+3)]);
+        output[(i*4)+3] = multPoly(0x0b, state[i*4]) ^ multPoly(0x0d, state[(i*4)+1]) ^ multPoly(0x09, state[(i*4+2)]) ^ multPoly(0x0e, state[(i*4+3)]);
+    }
+
+    // copie du resultat obtenu dans output à la sortie   
+    for (int i = 0; i < 16; i++) {
+        state[i] = output[i];
+    } 
 }
 
 /**
