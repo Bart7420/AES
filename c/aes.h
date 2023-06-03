@@ -6,3 +6,4 @@ void invShiftRows(unsigned char *state);
 void mixColumn(unsigned char *state);
 void invMixColumn(unsigned char *state);
 unsigned char multPoly(unsigned char poly1, unsigned char poly2);
+unsigned char *keyExpansion(unsigned char *key, int keyLength, int nbRound);

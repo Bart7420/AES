@@ -1,65 +1,66 @@
-
+#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include "aes.h"
 
-void strToState(unsigned char *str, unsigned char *state) {
 
-    unsigned char transform(unsigned char in) {
-        unsigned char out;
-        switch (in)
-        {
-        case '0':
-            out = 0x00;
-            break;
-        case '1':
-            out = 0x01;
-            break;
-        case '2':
-            out = 0x02;
-            break;
-        case '3':
-            out = 0x03;
-            break;
-        case '4':
-            out = 0x04;
-            break;
-        case '5':
-            out = 0x05;
-            break;
-        case '6':
-            out = 0x06;
-            break;
-        case '7':
-            out = 0x07;
-            break;
-        case '8':
-            out = 0x08;
-            break;
-        case '9':
-            out = 0x09;
-            break;
-        case 'a':
-            out = 0x0a;
-            break;
-        case 'b':
-            out = 0x0b;
-            break;
-        case 'c':
-            out = 0x0c;
-            break;
-        case 'd':
-            out = 0x0d;
-            break;
-        case 'e':
-            out = 0x0e;
-            break;
-        case 'f':
-            out = 0x0f;
-            break;
-        }
-        return out;
+unsigned char transform(unsigned char in) {
+    unsigned char out;
+    switch (in)
+    {
+    case '0':
+        out = 0x00;
+        break;
+    case '1':
+        out = 0x01;
+        break;
+    case '2':
+        out = 0x02;
+        break;
+    case '3':
+        out = 0x03;
+        break;
+    case '4':
+        out = 0x04;
+        break;
+    case '5':
+        out = 0x05;
+        break;
+    case '6':
+        out = 0x06;
+        break;
+    case '7':
+        out = 0x07;
+        break;
+    case '8':
+        out = 0x08;
+        break;
+    case '9':
+        out = 0x09;
+        break;
+    case 'a':
+        out = 0x0a;
+        break;
+    case 'b':
+        out = 0x0b;
+        break;
+    case 'c':
+        out = 0x0c;
+        break;
+    case 'd':
+        out = 0x0d;
+        break;
+    case 'e':
+        out = 0x0e;
+        break;
+    case 'f':
+        out = 0x0f;
+        break;
     }
+    return out;
+}
+
+void strToState(unsigned char *str, unsigned char *state) {
 
     for (int i=0, j=0; i<32;i=i+2, j++) {
         state[j] = (transform(str[i])<<4) ^ transform(str[i+1]);
@@ -136,10 +137,26 @@ void stateToStr(unsigned char *state, unsigned char *output) {
 
 }
 
+void strToWords(unsigned char *str, unsigned char *state, int length) {
+
+    for (int i=0, j=0; i<length;i=i+2, j++) {
+        state[j] = (transform(str[i])<<4) ^ transform(str[i+1]);
+    }
+
+}
+
+void wordsToStr(unsigned char *state, unsigned char *output, int length) {
+    for(int i = 0; i < length; i++){
+        char un[3];
+        sprintf(un, "%2.2x", (int) state[i]);
+        strncpy(&output[2*i], un, 2);
+    }
+}
+
 
 void verifier_test(char *name, char *test, char *verif) {
     if (strcmp(test, verif) == 0) {
-        printf("\033[0;32m");
+        printf("\n\033[0;32m");
         printf("%s : ok\n", name);
         printf("ATTENDU : %s\n", verif);
         printf("RESULT  : %s\n", test);
@@ -316,6 +333,42 @@ void test_invShiftRows() {
     verifier_test("invShiftRows test2", result2, attendu2);
 }
 
+void test_keyExpansion(){
+    // AES 128
+    unsigned char key[] = "2b7e151628aed2a6abf7158809cf4f3c";
+    unsigned char input[16];
+    strToWords(key, input, 32);
+    unsigned char* result = keyExpansion(input, 4, 10);
+    char result2[4*44*2+1] = "";
+    wordsToStr(result, result2, 4*44);
+    verifier_test("Test AES 128 : keyExpansion", result2, "2b7e151628aed2a6abf7158809cf4f3ca0fafe1788542cb123a339392a6c7605f2c295f27a96b9435935807a7359f67f3d80477d4716fe3e1e237e446d7a883bef44a541a8525b7fb671253bdb0bad00d4d1c6f87c839d87caf2b8bc11f915bc6d88a37a110b3efddbf98641ca0093fd4e54f70e5f5fc9f384a64fb24ea6dc4fead27321b58dbad2312bf5607f8d292fac7766f319fadc2128d12941575c006ed014f9a8c9ee2589e13f0cc8b6630ca6");
+    free(result);
+
+
+    // AES 192
+    unsigned char keyb[] = "8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b";
+    unsigned char inputb[48];
+    strToWords(keyb, inputb, 96);
+    unsigned char* resultb = keyExpansion(inputb, 6, 12);
+    char result2b[4*52*2+1] = "";
+    wordsToStr(resultb, result2b, 4*52);
+    verifier_test("Test AES 192 : keyExpansion", result2b, "8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7bfe0c91f72402f5a5ec12068e6c827f6b0e7a95b95c56fec24db7b4bd69b5411885a74796e92538fde75fad44bb095386485af05721efb14fa448f6d94d6dce24aa326360113b30e6a25e7ed583b1cf9a27f939436a94f767c0a69407d19da4e1ec1786eb6fa64971485f703222cb8755e26d135233f0b7b340beeb282f18a2596747d26b458c553ea7e1466c9411f1df821f750aad07d753ca4005388fcc5006282d166abc3ce7b5e98ba06f448c773c8ecc720401002202");
+    free(resultb);
+
+
+    // AES 256
+    unsigned char keyc[] = "603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4";
+    unsigned char inputc[64];
+    strToWords(keyc, inputc, 128);
+    unsigned char* resultc = keyExpansion(inputc, 8, 14);
+    char result2c[4*62*2+1] = "";
+    wordsToStr(resultc, result2c, 4*60);
+    verifier_test("Test AES 256 : keyExpansion", result2c, "603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff49ba354118e6925afa51a8b5f2067fcdea8b09c1a93d194cdbe49846eb75d5b9ad59aecb85bf3c917fee94248de8ebe96b5a9328a2678a647983122292f6c79b3812c81addadf48ba24360af2fab8b46498c5bfc9bebd198e268c3ba709e0421468007bacb2df331696e939e46c518d80c814e20476a9fb8a5025c02d59c58239de1369676ccc5a71fa2563959674ee155886ca5d2e2f31d77e0af1fa27cf73c3749c47ab18501ddae2757e4f7401905acafaaae3e4d59b349adf6acebd10190dfe4890d1e6188d0b046df344706c631e");
+    free(resultc);
+    
+    
+}
+
 void all_tests() {
     test_mixColumn();
     test_invMixColumn();
@@ -324,6 +377,7 @@ void all_tests() {
     test_addRoundKey();
     test_shiftRows();
     test_invShiftRows();
+    test_keyExpansion();
 }
 
 
