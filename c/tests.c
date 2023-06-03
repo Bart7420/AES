@@ -349,8 +349,8 @@ void test_keyExpansion(){
 
     // AES 192
     unsigned char keyb[] = "8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b";
-    unsigned char inputb[48];
-    strToWords(keyb, inputb, 96);
+    unsigned char inputb[24];
+    strToWords(keyb, inputb, 48);
     unsigned char* resultb = keyExpansion(inputb, 6, 12);
     char result2b[4*52*2+1] = "";
     wordsToStr(resultb, result2b, 4*52);
@@ -360,8 +360,8 @@ void test_keyExpansion(){
 
     // AES 256
     unsigned char keyc[] = "603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4";
-    unsigned char inputc[64];
-    strToWords(keyc, inputc, 128);
+    unsigned char inputc[32];
+    strToWords(keyc, inputc, 64);
     unsigned char* resultc = keyExpansion(inputc, 8, 14);
     char result2c[4*62*2+1] = "";
     wordsToStr(resultc, result2c, 4*60);
@@ -369,6 +369,62 @@ void test_keyExpansion(){
     free(resultc);
     
     
+}
+void test_cipher(){
+    // AES 128
+    unsigned char key[] = "2b7e151628aed2a6abf7158809cf4f3c";
+    unsigned char key_input[16];
+    strToWords(key, key_input, 32);
+
+    unsigned char text[32] = "3243f6a8885a308d313198a2e0370734";
+    unsigned char input[16];
+    strToState(text, input);
+
+    unsigned char *state = chiffrer(key_input, input, 4);
+
+    char output[16];
+    stateToStr(state, output);
+
+    verifier_test("Cipher AES 128", output, "3925841d02dc09fbdc118597196a0b32"); 
+    free(state);
+
+
+
+    //AES 192
+    unsigned char keyb[] = "000102030405060708090a0b0c0d0e0f1011121314151617";
+    unsigned char key_inputb[24];
+    strToWords(keyb, key_inputb, 48);
+
+    unsigned char textb[32] = "00112233445566778899aabbccddeeff";
+    unsigned char inputb[16];
+    strToState(textb, inputb);
+
+    unsigned char *stateb = chiffrer(key_inputb, inputb, 6);
+
+    char outputb[16];
+    stateToStr(stateb, outputb);
+
+    verifier_test("Cipher AES 192", outputb, "dda97ca4864cdfe06eaf70a0ec0d7191"); 
+    free(stateb);
+
+
+
+    // AES 256
+    unsigned char keyc[] = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
+    unsigned char key_inputc[32];
+    strToWords(keyc, key_inputc, 64);
+
+    unsigned char textc[32] = "00112233445566778899aabbccddeeff";
+    unsigned char inputc[16];
+    strToState(textc, inputc);
+
+    unsigned char *statec = chiffrer(key_inputc, inputc, 8);
+
+    char outputc[16];
+    stateToStr(statec, outputc);
+
+    verifier_test("Cipher AES 256", outputc, "8ea2b7ca516745bfeafc49904b496089"); 
+    free(statec);
 }
 
 void all_tests() {
@@ -380,6 +436,7 @@ void all_tests() {
     test_shiftRows();
     test_invShiftRows();
     test_keyExpansion();
+    test_cipher();
 }
 
 

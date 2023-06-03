@@ -188,9 +188,9 @@ void xor(unsigned char word1[4], unsigned char word2[4], unsigned char result[4]
 
 unsigned char *keyExpansion(unsigned char *key, int keyLength, int nbRound) {
 
-    unsigned char* w = malloc(4*(nbRound+1)*4*(sizeof (unsigned char)));
+    unsigned char *w = malloc(4*(nbRound+1)*4*(sizeof (unsigned char)));
 
-    int i =0;
+    int i = 0;
     while ( i < keyLength) {
         memcpy(&w[4*i], &key[4*i], 4*sizeof (unsigned char));
         i++;
@@ -220,4 +220,60 @@ unsigned char *keyExpansion(unsigned char *key, int keyLength, int nbRound) {
     return w;
     
 }
+
+unsigned char *cipher(unsigned char *extandedKey, unsigned char *input, int nbRound){
+
+    unsigned char *state = malloc(16*sizeof(unsigned char));
+    memcpy(state, input, 16*sizeof(unsigned char));
+
+    addRoundKey(state, &extandedKey[0]);
+
+    for(int round = 1; round < nbRound; round++){
+        subBytes(state);
+        shiftRows(state);
+        mixColumn(state);
+        addRoundKey(state, &extandedKey[4*(round*4)]);
+    }
+
+    subBytes(state);
+    shiftRows(state);
+    addRoundKey(state, &extandedKey[4*(4*nbRound)]);
+
+    return state;
+}
+
+unsigned char *chiffrer(unsigned char *key, unsigned char *input, int keyLength){
+    int nbRound;
+    if(keyLength == 4){
+        nbRound = 10;
+    } else if(keyLength == 6){
+        nbRound = 12;
+    } else if (keyLength = 8){
+        nbRound = 14;
+    }
+
+    unsigned char *extandedKey = keyExpansion(key, keyLength, nbRound);
+    unsigned char *output = cipher(extandedKey, input, nbRound);
+    free(extandedKey);
+
+    return output;
+}
+/*
+Cipher(byte in[4*Nb], byte out[4*Nb], word w[Nb*(Nr+1)])
+begin
+    byte state[4,Nb]
+    state = in
+    AddRoundKey(state, w[0, Nb-1]) // See Sec. 5.1.4
+    for round = 1 step 1 to Nr–1
+        SubBytes(state) // See Sec. 5.1.1
+        ShiftRows(state) // See Sec. 5.1.2
+        MixColumns(state) // See Sec. 5.1.3
+        AddRoundKey(state, w[round*Nb, (round+1)*Nb-1])
+    end for
+    SubBytes(state)
+    ShiftRows(state)
+    AddRoundKey(state, w[Nr*Nb, (Nr+1)*Nb-1])
+    out = state
+end
+*/
 
