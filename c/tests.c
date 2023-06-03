@@ -56,6 +56,8 @@ unsigned char transform(unsigned char in) {
     case 'f':
         out = 0x0f;
         break;
+    default:
+            out = 0x00;
     }
     return out;
 }
@@ -218,7 +220,7 @@ void test_invMixColumn() {
 
 void test_subBytes() {
 
-    /*              TEST 1            */
+    /*==============TEST 1============*/
     /*      Attendu :                 */
     char attendu1[] = "d42711aee0bf98f1b8b45de51e415230";
 
@@ -237,7 +239,7 @@ void test_subBytes() {
 
 void test_invSubBytes() {
 
-    /*              TEST 1            */
+    /*==============TEST 1============*/
     /*      Attendu :                 */
     char attendu1[] = "bdb52189f261b63d0b107c9e8b6e776e";
 
@@ -256,7 +258,7 @@ void test_invSubBytes() {
 
 void test_addRoundKey() {
 
-    /*              TEST 1            */
+    /*==============TEST 1============*/
     /*      Attendu :                 */
     char attendu1[] = "a49c7ff2689f352b6b5bea43026a5049";
 
@@ -276,7 +278,7 @@ void test_addRoundKey() {
 
 void test_shiftRows() {
 
-    /*              TEST 1            */
+    /*==============TEST 1============*/
     /*      Attendu :                 */
     char attendu1[] = "d4bf5d30e0b452aeb84111f11e2798e5";
 
@@ -295,7 +297,7 @@ void test_shiftRows() {
 
 void test_invShiftRows() {
 
-    /*              TEST 1            */
+    /*==============TEST 1============*/
     /*      Attendu :                 */
     char attendu1[] = "3e175076b61c04678dfc2295f6a8bfc0";
 
@@ -314,7 +316,7 @@ void test_invShiftRows() {
     verifier_test("invShiftRows test1", result1, attendu1);
 
 
-    /*              TEST 2            */
+    /*==============TEST 2============*/
     /*      Attendu :                 */
     char attendu2[] = "5411f4b56bd9700e96a0902fa1bb9aa1";
 
