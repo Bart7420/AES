@@ -1,159 +1,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "aes.h"
+#include "include/tests.h"
+#include "include/aes.h"
+#include "include/conversion.h"
 
 
-unsigned char transform(unsigned char in) {
-    unsigned char out;
-    switch (in)
-    {
-    case '0':
-        out = 0x00;
-        break;
-    case '1':
-        out = 0x01;
-        break;
-    case '2':
-        out = 0x02;
-        break;
-    case '3':
-        out = 0x03;
-        break;
-    case '4':
-        out = 0x04;
-        break;
-    case '5':
-        out = 0x05;
-        break;
-    case '6':
-        out = 0x06;
-        break;
-    case '7':
-        out = 0x07;
-        break;
-    case '8':
-        out = 0x08;
-        break;
-    case '9':
-        out = 0x09;
-        break;
-    case 'a':
-        out = 0x0a;
-        break;
-    case 'b':
-        out = 0x0b;
-        break;
-    case 'c':
-        out = 0x0c;
-        break;
-    case 'd':
-        out = 0x0d;
-        break;
-    case 'e':
-        out = 0x0e;
-        break;
-    case 'f':
-        out = 0x0f;
-        break;
-    default:
-            out = 0x00;
-    }
-    return out;
-}
-
-void strToState(unsigned char *str, unsigned char *state) {
-
-    for (int i=0, j=0; i<32;i=i+2, j++) {
-        state[j] = (transform(str[i])<<4) ^ transform(str[i+1]);
-    }
-
-}
-
-void stateToStr(unsigned char *state, unsigned char *output) {
-
-    char tot[36];
-
-
-    char un[3];
-    char deux[3];
-    char trois[3];
-    char quatre[3];
-    char cinq[3];
-    char six[3];
-    char sept[3];
-    char huit[3];
-    char neuf[3];
-    char dix[3];
-    char onze[3];
-    char douze[3];
-    char treize[3];
-    char quatorze[3];
-    char quinze[3];
-    char seize[3];
-    //char dernier[3];
-
-    sprintf(un, "%2.2x", (int) state[0]);
-    sprintf(deux, "%2.2x", (int) state[1]);
-    sprintf(trois, "%2.2x", (int) state[2]);
-    sprintf(quatre, "%2.2x", (int) state[3]);
-    sprintf(cinq, "%2.2x", (int) state[4]);
-    sprintf(six, "%2.2x", (int) state[5]);
-    sprintf(sept, "%2.2x", (int) state[6]);
-    sprintf(huit, "%2.2x", (int) state[7]);
-    sprintf(neuf, "%2.2x", (int) state[8]);
-    sprintf(dix, "%2.2x", (int) state[9]);
-    sprintf(onze, "%2.2x", (int) state[10]);
-    sprintf(douze, "%2.2x", (int) state[11]);
-    sprintf(treize, "%2.2x", (int) state[12]);
-    sprintf(quatorze, "%2.2x", (int) state[13]);
-    sprintf(quinze, "%2.2x", (int) state[14]);
-    sprintf(seize, "%2.2x", (int) state[15]);
-    //sprintf(dernier, "%x", (int) state[16]);
-
-
-
-    strcpy(tot, un);
-    strcat(tot, deux);
-    strcat(tot, trois);
-    strcat(tot, quatre);
-    strcat(tot, cinq);
-    strcat(tot, six);
-    strcat(tot, sept);
-    strcat(tot, huit);
-    strcat(tot, neuf);
-    strcat(tot, dix);
-    strcat(tot, onze);
-    strcat(tot, douze);
-    strcat(tot, treize);
-    strcat(tot, quatorze);
-    strcat(tot, quinze);
-    strcat(tot, seize);
-    //strcat(tot, dernier);
-
-
-    for (int i = 0; i < 36; i++) {
-        output[i] = tot[i];
-    }
-
-
-}
-
-void strToWords(unsigned char *str, unsigned char *state, int length) {
-
-    for (int i=0, j=0; i<length;i=i+2, j++) {
-        state[j] = (transform(str[i])<<4) ^ transform(str[i+1]);
-    }
-
-}
-
-void wordsToStr(unsigned char *state, unsigned char *output, int length) {
-    for(int i = 0; i < length; i++){
-        char un[3];
-        sprintf(un, "%2.2x", (int) state[i]);
-        strncpy(&output[2*i], un, 2);
-    }
-}
 
 
 void verifier_test(char *name, char *test, char *verif) {
@@ -189,7 +41,7 @@ void test_mixColumn() {
     mixColumn(test1);
 
     /*     Conversion(NE PAS MODIFIER)*/
-    char result1[32] = "";
+    char result1[33] = "";
     stateToStr(test1, result1);
     /*      Véfification du test      */
     verifier_test("mixcolumn test1", result1, attendu1);
@@ -210,7 +62,7 @@ void test_invMixColumn() {
     invMixColumn(test1);
 
     /*     Conversion(NE PAS MODIFIER)*/
-    char result1[32] = "";
+    char result1[33] = "";
     stateToStr(test1, result1);
     /*      Véfification du test      */
     verifier_test("invMixcolumn test1", result1, attendu1);
@@ -231,7 +83,7 @@ void test_subBytes() {
     subBytes(test1);
 
     /*     Conversion(NE PAS MODIFIER)*/
-    char result1[32] = "";
+    char result1[33] = "";
     stateToStr(test1, result1);
     /*      Véfification du test      */
     verifier_test("subBytes test1", result1, attendu1);
@@ -250,7 +102,7 @@ void test_invSubBytes() {
     invSubBytes(test1);
 
     /*     Conversion(NE PAS MODIFIER)*/
-    char result1[32] = "";
+    char result1[33] = "";
     stateToStr(test1, result1);
     /*      Véfification du test      */
     verifier_test("invSubBytes test1", result1, attendu1);
@@ -270,7 +122,7 @@ void test_addRoundKey() {
     addRoundKey(test1, test1_key);
 
     /*     Conversion(NE PAS MODIFIER)*/
-    char result1[32] = "";
+    char result1[33] = "";
     stateToStr(test1, result1);
     /*      Véfification du test      */
     verifier_test("addRoundKey test1", result1, attendu1);
@@ -289,7 +141,7 @@ void test_shiftRows() {
     shiftRows(test1);
 
     /*     Conversion(NE PAS MODIFIER)*/
-    char result1[32] = "";
+    char result1[33] = "";
     stateToStr(test1, result1);
     /*      Véfification du test      */
     verifier_test("shiftRows test1", result1, attendu1);
@@ -310,7 +162,7 @@ void test_invShiftRows() {
     invShiftRows(test1);
 
     /*     Conversion(NE PAS MODIFIER)*/
-    char result1[32] = "";
+    char result1[33] = "";
     stateToStr(test1, result1);
     /*      Véfification du test      */
     verifier_test("invShiftRows test1", result1, attendu1);
@@ -329,7 +181,7 @@ void test_invShiftRows() {
     invShiftRows(test2);
 
     /*     Conversion(NE PAS MODIFIER)*/
-    char result2[32] = "";
+    char result2[33] = "";
     stateToStr(test2, result2);
     /*      Véfification du test      */
     verifier_test("invShiftRows test2", result2, attendu2);
@@ -337,7 +189,7 @@ void test_invShiftRows() {
 
 void test_keyExpansion(){
     // AES 128
-    unsigned char key[] = "2b7e151628aed2a6abf7158809cf4f3c";
+    char key[] = "2b7e151628aed2a6abf7158809cf4f3c";
     unsigned char input[16];
     strToWords(key, input, 32);
     unsigned char* result = keyExpansion(input, 4, 10);
@@ -348,7 +200,7 @@ void test_keyExpansion(){
 
 
     // AES 192
-    unsigned char keyb[] = "8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b";
+    char keyb[] = "8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b";
     unsigned char inputb[24];
     strToWords(keyb, inputb, 48);
     unsigned char* resultb = keyExpansion(inputb, 6, 12);
@@ -359,7 +211,7 @@ void test_keyExpansion(){
 
 
     // AES 256
-    unsigned char keyc[] = "603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4";
+    char keyc[] = "603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4";
     unsigned char inputc[32];
     strToWords(keyc, inputc, 64);
     unsigned char* resultc = keyExpansion(inputc, 8, 14);
@@ -372,17 +224,17 @@ void test_keyExpansion(){
 }
 void test_cipher(){
     // AES 128
-    unsigned char key[] = "2b7e151628aed2a6abf7158809cf4f3c";
+    char key[] = "2b7e151628aed2a6abf7158809cf4f3c";
     unsigned char key_input[16];
     strToWords(key, key_input, 32);
 
-    unsigned char text[32] = "3243f6a8885a308d313198a2e0370734";
+    char text[32] = "3243f6a8885a308d313198a2e0370734";
     unsigned char input[16];
     strToState(text, input);
 
     unsigned char *state = chiffrer(key_input, input, 4);
 
-    char output[16];
+    char output[33] = "";
     stateToStr(state, output);
 
     verifier_test("Cipher AES 128", output, "3925841d02dc09fbdc118597196a0b32"); 
@@ -391,17 +243,17 @@ void test_cipher(){
 
 
     //AES 192
-    unsigned char keyb[] = "000102030405060708090a0b0c0d0e0f1011121314151617";
+    char keyb[] = "000102030405060708090a0b0c0d0e0f1011121314151617";
     unsigned char key_inputb[24];
     strToWords(keyb, key_inputb, 48);
 
-    unsigned char textb[32] = "00112233445566778899aabbccddeeff";
+    char textb[32] = "00112233445566778899aabbccddeeff";
     unsigned char inputb[16];
     strToState(textb, inputb);
 
     unsigned char *stateb = chiffrer(key_inputb, inputb, 6);
 
-    char outputb[16];
+    char outputb[33] = "";
     stateToStr(stateb, outputb);
 
     verifier_test("Cipher AES 192", outputb, "dda97ca4864cdfe06eaf70a0ec0d7191"); 
@@ -410,17 +262,17 @@ void test_cipher(){
 
 
     // AES 256
-    unsigned char keyc[] = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
+    char keyc[] = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
     unsigned char key_inputc[32];
     strToWords(keyc, key_inputc, 64);
 
-    unsigned char textc[32] = "00112233445566778899aabbccddeeff";
+    char textc[32] = "00112233445566778899aabbccddeeff";
     unsigned char inputc[16];
     strToState(textc, inputc);
 
     unsigned char *statec = chiffrer(key_inputc, inputc, 8);
 
-    char outputc[16];
+    char outputc[33] = "";
     stateToStr(statec, outputc);
 
     verifier_test("Cipher AES 256", outputc, "8ea2b7ca516745bfeafc49904b496089"); 
@@ -429,17 +281,17 @@ void test_cipher(){
 
 void test_invCipher(){
     // AES 128
-    unsigned char key[] = "2b7e151628aed2a6abf7158809cf4f3c";
+    char key[] = "2b7e151628aed2a6abf7158809cf4f3c";
     unsigned char key_input[16];
     strToWords(key, key_input, 32);
 
-    unsigned char text[32] = "3925841d02dc09fbdc118597196a0b32";
+    char text[32] = "3925841d02dc09fbdc118597196a0b32";
     unsigned char input[16];
     strToState(text, input);
 
     unsigned char *state = dechiffrer(key_input, input, 4);
 
-    char output[16];
+    char output[33] = "";
     stateToStr(state, output);
 
     verifier_test("invCipher AES 128", output, "3243f6a8885a308d313198a2e0370734"); 
@@ -448,17 +300,17 @@ void test_invCipher(){
 
 
     //AES 192
-    unsigned char keyb[] = "000102030405060708090a0b0c0d0e0f1011121314151617";
+    char keyb[] = "000102030405060708090a0b0c0d0e0f1011121314151617";
     unsigned char key_inputb[24];
     strToWords(keyb, key_inputb, 48);
 
-    unsigned char textb[32] = "dda97ca4864cdfe06eaf70a0ec0d7191";
+    char textb[32] = "dda97ca4864cdfe06eaf70a0ec0d7191";
     unsigned char inputb[16];
     strToState(textb, inputb);
 
     unsigned char *stateb = dechiffrer(key_inputb, inputb, 6);
 
-    char outputb[16];
+    char outputb[33] = "";
     stateToStr(stateb, outputb);
 
     verifier_test("invCipher AES 192", outputb, "00112233445566778899aabbccddeeff"); 
@@ -467,17 +319,17 @@ void test_invCipher(){
 
 
     // AES 256
-    unsigned char keyc[] = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
+    char keyc[] = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
     unsigned char key_inputc[32];
     strToWords(keyc, key_inputc, 64);
 
-    unsigned char textc[32] = "8ea2b7ca516745bfeafc49904b496089";
+    char textc[32] = "8ea2b7ca516745bfeafc49904b496089";
     unsigned char inputc[16];
     strToState(textc, inputc);
 
     unsigned char *statec = dechiffrer(key_inputc, inputc, 8);
 
-    char outputc[16];
+    char outputc[33] = "";
     stateToStr(statec, outputc);
 
     verifier_test("invCipher AES 256", outputc, "00112233445566778899aabbccddeeff"); 

@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "include/aes.h"
 
 // en c on peut utiliser les char (8 bits) pour representer un polynomes de Z2562 d'haskell
 // donc le texte est un tableau de 16 char
@@ -248,7 +249,7 @@ unsigned char *chiffrer(unsigned char *key, unsigned char *input, int keyLength)
         nbRound = 10;
     } else if(keyLength == 6){
         nbRound = 12;
-    } else if (keyLength = 8){
+    } else if (keyLength == 8){
         nbRound = 14;
     }
 
@@ -286,7 +287,7 @@ unsigned char *dechiffrer(unsigned char *key, unsigned char *input, int keyLengt
         nbRound = 10;
     } else if(keyLength == 6){
         nbRound = 12;
-    } else if (keyLength = 8){
+    } else if (keyLength == 8){
         nbRound = 14;
     }
 
@@ -296,25 +297,4 @@ unsigned char *dechiffrer(unsigned char *key, unsigned char *input, int keyLengt
 
     return output;
 }
-
-
-
-/*
-InvCipher(byte in[4*Nb], byte out[4*Nb], word w[Nb*(Nr+1)])
-begin
-    byte state[4,Nb]
-    state = in
-    AddRoundKey(state, w[Nr*Nb, (Nr+1)*Nb-1]) // See Sec. 5.1.4
-    for round = Nr-1 step -1 downto 1
-        InvShiftRows(state) // See Sec. 5.3.1
-        InvSubBytes(state) // See Sec. 5.3.2
-        AddRoundKey(state, w[round*Nb, (round+1)*Nb-1])
-        InvMixColumns(state) // See Sec. 5.3.3
-    end for
-    InvShiftRows(state)
-    InvSubBytes(state)
-    AddRoundKey(state, w[0, Nb-1])
-    out = state
-end
-*/
 
