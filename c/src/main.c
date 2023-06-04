@@ -1,15 +1,15 @@
 #include <stdio.h>
 #include <string.h>
-#include "include/main.h"
+#include "main.h"
 
 #ifdef TEST    
-#include "include/tests.h"
+#include "tests.h"
 #endif
 #ifdef CMD
-#include "include/cmd_aes.h"
+#include "cmd_aes.h"
 #endif
 #ifdef GRAPHIC
-#include "include/graphic_aes.h"
+#include "graphic_aes.h"
 #endif
 
 void afficher_state(unsigned char *state) {

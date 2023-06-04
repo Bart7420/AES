@@ -1,9 +1,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "include/tests.h"
-#include "include/aes.h"
-#include "include/conversion.h"
+#include "tests.h"
+#include "aes.h"
+#include "conversion.h"
 
 
 

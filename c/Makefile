@@ -1,4 +1,4 @@
-gcc_options = -g -Wall -Wextra -fsanitize=address
+gcc_options = -g -Wall -Wextra -I include/ -fsanitize=address
 mode =
 
 test = 0 # Tests
@@ -21,22 +21,22 @@ main: main.o aes.o tests.o conversion.o cmd_aes.o graphic_aes.o
 	gcc -o $@ $^ $(gcc_options)
 
 
-main.o: main.c include/main.h
+main.o: src/main.c include/main.h
 	gcc -c $(gcc_options) $<
 
-aes.o: aes.c include/aes.h
+aes.o: src/aes.c include/aes.h
 	gcc -c $(gcc_options) $<
 
-tests.o : tests.c include/tests.h
+tests.o : src/tests.c include/tests.h
 	gcc -c $(gcc_options) $<
 
-conversion.o : conversion.c include/conversion.h
+conversion.o : src/conversion.c include/conversion.h
 	gcc -c $(gcc_options) $<
 
-cmd_aes.o : cmd_aes.c include/cmd_aes.h
+cmd_aes.o : src/cmd_aes.c include/cmd_aes.h
 	gcc -c $(gcc_options) $<
 
-graphic_aes.o : graphic_aes.c include/graphic_aes.h
+graphic_aes.o : src/graphic_aes.c include/graphic_aes.h
 	gcc -c $(gcc_options) $<
 
 

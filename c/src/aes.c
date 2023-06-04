@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "include/aes.h"
+#include "aes.h"
 
 // en c on peut utiliser les char (8 bits) pour representer un polynomes de Z2562 d'haskell
 // donc le texte est un tableau de 16 char
