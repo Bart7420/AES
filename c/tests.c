@@ -164,7 +164,7 @@ void verifier_test(char *name, char *test, char *verif) {
         printf("RESULT  : %s\n", test);
         printf("\033[0m");
     } else {
-        printf("\033[0;31m");
+        printf("\n\033[0;31m");
         printf("%s : ko\n", name);
         printf("ATTENDU : %s\n", verif);
         printf("RESULT  : %s\n", test);
@@ -427,6 +427,63 @@ void test_cipher(){
     free(statec);
 }
 
+void test_invCipher(){
+    // AES 128
+    unsigned char key[] = "2b7e151628aed2a6abf7158809cf4f3c";
+    unsigned char key_input[16];
+    strToWords(key, key_input, 32);
+
+    unsigned char text[32] = "3925841d02dc09fbdc118597196a0b32";
+    unsigned char input[16];
+    strToState(text, input);
+
+    unsigned char *state = dechiffrer(key_input, input, 4);
+
+    char output[16];
+    stateToStr(state, output);
+
+    verifier_test("invCipher AES 128", output, "3243f6a8885a308d313198a2e0370734"); 
+    free(state);
+
+
+
+    //AES 192
+    unsigned char keyb[] = "000102030405060708090a0b0c0d0e0f1011121314151617";
+    unsigned char key_inputb[24];
+    strToWords(keyb, key_inputb, 48);
+
+    unsigned char textb[32] = "dda97ca4864cdfe06eaf70a0ec0d7191";
+    unsigned char inputb[16];
+    strToState(textb, inputb);
+
+    unsigned char *stateb = dechiffrer(key_inputb, inputb, 6);
+
+    char outputb[16];
+    stateToStr(stateb, outputb);
+
+    verifier_test("invCipher AES 192", outputb, "00112233445566778899aabbccddeeff"); 
+    free(stateb);
+
+
+
+    // AES 256
+    unsigned char keyc[] = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
+    unsigned char key_inputc[32];
+    strToWords(keyc, key_inputc, 64);
+
+    unsigned char textc[32] = "8ea2b7ca516745bfeafc49904b496089";
+    unsigned char inputc[16];
+    strToState(textc, inputc);
+
+    unsigned char *statec = dechiffrer(key_inputc, inputc, 8);
+
+    char outputc[16];
+    stateToStr(statec, outputc);
+
+    verifier_test("invCipher AES 256", outputc, "00112233445566778899aabbccddeeff"); 
+    free(statec);
+}
+
 void all_tests() {
     test_mixColumn();
     test_invMixColumn();
@@ -437,6 +494,7 @@ void all_tests() {
     test_invShiftRows();
     test_keyExpansion();
     test_cipher();
+    test_invCipher();
 }
 
 

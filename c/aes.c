@@ -258,21 +258,62 @@ unsigned char *chiffrer(unsigned char *key, unsigned char *input, int keyLength)
 
     return output;
 }
+
+unsigned char *invCipher(unsigned char *extandedKey, unsigned char *input, int nbRound){
+
+    unsigned char *state = malloc(16*sizeof(unsigned char));
+    memcpy(state, input, 16*sizeof(unsigned char));
+
+    addRoundKey(state, &extandedKey[4*(4*nbRound)]);
+
+    for(int round = nbRound-1; round > 0; round--){
+        invShiftRows(state);
+        invSubBytes(state);
+        addRoundKey(state, &extandedKey[4*(4*round)]);
+        invMixColumn(state);
+    }
+
+    invShiftRows(state);
+    invSubBytes(state);
+    addRoundKey(state, &extandedKey[0]);
+
+    return state;
+}
+
+unsigned char *dechiffrer(unsigned char *key, unsigned char *input, int keyLength){
+    int nbRound;
+    if(keyLength == 4){
+        nbRound = 10;
+    } else if(keyLength == 6){
+        nbRound = 12;
+    } else if (keyLength = 8){
+        nbRound = 14;
+    }
+
+    unsigned char *extandedKey = keyExpansion(key, keyLength, nbRound);
+    unsigned char *output = invCipher(extandedKey, input, nbRound);
+    free(extandedKey);
+
+    return output;
+}
+
+
+
 /*
-Cipher(byte in[4*Nb], byte out[4*Nb], word w[Nb*(Nr+1)])
+InvCipher(byte in[4*Nb], byte out[4*Nb], word w[Nb*(Nr+1)])
 begin
     byte state[4,Nb]
     state = in
-    AddRoundKey(state, w[0, Nb-1]) // See Sec. 5.1.4
-    for round = 1 step 1 to Nr–1
-        SubBytes(state) // See Sec. 5.1.1
-        ShiftRows(state) // See Sec. 5.1.2
-        MixColumns(state) // See Sec. 5.1.3
+    AddRoundKey(state, w[Nr*Nb, (Nr+1)*Nb-1]) // See Sec. 5.1.4
+    for round = Nr-1 step -1 downto 1
+        InvShiftRows(state) // See Sec. 5.3.1
+        InvSubBytes(state) // See Sec. 5.3.2
         AddRoundKey(state, w[round*Nb, (round+1)*Nb-1])
+        InvMixColumns(state) // See Sec. 5.3.3
     end for
-    SubBytes(state)
-    ShiftRows(state)
-    AddRoundKey(state, w[Nr*Nb, (Nr+1)*Nb-1])
+    InvShiftRows(state)
+    InvSubBytes(state)
+    AddRoundKey(state, w[0, Nb-1])
     out = state
 end
 */
