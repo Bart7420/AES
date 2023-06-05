@@ -8,8 +8,21 @@
 
 
 
+void getEntree(char *gentree) {
+  strcpy(gentree, entree);
+}
+void getSortie(char *gsortie) {
+  strcpy(gsortie, entree);
+}
+void setEntree(char *sentree) {
+  strcpy(entree, sentree);
+}
+void setSortie(char *ssortie) {
+  strcpy(sortie, ssortie);
+}
 
-void graphicAes(int argc, char **argv){
+
+void main(int argc, char **argv){
     // Interface graphique
 
     gtk_init(&argc, &argv);

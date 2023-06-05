@@ -9,9 +9,6 @@
 #ifdef CMD
 #include "cmd_aes.h"
 #endif
-#ifdef GRAPHIC
-#include "graphic_aes.h"
-#endif
 
 void afficher_state(unsigned char *state) {
     printf("output :");
@@ -25,12 +22,7 @@ void afficher_state(unsigned char *state) {
     
 }
 
-int main(int argc,char *argv[])
-{
-
-    // CONSTANTES
-    int keyLength = 4;
-    int nbRound = 10;
+int main(int argc,char *argv[]){
 
     // en c on peut utiliser les char (8 bits) pour representer un polynomes de Z2562 d'haskell
     // donc le texte est un tableau de 16 char
@@ -51,23 +43,6 @@ int main(int argc,char *argv[])
     #ifdef CMD
     cmdAes();
     #endif
-    #ifdef GRAPHIC
-    graphicAes(&argc, &argv);
-    #endif
 
     return 0;
-}
-
-
-void getEntree(char *gentree) {
-  strcpy(gentree, entree);
-}
-void getSortie(char *gsortie) {
-  strcpy(gsortie, entree);
-}
-void setEntree(char *sentree) {
-  strcpy(entree, sentree);
-}
-void setSortie(char *ssortie) {
-  strcpy(sortie, ssortie);
 }
