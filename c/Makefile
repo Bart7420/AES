@@ -1,4 +1,8 @@
 gcc_options = -g -Wall -Wextra -I include/ -fsanitize=address
+
+flags = `pkg-config --cflags gtk+-3.0`
+libs = `pkg-config --libs gtk+-3.0`
+
 mode =
 
 test = 0 # Tests
@@ -17,8 +21,8 @@ gcc_options += -D GRAPHIC=1
 endif
 
 
-main: main.o aes.o tests.o conversion.o cmd_aes.o graphic_aes.o
-	gcc -o $@ $^ $(gcc_options)
+main: main.o aes.o tests.o conversion.o cmd_aes.o graphic_aes.o io.o callbacks.o
+	gcc -o $@ $^ $(gcc_options) $(libs) $(flags)
 
 
 main.o: src/main.c include/main.h
@@ -36,8 +40,15 @@ conversion.o : src/conversion.c include/conversion.h
 cmd_aes.o : src/cmd_aes.c include/cmd_aes.h
 	gcc -c $(gcc_options) $<
 
-graphic_aes.o : src/graphic_aes.c include/graphic_aes.h
-	gcc -c $(gcc_options) $<
+
+graphic_aes.o: src/graphic_aes.c include/callbacks.h include/io.h include/graphic_aes.h
+	gcc $(gcc_options) -c $<  $(flags)
+
+callbacks.o : src/callbacks.c include/callbacks.h include/graphic_aes.h
+	gcc $(gcc_options) -c $<  $(flags)
+
+io.o :src/io.c include/io.h include/graphic_aes.h
+	gcc $(gcc_options) -c $< $(flags)
 
 
 clean:

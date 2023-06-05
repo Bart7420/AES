@@ -2,6 +2,7 @@
 #include <string.h>
 #include "main.h"
 
+
 #ifdef TEST    
 #include "tests.h"
 #endif
@@ -51,9 +52,22 @@ int main(int argc,char *argv[])
     cmdAes();
     #endif
     #ifdef GRAPHIC
-    graphicAes();
+    graphicAes(&argc, &argv);
     #endif
 
     return 0;
 }
 
+
+void getEntree(char *gentree) {
+  strcpy(gentree, entree);
+}
+void getSortie(char *gsortie) {
+  strcpy(gsortie, entree);
+}
+void setEntree(char *sentree) {
+  strcpy(entree, sentree);
+}
+void setSortie(char *ssortie) {
+  strcpy(sortie, ssortie);
+}
