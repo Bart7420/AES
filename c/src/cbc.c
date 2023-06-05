@@ -1,6 +1,11 @@
+#include <string.h>
+#include <stdlib.h>
+
+
 #include "cbc.h"
 #include "aes.h"
 #include "conversion.h"
+
 
 extern key[65];
 

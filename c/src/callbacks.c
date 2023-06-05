@@ -42,7 +42,7 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
     int len = 12;
     byte *test = lecture(&len);
     afficher_state(test);
-    printf("taille : %d\n", len);
+    printf("taille : %d\n", len);nflit de fusion dans c/graphic_aes
     printf("tailek :: %d\n", gtk_entry_get_text_length(label));
     printf("clé :: %s\n", gtk_entry_get_text(label));
 
@@ -61,7 +61,7 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
       }
     }
     if (ok == 1) {
-      //chiffrer_cbc();
+      chiffrer_cbc();
     }
     (void) appelant;
 }
@@ -79,13 +79,12 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
       for (int i =0; i<taille_cle; i++) {
         if ((cle[i] == '0') || (cle[i] == '1') || (cle[i] == '2') || (cle[i] == '3') || (cle[i] == '4') || (cle[i] == '5') || (cle[i] == '6') || (cle[i] == '7') || (cle[i] == '8') || (cle[i] == '9') || (cle[i] == 'a') || (cle[i] == 'b') || (cle[i] == 'c') || (cle[i] == 'd') || (cle[i] == 'e') || (cle[i] == 'f') ) {
             // on encode
-            //dechiffrer_cbc();
             ok = 1;
         } 
       }
     }
     if (ok == 1) {
-      //dechiffrer_cbc();
+      dechiffrer_cbc();
     }
     
 
