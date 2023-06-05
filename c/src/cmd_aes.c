@@ -13,8 +13,8 @@ void clearBuffer() {
 void cmdAes(){
     printf("AES command line\n");
 
-    unsigned char input[16];
-    unsigned char key[32];
+    byte input[16];
+    byte key[32];
 
     while(getInputText(input) == 0){
         printf("\nErreur lors de la saisie");
@@ -30,7 +30,7 @@ void cmdAes(){
     }
     clearBuffer();
 
-    unsigned char *output = chiffrer(key, input, keyLength);
+    byte *output = chiffrer(key, input, keyLength);
     char result[33] = "";
     stateToStr(output, result);
 
@@ -56,7 +56,7 @@ void cmdAes(){
 
 }
 
-int getInputText(unsigned char *input){
+int getInputText(byte *input){
 
     char text[33] = "";
     printf("\nEntrez le texte à chiffrer (32 char): ");
@@ -68,7 +68,7 @@ int getInputText(unsigned char *input){
 
 
 }
-int getKey(unsigned char *key) {
+int getKey(byte *key) {
     
     char user_key[65] = "";
 

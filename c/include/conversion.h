@@ -1,4 +1,5 @@
-void strToState(char *str, unsigned char *state);
-void stateToStr(unsigned char *state, char *output);
-void strToWords(char *str, unsigned char *state, int length);
-void wordsToStr(unsigned char *state, char *output, int length);
+typedef unsigned char byte;
+void strToState(char *str, byte *state);
+void stateToStr(byte *state, char *output);
+void strToWords(char *str, byte *state, int length);
+void wordsToStr(byte *state, char *output, int length);

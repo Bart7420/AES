@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
-unsigned char transform(char in) {
-    unsigned char out;
+byte transform(char in) {
+    byte out;
     switch (in)
     {
     case '0':
@@ -60,7 +60,7 @@ unsigned char transform(char in) {
     return out;
 }
 
-void strToState(char *str, unsigned char *state) {
+void strToState(char *str, byte *state) {
 
     for (int i=0, j=0; i<32;i=i+2, j++) {
         state[j] = (transform(str[i])<<4) ^ transform(str[i+1]);
@@ -68,7 +68,7 @@ void strToState(char *str, unsigned char *state) {
 
 }
 
-void stateToStr(unsigned char *state, char *output) {
+void stateToStr(byte *state, char *output) {
 
     char tot[33] = "";
 
@@ -137,7 +137,7 @@ void stateToStr(unsigned char *state, char *output) {
 
 }
 
-void strToWords(char *str, unsigned char *state, int length) {
+void strToWords(char *str, byte *state, int length) {
 
     for (int i=0, j=0; i<length;i=i+2, j++) {
         state[j] = (transform(str[i])<<4) ^ transform(str[i+1]);
@@ -145,7 +145,7 @@ void strToWords(char *str, unsigned char *state, int length) {
 
 }
 
-void wordsToStr(unsigned char *state, char *output, int length) {
+void wordsToStr(byte *state, char *output, int length) {
     for(int i = 0; i < length; i++){
         char un[3];
         sprintf(un, "%2.2x", (int) state[i]);
