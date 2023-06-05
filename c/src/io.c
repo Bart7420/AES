@@ -13,12 +13,18 @@ extern char sortie[100];
 //char sortie[100];
 
 
-void ecriture(byte *data, int taille) {
+void ecriture(byte *data, int taille, int decryption) {
             FILE* out = NULL;
             out = fopen((sortie), "w");
             
             //byte test1[16] = {0xd4, 0x27, 0x11, 0xae, 0xe0, 0xbf, 0x98, 0xf1, 0xb8, 0xb4, 0x5d, 0xe5, 0x1e, 0x41, 0x52, 0x32};
-            fwrite(data, taille, 1, out);
+            
+            int difference = 0;
+            if(decryption == 1) {
+                difference = data[taille-1]+1;
+            }
+            
+            fwrite(data, (taille-difference), 1, out);
             fclose(out);
 }
 
@@ -38,26 +44,33 @@ void afficher_state(byte *state) {
 }
 
 
-byte *lecture(int *taille) {
+byte *lecture(int *taille, int encryption) {
     byte *flux;
         //if (strcmp((entree), "") && strcmp((sortie), "")){
             FILE* out = NULL;
             out = fopen((entree), "r+");
             fseek(out, 0, SEEK_END);
             int file_length = ftell(out);
+
+            if(encryption == 1) {
+                file_length++; // Ajout d'un byte pour coder le padding
+            }
             printf("%d\n", file_length);
-            int length;
-            int difference =0;
+            
+            int difference = 0;
             if ((file_length %16) != 0) {
                 difference = 16-(file_length % 16);
             }
             
-            
-            length = file_length+difference;
+            int length;
+            length = file_length + difference;
 
             flux= calloc(sizeof(byte)* length, 1);
             fseek(out, 0, SEEK_SET);
             fread(flux, 1, file_length, out);
+            if(encryption == 1) {
+                flux[length-1] = difference; //Ajout du padding sur le dernier byte
+            }
 
             //fwrite(test1, sizeof(test1), 1, out);
             fclose(out);
