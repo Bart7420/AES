@@ -23,6 +23,7 @@ graphic_aes: graphic_aes.o io.o callbacks.o aes.o conversion.o
 	gcc -o $@ $^ $(gcc_options) $(libs) $(flags)
 
 
+
 main.o: src/main.c include/main.h
 	gcc -c $(gcc_options) $<
 
