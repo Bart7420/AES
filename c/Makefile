@@ -15,13 +15,11 @@ ifeq ($(saes), 1)
 gcc_options += -D CMD=1
 endif
 
-gaes = 0 # Interface graphique
-ifeq ($(gaes), 1)
-gcc_options += -D GRAPHIC=1
-endif
 
+main: main.o aes.o tests.o conversion.o cmd_aes.o
+	gcc -o $@ $^ $(gcc_options)
 
-main: main.o aes.o tests.o conversion.o cmd_aes.o graphic_aes.o io.o callbacks.o
+graphic_aes: graphic_aes.o io.o callbacks.o aes.o conversion.o
 	gcc -o $@ $^ $(gcc_options) $(libs) $(flags)
 
 

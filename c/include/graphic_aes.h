@@ -1,1 +1,3 @@
 void graphicAes(int argc, char **argv);
+char entree[100] = "";
+char sortie[100] = "";
