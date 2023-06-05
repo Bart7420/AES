@@ -43,13 +43,13 @@ cmd_aes.o : src/cmd_aes.c include/cmd_aes.h
 graphic_aes.o: src/graphic_aes.c include/callbacks.h include/io.h include/graphic_aes.h include/cbc.h
 	gcc $(gcc_options) -c $<  $(flags)
 
-callbacks.o : src/callbacks.c include/callbacks.h include/graphic_aes.h
+callbacks.o : src/callbacks.c include/callbacks.h include/graphic_aes.h include/conversion.h include/cbc.h
 	gcc $(gcc_options) -c $<  $(flags)
 
 io.o :src/io.c include/io.h include/graphic_aes.h
 	gcc $(gcc_options) -c $< $(flags)
 
-cbc.o : src/cbc.c include/aes.h include/conversion.h include/cbc.h
+cbc.o : src/cbc.c include/aes.h include/conversion.h include/cbc.h include/io.h
 	gcc $(gcc_options) -c $< $(flags)
 
 

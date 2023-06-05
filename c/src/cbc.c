@@ -5,16 +5,16 @@
 #include "cbc.h"
 #include "aes.h"
 #include "conversion.h"
+#include "io.h"
 
 
-extern key[65];
+extern byte key[65];
 
 void chiffrer_cbc() {
 
     // Key
-    int keyLength = strlen(key)/8;
-    byte *aes_key = malloc(keyLength*8);
-    strToWords(key, aes_key, keyLength*8);
+    int keyLength = strlen(key)/4;
+
 
     int fileLength = 0;
     byte *data = NULL;
@@ -35,7 +35,7 @@ void chiffrer_cbc() {
     byte *extandedKey = keyExpansion(key, keyLength, nbRound);
     
 
-    stateXor(state, aes_key);
+    stateXor(state, key);
     cipher_cbc(extandedKey, state, nbRound);
 
     for (long long int i = 16; i < fileLength; i+=16)
@@ -50,16 +50,15 @@ void chiffrer_cbc() {
 }
 void dechiffrer_cbc(){
     // Key
-    int keyLength = strlen(key)/8;
-    byte *aes_key = malloc(keyLength*8);
-    strToWords(key, aes_key, keyLength*8);
+    int keyLength = strlen(key)/4;
+
 
     int fileLength = 0;
     byte *data = NULL;
 
     data = lecture(&fileLength);
 
-    byte *state = data[fileLength-16];
+    byte *state = &data[fileLength-16];
 
 
     int nbRound;
@@ -74,13 +73,13 @@ void dechiffrer_cbc(){
     byte *extandedKey = keyExpansion(key, keyLength, nbRound);
 
     
-    for (long long int i = (fileLength-16); i > 0; i -= 16)
+    for (long long int i = (fileLength-16); (i > 0) && (fileLength>16); i -= 16)
     {
         invcipher_cbc(extandedKey, &state[i], nbRound);
         stateXor(&state[i-16], &state[i]);
     }
     invcipher_cbc(extandedKey, state, nbRound);
-    stateXor(state, aes_key);
+    stateXor(state, key);
 
     free(extandedKey);
     ecriture(state, fileLength);
@@ -88,11 +87,14 @@ void dechiffrer_cbc(){
 }
 
 
-void stateXor(byte *state, byte *xorwith){
-    for (int i = 0; i < 4; i++)
-    {
-        xor(&state[0], &xorwith[0], &state[0]);
+void stateXor(byte state[16], byte xorwith[16]){
+    for (int i = 0; i<16; i++) {
+        state[i] = state[i] ^ xorwith[i];
     }
+
+   /* for (int i = 0; i < 16; i=i+4) {
+        xor(&state[i], &xorwith[i], &state[i]);
+    }*/
     
 }
 

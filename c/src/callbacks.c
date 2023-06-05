@@ -3,11 +3,14 @@
 #include <gtk/gtk.h>
 #include "callbacks.h"
 #include "io.h"
+#include "conversion.h"
+#include "cbc.h"
 
 //#include "main.h"
 
 extern char entree[100];
 extern char sortie[100];
+extern char key[65];
 
 // sortie du programme
 void cb_exit(GtkWidget *p_widget, gpointer label) {
@@ -51,7 +54,7 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
     int taille_cle = (int) gtk_entry_get_text_length(label);
     char *cle = gtk_entry_get_text(label);
     int ok = 0;
-    if ((taille_cle ==32) || (taille_cle == 48) || (taille_cle == 92)) {
+    if ((taille_cle ==16) || (taille_cle == 24) || (taille_cle == 32)) {
       // on encode si :
       for (int i =0; i<taille_cle; i++) {
         if ((cle[i] == '0') || (cle[i] == '1') || (cle[i] == '2') || (cle[i] == '3') || (cle[i] == '4') || (cle[i] == '5') || (cle[i] == '6') || (cle[i] == '7') || (cle[i] == '8') || (cle[i] == '9') || (cle[i] == 'a') || (cle[i] == 'b') || (cle[i] == 'c') || (cle[i] == 'd') || (cle[i] == 'e') || (cle[i] == 'f') ) {
@@ -61,6 +64,7 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
       }
     }
     if (ok == 1) {
+      memcpy(key, cle, taille_cle);
       chiffrer_cbc();
     }
     (void) appelant;
@@ -74,7 +78,7 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
     int taille_cle = (int) gtk_entry_get_text_length(label);
     char *cle = gtk_entry_get_text(label);
     int ok = 0;
-    if ((taille_cle ==32) || (taille_cle == 48) || (taille_cle == 92)) {
+    if ((taille_cle ==16) || (taille_cle == 24) || (taille_cle == 32)) {
       // on encode si :
       for (int i =0; i<taille_cle; i++) {
         if ((cle[i] == '0') || (cle[i] == '1') || (cle[i] == '2') || (cle[i] == '3') || (cle[i] == '4') || (cle[i] == '5') || (cle[i] == '6') || (cle[i] == '7') || (cle[i] == '8') || (cle[i] == '9') || (cle[i] == 'a') || (cle[i] == 'b') || (cle[i] == 'c') || (cle[i] == 'd') || (cle[i] == 'e') || (cle[i] == 'f') ) {
@@ -84,6 +88,7 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
       }
     }
     if (ok == 1) {
+      memcpy(key, cle, taille_cle);
       dechiffrer_cbc();
     }
     

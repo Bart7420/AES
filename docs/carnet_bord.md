@@ -93,7 +93,26 @@ Nous avons continuer l'implémentation d'aes en C.
 - Ronan :
     - [x] Continuer la documentation
     - [x] Nettoyer le code
-    - [ ] Continuer le C
+    - [x] Continuer le C
 
 - Etienne :
     - [x] Continuer et finir la documentation
+    - [x] Continuer le C
+
+ 
+# Deuxième période
+
+## Séance 6 (5/06/2023)
+Durant la séance nous avons continué le code en c.
+Nous avons fini l'interface graphique que nous avions commencé dans l'entre-période. 
+Nous avons réalisé l'algorithme CBC pour coder et décoder des fichiers de manière fiable.
+Nous avons passé beaucoup de temps a debuggé nos programmes.
+
+**Objectifs de la séance :**
+- Ronan :
+    - [x] Algorithme CBC
+    - [x] Correction AES version terminal
+
+- Etienne :
+    - [x] Continuer l'interface graphique et l'integrer dans le code
+    - [x] Gérer la lecture et l'écriture des fichiers
