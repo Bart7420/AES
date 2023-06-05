@@ -25,6 +25,7 @@ main: main.o aes.o tests.o conversion.o cmd_aes.o graphic_aes.o io.o callbacks.o
 	gcc -o $@ $^ $(gcc_options) $(libs) $(flags)
 
 
+
 main.o: src/main.c include/main.h
 	gcc -c $(gcc_options) $<
 

@@ -10,12 +10,21 @@ Etapes :
 
 <br>
 
+## Compilation
+
+Pour compiler l'interface graphique, il faut installer la librarie gtk comme ci-dessous :
+
+
+> ```sudo apt install gtk-3-dev```
+
+
 ## Documents
 - [Carnet de bord](./docs/carnet_bord.md)
 - [Documentation](./docs/documentation.md)
 - [Fichier récapitulant le fonctionnement d'aes](./docs/fonctionnement_aes.md)
 
 <br>
+
 
 ## Planning
 
