@@ -1,4 +1,4 @@
-gcc_options = -g -Wall -Wextra -I include/ -fsanitize=address #-O3 -mavx2 -march=native
+gcc_options = -g -Wall -Wextra -I include/ -fsanitize=address -O3 -mavx2 -march=native
 
 flags = `pkg-config --cflags gtk+-3.0`
 libs = `pkg-config --libs gtk+-3.0`

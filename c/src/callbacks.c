@@ -106,18 +106,12 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
     //taille fichier
     int file_length;
     byte *data = NULL; // on utilise pas ici
-    data = lecture(&file_length);
+    data = lecture(&file_length, 0);
 
     char text_taille[100] = "";
-    //strcpy(text_taille, "Taille : ");
-    //sprintf(text_taille, "%d", file_length);
-    //text_taille = snprintf(NULL, 0, "%d", file_length);
-    //malloc(17+ ceil(log10(file_length)));
     sprintf(text_taille, "Taille encodé :%d\n\r", file_length);
-    //strcat(text_taille, "\r");
 
     char text_temps[100] = "";
-    //strcpy(text_taille, "Temps : ");
     sprintf(text_temps, "Temps : %d s\n\r", temps);
 
     char text_vitesse[100] = "";
@@ -149,8 +143,39 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
     }
   }
   if (ok == 1) {
+
+
+    //mesure du temps
+    time_t debut;
+    time_t fin;
+
     memcpy(key, cle, taille_cle);
+    time(&debut);
     dechiffrer_cbc();
+    time(&fin);
+    time_t temps = fin-debut;
+    VteTerminal *term = widgets->p_vte;
+    vte_terminal_feed(term, "Decodage ...\n\r", 14);
+
+    //taille fichier
+    int file_length;
+    byte *data = NULL; // on utilise pas ici
+    data = lecture(&file_length, 0);
+
+    char text_taille[100] = "";
+    sprintf(text_taille, "Taille décodé :%d\n\r", file_length);
+
+    char text_temps[100] = "";
+    sprintf(text_temps, "Temps : %d s\n\r", temps);
+
+    char text_vitesse[100] = "";
+    sprintf(text_vitesse, "Vitesse : %d mo/s\n\r", ((file_length / 100000) / temps));
+
+    vte_terminal_feed(term, text_taille, 100);
+    vte_terminal_feed(term, text_temps, 100);
+    vte_terminal_feed(term, text_vitesse, 100);
+
+
   }
   
 

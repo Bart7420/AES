@@ -12,10 +12,10 @@ Etapes :
 
 ## Compilation
 
-Pour compiler l'interface graphique, il faut installer la librarie gtk comme ci-dessous :
+Pour compiler l'interface graphique, il faut installer la librarie gtk indiqué ci-dessous :
 
 
-> ```sudo apt install gtk-3-dev```
+> ```sudo apt install gtk-3-dev libvte-2.91-dev```
 
 
 ## Documents
