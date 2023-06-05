@@ -19,7 +19,7 @@ void chiffrer_cbc() {
     int fileLength = 0;
     byte *data = NULL;
 
-    data = lecture(&fileLength);
+    data = lecture(&fileLength, 1);
 
     byte *state = data;
 
@@ -35,7 +35,7 @@ void chiffrer_cbc() {
     byte *extandedKey = keyExpansion(key, keyLength, nbRound);
     
 
-    stateXor(state, key);
+    //stateXor(state, key);
     cipher_cbc(extandedKey, state, nbRound);
 
     for (long long int i = 16; i < fileLength; i+=16)
@@ -45,7 +45,8 @@ void chiffrer_cbc() {
     }
 
     free(extandedKey);
-    ecriture(state, fileLength);
+    ecriture(state, fileLength, 0);
+    free(data);
     
 }
 void dechiffrer_cbc(){
@@ -56,9 +57,9 @@ void dechiffrer_cbc(){
     int fileLength = 0;
     byte *data = NULL;
 
-    data = lecture(&fileLength);
+    data = lecture(&fileLength, 0);
 
-    byte *state = &data[fileLength-16];
+    byte *state = data;
 
 
     int nbRound;
@@ -76,13 +77,14 @@ void dechiffrer_cbc(){
     for (long long int i = (fileLength-16); (i > 0) && (fileLength>16); i -= 16)
     {
         invcipher_cbc(extandedKey, &state[i], nbRound);
-        stateXor(&state[i-16], &state[i]);
+        stateXor(&state[i], &state[i-16]);
     }
     invcipher_cbc(extandedKey, state, nbRound);
     stateXor(state, key);
 
     free(extandedKey);
-    ecriture(state, fileLength);
+    ecriture(state, fileLength, 1);
+    free(data);
 
 }
 
