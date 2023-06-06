@@ -23,7 +23,7 @@ endif
 main: main.o aes.o tests.o conversion.o cmd_aes.o
 	gcc -o $@ $^ $(gcc_options)
 
-graphic_aes: graphic_aes.o io.o callbacks.o aes.o conversion.o cbc.o
+graphic_aes: graphic_aes.o io.o callbacks.o aes.o conversion.o cbc.o ecb.o bmp.o
 	gcc -o $@ $^ $(gcc_options) $(libs) $(flags) $(l) $(f)
 
 cbc_aes: cbc_aes.o aes.o conversion.o cbc.o io.o
@@ -50,7 +50,7 @@ cmd_aes.o : src/cmd_aes.c include/cmd_aes.h
 	gcc -c $(gcc_options) $<
 
 
-graphic_aes.o: src/graphic_aes.c include/callbacks.h include/io.h include/graphic_aes.h include/cbc.h
+graphic_aes.o: src/graphic_aes.c include/callbacks.h include/io.h include/graphic_aes.h include/cbc.h include/ecb.h include/bmp.h
 	gcc $(gcc_options) -c $<  $(flags) $(f)
 
 callbacks.o : src/callbacks.c include/callbacks.h include/graphic_aes.h include/conversion.h include/cbc.h

@@ -42,6 +42,8 @@ int main(int argc, char **argv){
     widgets.p_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(widgets.p_window), "AES");
     g_signal_connect (G_OBJECT (widgets.p_window), "destroy", G_CALLBACK (gtk_main_quit), NULL);
+    gtk_window_set_icon_from_file(GTK_WINDOW(widgets.p_window), "cles.png", NULL); 
+    // copyright free flaticon Good Ware
 
     //conteneur principal vertical
     widgets.p_main_box_vertical = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
@@ -49,12 +51,61 @@ int main(int argc, char **argv){
 
     //conteneur principal horizontal
     widgets.p_main_box_horizontal = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 50);
-    gtk_box_set_homogeneous(widgets.p_main_box_horizontal, TRUE);
+    gtk_box_set_homogeneous(widgets.p_main_box_horizontal, FALSE);
     gtk_container_add(G_OBJECT (widgets.p_main_box_vertical), widgets.p_main_box_horizontal);
 
-    //conteneur choix fichiers
-    widgets.p_choose_file_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
-    gtk_container_add(G_OBJECT (widgets.p_main_box_horizontal), widgets.p_choose_file_box);
+    //conteneur gauche
+    widgets.p_left_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
+    gtk_container_add(G_OBJECT (widgets.p_main_box_horizontal), widgets.p_left_box);
+
+    GtkWidget *p_label_aes;
+    p_label_aes = gtk_label_new("AES");
+    PangoAttrList *const Attrs = pango_attr_list_new();
+    PangoAttribute *const SizeAttr = pango_attr_size_new(53*PANGO_SCALE);
+    pango_attr_list_insert(Attrs, SizeAttr);
+    gtk_label_set_attributes((GtkLabel *)p_label_aes, Attrs);
+    gtk_box_pack_start(GTK_BOX (widgets.p_left_box), p_label_aes, FALSE, FALSE, 10);
+
+    //box choix fichiers 
+    GtkWidget *p_choose_file_box;
+    p_choose_file_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 50);
+    gtk_box_set_homogeneous(p_choose_file_box, FALSE);
+    gtk_box_pack_start(GTK_BOX (widgets.p_left_box), p_choose_file_box, FALSE, FALSE, 10);
+
+    // box choix fichiers droite
+    GtkWidget *p_choose_file_box_right;
+    p_choose_file_box_right = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_box_set_homogeneous(p_choose_file_box_right, FALSE);
+    gtk_box_pack_end(GTK_BOX (p_choose_file_box), p_choose_file_box_right, FALSE, FALSE, 10);
+
+
+    // box choix clé
+    GtkWidget *p_key_box;
+    p_key_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_box_set_homogeneous(p_key_box, TRUE);
+    gtk_box_pack_start(GTK_BOX (widgets.p_left_box), p_key_box, FALSE, FALSE, 10);
+
+    // box choix modes
+    GtkWidget *p_modes_box;
+    p_modes_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_box_set_homogeneous(p_modes_box, TRUE);
+    gtk_box_pack_start(GTK_BOX (widgets.p_left_box), p_modes_box, FALSE, FALSE, 10);
+
+    // label mode
+    GtkWidget *p_modes_label;
+    p_modes_label = gtk_label_new ("mode d'encryption");
+    gtk_box_pack_start(GTK_BOX (p_modes_box), p_modes_label, FALSE, FALSE, 10);
+
+    // les deux boutons radio
+    widgets.p_radio_btn_cbc = gtk_radio_button_new_with_label(FALSE, "CBC");
+    gtk_box_pack_start(GTK_BOX (p_modes_box), widgets.p_radio_btn_cbc, FALSE, FALSE, 10);
+    widgets.p_radio_btn_ebc = gtk_radio_button_new_with_label_from_widget(widgets.p_radio_btn_cbc, "ECB");
+    gtk_box_pack_start(GTK_BOX (p_modes_box), widgets.p_radio_btn_ebc, FALSE, FALSE, 10);
+
+    //mode bmp
+    widgets.p_case_bmp = gtk_check_button_new_with_label("BMP");
+    gtk_box_pack_start(GTK_BOX (p_modes_box), widgets.p_case_bmp, FALSE, FALSE, 10);
+
 
     //conteneur droite
     widgets.p_right_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
@@ -79,7 +130,7 @@ int main(int argc, char **argv){
 
     //label titre choix fichiers
     widgets.p_label_choix = gtk_label_new ("CHOIX DE FICHIERS");
-    gtk_box_pack_start(GTK_BOX (widgets.p_choose_file_box), widgets.p_label_choix, FALSE, FALSE, 10);
+    gtk_box_pack_start(GTK_BOX (p_choose_file_box), widgets.p_label_choix, FALSE, FALSE, 10);
 
     // bouton open
     widgets.p_label_open = gtk_label_new ("no file");
@@ -112,16 +163,21 @@ int main(int argc, char **argv){
 
     g_signal_connect(G_OBJECT(widgets.p_button_encode), "clicked", G_CALLBACK(cb_encode), &widgets);
     g_signal_connect(G_OBJECT(widgets.p_button_decode), "clicked", G_CALLBACK(cb_decode), &widgets);
-    gtk_box_pack_start(GTK_BOX (widgets.p_choose_file_box), widgets.p_label_cle, FALSE, FALSE, 10);
-    gtk_box_pack_start(GTK_BOX (widgets.p_choose_file_box), widgets.p_text, FALSE, FALSE, 10);
-    gtk_box_pack_start(GTK_BOX (widgets.p_choose_file_box), widgets.p_button_open, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX (widgets.p_choose_file_box), widgets.p_label_open, FALSE, FALSE, 10);
-    gtk_box_pack_start(GTK_BOX (widgets.p_choose_file_box), widgets.p_button_save, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX (widgets.p_choose_file_box), widgets.p_label_save, FALSE, FALSE, 10);
+    gtk_box_pack_start(GTK_BOX (p_key_box), widgets.p_label_cle, FALSE, FALSE, 10);
+    gtk_box_pack_start(GTK_BOX (p_key_box), widgets.p_text, FALSE, FALSE, 10);
+    gtk_box_pack_start(GTK_BOX (p_choose_file_box_right), widgets.p_button_open, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX (p_choose_file_box_right), widgets.p_label_open, FALSE, FALSE, 10);
+    gtk_box_pack_start(GTK_BOX (p_choose_file_box_right), widgets.p_button_save, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX (p_choose_file_box_right), widgets.p_label_save, FALSE, FALSE, 10);
 
 
     widgets.p_vte = vte_terminal_new();
     gtk_box_pack_start(GTK_BOX (widgets.p_right_box), widgets.p_vte, FALSE, FALSE, 10);
+    //vte_terminal_set_size(widgets.p_vte, 40, 10);
+    gtk_window_set_default_size(widgets.p_window, 900, 700);
+    gtk_window_set_resizable(widgets.p_window, FALSE);
+    //gtk_widget_set_size_request(widgets.p_vte, 40, 40);
+    vte_terminal_set_rewrap_on_resize(widgets.p_vte, TRUE);
 
 
     //GTask *task = NULL;
@@ -130,7 +186,8 @@ int main(int argc, char **argv){
 
 
 
-
+    
+    
 
 
 

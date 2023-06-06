@@ -6,12 +6,15 @@
 #include <time.h>
 #include <math.h>
 #include <sys/time.h>
+#include <unistd.h>
 
 
 #include "callbacks.h"
 #include "io.h"
 #include "conversion.h"
 #include "cbc.h"
+#include "ecb.h"
+#include "bmp.h"
 
 //#include "main.h"
 
@@ -25,7 +28,7 @@ struct Widgets {
   GtkWidget *p_window;
   GtkWidget *p_main_box_vertical;
   GtkWidget *p_main_box_horizontal;
-  GtkWidget *p_choose_file_box;
+  GtkWidget *p_left_box;
   GtkWidget *p_right_box;
   GtkWidget *p_button ;
   GtkWidget *p_button_encode;
@@ -35,11 +38,16 @@ struct Widgets {
   GtkWidget *p_text;
   GtkWidget *p_button_save;
   GtkWidget *p_label_save;
+  GtkWidget* p_radio_btn_cbc;
+  GtkWidget* p_radio_btn_ebc;
+  GtkWidget *p_case_bmp;
 };
 
 
 // sortie du programme
 void cb_exit(GtkWidget *p_widget, gpointer label) {
+  struct Widgets *widgets = (struct Widgets*) label;
+  //gtk_widget_destroy(widgets->p_window);
   gtk_main_quit(); // fonction de base de gtk qui kill tous les composants
 
     // ajouter ici tous les autres élements à libérer à la fin
@@ -97,11 +105,33 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
     struct timeval fin;
     VteTerminal *term = widgets->p_vte;
     vte_terminal_feed(term, "Endodage ...\n\r", 14);
+    sleep(1);
+    
 
     memcpy(key, cle, taille_cle);
     gettimeofday(&debut, 0);
-     
-    chiffrer_cbc(entree, sortie, key);
+    
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_radio_btn_cbc))==TRUE) {
+      printf("mode choisi : cbc\n");
+      if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_case_bmp))==TRUE) {
+        bmp(1, 2, entree, sortie, key);
+      } else {
+        chiffrer_cbc(entree, sortie, key);
+      }
+      
+    }
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_radio_btn_ebc))==TRUE) {
+      printf("mode choisi : ecb\n");
+      if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_case_bmp))==TRUE) {
+        bmp(1, 1, entree, sortie, key);
+      } else {
+        chiffrer_ecb(entree, sortie, key);
+      }
+      
+    }
+    
+
+
     gettimeofday(&fin, 0);
     long secondes = fin.tv_sec - debut.tv_sec;
     long microsecondes = fin.tv_usec - debut.tv_usec;
@@ -126,6 +156,9 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
     vte_terminal_feed(term, text_taille, 100);
     vte_terminal_feed(term, text_temps, 100);
     vte_terminal_feed(term, text_vitesse, 100);
+
+    vte_terminal_feed(term, text_vitesse, 100);
+
   }
   (void) appelant;
 }
@@ -160,7 +193,22 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
 
     memcpy(key, cle, taille_cle);
     time(&debut);
-    dechiffrer_cbc(entree, sortie, key);
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_radio_btn_cbc))==TRUE) {
+      printf("mode choisi : cbc\n");
+      if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_case_bmp))==TRUE) {
+        bmp(2, 2, entree, sortie, key);
+      } else {
+        dechiffrer_cbc(entree, sortie, key);
+      }
+    }
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_radio_btn_ebc))==TRUE) {
+      printf("mode choisi : ecb\n");
+      if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_case_bmp))==TRUE) {
+        bmp(2, 1, entree, sortie, key);
+      } else {
+        dechiffrer_ecb(entree, sortie, key);
+      }
+    }
     time(&fin);
     time_t temps = fin-debut;
   

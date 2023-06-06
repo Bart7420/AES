@@ -11,7 +11,7 @@ struct Widgets {
   GtkWidget *p_window;
   GtkWidget *p_main_box_vertical;
   GtkWidget *p_main_box_horizontal;
-  GtkWidget *p_choose_file_box;
+  GtkWidget *p_left_box;
   GtkWidget *p_right_box;
   GtkWidget *p_button ;
   GtkWidget *p_button_encode;
@@ -21,4 +21,7 @@ struct Widgets {
   GtkWidget *p_text;
   GtkWidget *p_button_save;
   GtkWidget *p_label_save;
+  GtkWidget* p_radio_btn_cbc;
+  GtkWidget* p_radio_btn_ebc;
+  GtkWidget *p_case_bmp;
 };
