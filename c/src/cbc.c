@@ -13,7 +13,7 @@ extern byte key[65];
 void chiffrer_cbc(char input[100], char output[100], byte keyAes[65]) {
 
     // Key
-    int keyLength = strlen(keyAes)/4;
+    int keyLength = strlen((char*) keyAes)/4;
 
 
     int fileLength = 0;
@@ -23,7 +23,7 @@ void chiffrer_cbc(char input[100], char output[100], byte keyAes[65]) {
 
     byte *state = data;
 
-    int nbRound;
+    int nbRound = 0;
     if(keyLength == 4){
         nbRound = 10;
     } else if(keyLength == 6){
@@ -53,7 +53,7 @@ void chiffrer_cbc(char input[100], char output[100], byte keyAes[65]) {
 }
 void dechiffrer_cbc(char input[100], char output[100], byte keyAes[65]){
     // Key
-    int keyLength = strlen(keyAes)/4;
+    int keyLength = strlen((char*) keyAes)/4;
 
 
     int fileLength = 0;
@@ -64,7 +64,7 @@ void dechiffrer_cbc(char input[100], char output[100], byte keyAes[65]){
     byte *state = data;
 
 
-    int nbRound;
+    int nbRound = 0;
     if(keyLength == 4){
         nbRound = 10;
     } else if(keyLength == 6){
