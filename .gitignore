@@ -3,3 +3,6 @@
 main
 graphic_aes
 cbc_aes
+ecb_aes
+computeMixColumnTable
+callgrind*
