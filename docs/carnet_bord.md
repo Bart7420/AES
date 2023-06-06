@@ -116,3 +116,18 @@ Nous avons passé beaucoup de temps a debuggé nos programmes.
 - Etienne :
     - [x] Continuer l'interface graphique et l'integrer dans le code
     - [x] Gérer la lecture et l'écriture des fichiers
+
+
+## Séance 7 (6/06/2023)
+
+Durant cette deuxième séance de la deuxième période, nous allons continuer a implémenter la version CBC d'aes.
+
+
+**Objectifs de la séance :**
+- Ronan :
+    - [x] Algorithme CBC
+    - [x] Correction AES version terminal
+
+- Etienne :
+    - [x] Continuer l'interface graphique et l'integrer dans le code
+    - [x] Gérer la lecture et l'écriture des fichiers
