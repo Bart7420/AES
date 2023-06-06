@@ -1,4 +1,4 @@
-gcc_options = -g -Wall -Wextra -I include/ -fsanitize=address -O3 -mavx2 -march=native
+gcc_options = -g -Wall -Wextra -I include/ -fsanitize=address #-O3 -mavx2 -march=native
 
 flags = `pkg-config --cflags gtk+-3.0`
 libs = `pkg-config --libs gtk+-3.0`
@@ -25,6 +25,8 @@ main: main.o aes.o tests.o conversion.o cmd_aes.o
 graphic_aes: graphic_aes.o io.o callbacks.o aes.o conversion.o cbc.o
 	gcc -o $@ $^ $(gcc_options) $(libs) $(flags) $(l) $(f)
 
+cbc_aes: cbc_aes.o aes.o conversion.o cbc.o io.o
+	gcc -o $@ $^ $(gcc_options)
 
 
 main.o: src/main.c include/main.h
@@ -54,6 +56,9 @@ io.o :src/io.c include/io.h include/graphic_aes.h
 
 cbc.o : src/cbc.c include/aes.h include/conversion.h include/cbc.h include/io.h
 	gcc $(gcc_options) -c $< $(flags) $(f)
+
+cbc_aes.o: src/cbc_aes.c include/cbc.h include/io.h include/aes.h
+	gcc -c $(gcc_options) $<
 
 
 clean:
