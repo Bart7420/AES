@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <math.h>
+#include <sys/time.h>
 
 
 #include "callbacks.h"
@@ -92,16 +93,18 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
   if (ok == 1) {
 
     //mesure du temps
-    time_t debut;
-    time_t fin;
+    struct timeval debut;
+    struct timeval fin;
     VteTerminal *term = widgets->p_vte;
     vte_terminal_feed(term, "Endodage ...\n\r", 14);
 
     memcpy(key, cle, taille_cle);
-    time(&debut);
+    gettimeofday(&debut, 0);
     chiffrer_cbc(entree, sortie, key);
-    time(&fin);
-    time_t temps = fin-debut;
+    gettimeofday(&fin, 0);
+    long secondes = fin.tv_sec - debut.tv_sec;
+    long microsecondes = fin.tv_usec - debut.tv_usec;
+    double temps = secondes + microsecondes*1e-6;
     
 
     //taille fichier
@@ -113,11 +116,11 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
     sprintf(text_taille, "Taille encodé :%d\n\r", file_length);
 
     char text_temps[100] = "";
-    sprintf(text_temps, "Temps : %ld s\n\r", temps);
+    sprintf(text_temps, "Temps : %.3f s\n\r", temps);
 
     char text_vitesse[100] = "";
     if (temps == 0) { temps++;}
-    sprintf(text_vitesse, "Vitesse : %ld mo/s\n\r", ((file_length / 1000000) / temps));
+    sprintf(text_vitesse, "Vitesse : %.6f mo/s\n\r", ((file_length / 1e6) / temps));
 
     vte_terminal_feed(term, text_taille, 100);
     vte_terminal_feed(term, text_temps, 100);
