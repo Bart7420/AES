@@ -97,7 +97,7 @@ int main(int argc, char **argv){
     
     // champ de clé
     widgets.p_text = gtk_entry_new();
-    gtk_box_pack_start(GTK_BOX (widgets.p_choose_file_box), widgets.p_text, FALSE, FALSE, 10);
+    
     gtk_entry_set_placeholder_text(GTK_ENTRY(widgets.p_text),"Clé");
 
 
@@ -112,10 +112,11 @@ int main(int argc, char **argv){
     g_signal_connect(G_OBJECT(widgets.p_button_encode), "clicked", G_CALLBACK(cb_encode), &widgets);
     g_signal_connect(G_OBJECT(widgets.p_button_decode), "clicked", G_CALLBACK(cb_decode), &widgets);
     gtk_box_pack_start(GTK_BOX (widgets.p_choose_file_box), widgets.p_label_cle, FALSE, FALSE, 10);
+    gtk_box_pack_start(GTK_BOX (widgets.p_choose_file_box), widgets.p_text, FALSE, FALSE, 10);
     gtk_box_pack_start(GTK_BOX (widgets.p_choose_file_box), widgets.p_button_open, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX (widgets.p_choose_file_box), widgets.p_label_open, FALSE, FALSE, 10);
     gtk_box_pack_start(GTK_BOX (widgets.p_choose_file_box), widgets.p_button_save, FALSE, FALSE, 0);
-    gtk_box_pack_end(GTK_BOX (widgets.p_choose_file_box), widgets.p_label_save, FALSE, FALSE, 10);
+    gtk_box_pack_start(GTK_BOX (widgets.p_choose_file_box), widgets.p_label_save, FALSE, FALSE, 10);
 
 
     widgets.p_vte = vte_terminal_new();
