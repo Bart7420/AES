@@ -23,6 +23,10 @@ void ecriture(char output[100], byte *data, int taille, int decryption) {
             if(decryption == 1) {
                 difference = data[taille-1]+1;
             }
+
+            if (difference>16) {
+                difference = 0; // si la clé n'est pas la bonne, le padding est faux, on écrit alors jsute le résultat
+            } 
             
             fwrite(data, (taille-difference), 1, out);
             fclose(out);

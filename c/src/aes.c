@@ -106,25 +106,25 @@ void invShiftRows(byte *state){
 byte multPoly(byte poly1, byte poly2) {
 
     byte result = 0;
-    int poidFort = 0;
+
     for (int i = 0; i < 8; i++) {
         if ((poly2 & 1) == 1) {
             result = result ^ poly1;
         }
-        // on sauvgarde l'état du bit de poid fort
+        // test l'état du bit de poid le plus fort
         if ((poly1 & 0x80) == 0x80) {
-            poidFort = 1;
-        } else {
-            poidFort = 0;
-        }
-        poly1<<=1;
-        if (poidFort == 1) {
-            poly1 = poly1 ^ 0x1b; // on multiplie (xor dans l'ensemble fini) par l'élément irréductible
-        }
-        
-        poly2 >>= 1; // on décale b pour obtenir le prochain bit en position la plus faible
 
+            poly1<<=1;
+
+            poly1 = poly1 ^ 0x1b; // on multiplie (xor dans l'ensemble fini) par l'élément irréductible
+
+        } else {
+
+            poly1<<=1;
+        }
         
+
+        poly2 >>= 1; // on décale b pour obtenir le prochain bit en position la plus faible
     }
     return result;
     
@@ -143,9 +143,11 @@ void mixColumn(byte *state){
     }
 
     // copie du resultat obtenu dans output à la sortie   
+    /*
     for (int i = 0; i < 16; i++) {
         state[i] = output[i];
-    } 
+    } */
+    memcpy(state, output, 16); // optimisation
 }
 
 void invMixColumn(byte *state){
@@ -244,7 +246,7 @@ byte *cipher(byte *extandedKey, byte *input, int nbRound){
 }
 
 byte *chiffrer(byte *key, byte *input, int keyLength){
-    int nbRound;
+    int nbRound = 0;
     if(keyLength == 4){
         nbRound = 10;
     } else if(keyLength == 6){
@@ -282,7 +284,7 @@ byte *invCipher(byte *extandedKey, byte *input, int nbRound){
 }
 
 byte *dechiffrer(byte *key, byte *input, int keyLength){
-    int nbRound;
+    int nbRound = 0;
     if(keyLength == 4){
         nbRound = 10;
     } else if(keyLength == 6){

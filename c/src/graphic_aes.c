@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 #include <vte/vte.h>
+#include <gio/gio.h>
 
 #include "graphic_aes.h"
 #include "io.h"
@@ -123,8 +124,9 @@ int main(int argc, char **argv){
     gtk_box_pack_start(GTK_BOX (widgets.p_right_box), widgets.p_vte, FALSE, FALSE, 10);
 
 
-
-
+    //GTask *task = NULL;
+    //task = g_task_new(NULL, NULL, cb_exit, &widgets);
+    //g_task_set_task_data(NULL, NULL, NULL);
 
 
 

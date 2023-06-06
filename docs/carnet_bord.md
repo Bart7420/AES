@@ -122,6 +122,8 @@ Nous avons passé beaucoup de temps a debuggé nos programmes.
 
 Durant cette deuxième séance de la deuxième période, nous allons continuer a implémenter la version CBC d'aes.
 
+![Alt text](opti.png "a title")
+
 
 **Objectifs de la séance :**
 - Ronan :
@@ -131,3 +133,4 @@ Durant cette deuxième séance de la deuxième période, nous allons continuer a
 - Etienne :
     - [x] Continuer l'interface graphique et l'integrer dans le code
     - [x] Gérer la lecture et l'écriture des fichiers
+  

@@ -100,6 +100,7 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
 
     memcpy(key, cle, taille_cle);
     gettimeofday(&debut, 0);
+     
     chiffrer_cbc(entree, sortie, key);
     gettimeofday(&fin, 0);
     long secondes = fin.tv_sec - debut.tv_sec;
