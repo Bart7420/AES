@@ -35,7 +35,7 @@ void chiffrer_cbc() {
     byte *extandedKey = keyExpansion(key, keyLength, nbRound);
     
 
-    //stateXor(state, key);
+    stateXor(state, key);
     cipher_cbc(extandedKey, state, nbRound);
 
     for (long long int i = 16; i < fileLength; i+=16)
