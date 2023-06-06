@@ -94,19 +94,20 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
     //mesure du temps
     time_t debut;
     time_t fin;
+    VteTerminal *term = widgets->p_vte;
+    vte_terminal_feed(term, "Endodage ...\n\r", 14);
 
     memcpy(key, cle, taille_cle);
     time(&debut);
-    chiffrer_cbc();
+    chiffrer_cbc(entree, sortie, key);
     time(&fin);
     time_t temps = fin-debut;
-    VteTerminal *term = widgets->p_vte;
-    vte_terminal_feed(term, "Endodage ...\n\r", 14);
+    
 
     //taille fichier
     int file_length;
     byte *data = NULL; // on utilise pas ici
-    data = lecture(&file_length, 0);
+    data = lecture(entree, &file_length, 0);
 
     char text_taille[100] = "";
     sprintf(text_taille, "Taille encodé :%d\n\r", file_length);
@@ -150,18 +151,20 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
     time_t debut;
     time_t fin;
 
-    memcpy(key, cle, taille_cle);
-    time(&debut);
-    dechiffrer_cbc();
-    time(&fin);
-    time_t temps = fin-debut;
     VteTerminal *term = widgets->p_vte;
     vte_terminal_feed(term, "Decodage ...\n\r", 14);
+
+    memcpy(key, cle, taille_cle);
+    time(&debut);
+    dechiffrer_cbc(entree, sortie, key);
+    time(&fin);
+    time_t temps = fin-debut;
+  
 
     //taille fichier
     int file_length;
     byte *data = NULL; // on utilise pas ici
-    data = lecture(&file_length, 0);
+    data = lecture(entree, &file_length, 0);
 
     char text_taille[100] = "";
     sprintf(text_taille, "Taille décodé :%d\n\r", file_length);
