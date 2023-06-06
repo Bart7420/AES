@@ -30,7 +30,7 @@ cbc_aes: cbc_aes.o aes.o conversion.o cbc.o io.o
 	gcc -o $@ $^ $(gcc_options)
 ecb_aes: ecb_aes.o aes.o conversion.o cbc.o io.o ecb.o
 	gcc -o $@ $^ $(gcc_options)
-offset_aes: offset_aes.o io.o ecb.o aes.o cbc.o
+bmp_aes: bmp_aes.o io.o ecb.o aes.o cbc.o bmp.o
 	gcc -o $@ $^ $(gcc_options)
 
 
@@ -71,7 +71,10 @@ ecb.o: src/ecb.c include/ecb.h include/aes.h include/cbc.h include/io.h
 ecb_aes.o: src/ecb_aes.c include/ecb.h
 	gcc -c $(gcc_options) $<
 
-offset_aes.o : src/offset_aes.c include/offset_aes.h include/io.h include/ecb.h
+bmp_aes.o : src/bmp_aes.c include/bmp_aes.h include/bmp.h include/bmp.h
+	gcc -c $(gcc_options) $<
+
+bmp.o : src/bmp.c include/bmp.h include/io.h include/ecb.h
 	gcc -c $(gcc_options) $<
 
 
@@ -79,3 +82,7 @@ clean:
 	rm -rf *.o
 	rm -rf main
 	rm -rf test
+	rm -rf cbc_aes
+	rm -rf cbe_aes
+	rm -rf graphic_aes
+	rm -rf bmp_aes

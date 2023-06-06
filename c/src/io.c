@@ -48,7 +48,7 @@ void afficher_state(byte *state) {
 }
 
 
-byte *lecture(char input[100], int *taille, int encryption) {
+byte *lecture(char input[100], int *taille, int mode) {
     byte *flux;
         //if (strcmp((entree), "") && strcmp((sortie), "")){
             FILE* out = NULL;
@@ -56,13 +56,13 @@ byte *lecture(char input[100], int *taille, int encryption) {
             fseek(out, 0, SEEK_END);
             int file_length = ftell(out);
 
-            if(encryption == 1) {
+            if(mode == 1) {
                 file_length++; // Ajout d'un byte pour coder le padding
             }
             printf("%d\n", file_length);
             
             int difference = 0;
-            if ((file_length %16) != 0) {
+            if (((file_length %16) != 0) && (mode !=2)) {
                 difference = 16-(file_length % 16);
             }
             
@@ -72,7 +72,7 @@ byte *lecture(char input[100], int *taille, int encryption) {
             flux= calloc(sizeof(byte)* length, 1);
             fseek(out, 0, SEEK_SET);
             fread(flux, 1, file_length, out);
-            if(encryption == 1) {
+            if(mode == 1) {
                 flux[length-1] = difference; //Ajout du padding sur le dernier byte
             }
 
