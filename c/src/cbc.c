@@ -10,16 +10,16 @@
 
 extern byte key[65];
 
-void chiffrer_cbc() {
+void chiffrer_cbc(char input[100], char output[100], byte keyAes[65]) {
 
     // Key
-    int keyLength = strlen(key)/4;
+    int keyLength = strlen(keyAes)/4;
 
 
     int fileLength = 0;
     byte *data = NULL;
 
-    data = lecture(&fileLength, 1);
+    data = lecture(input, &fileLength, 1);
 
     byte *state = data;
 
@@ -32,8 +32,10 @@ void chiffrer_cbc() {
         nbRound = 14;
     }
 
-    byte *extandedKey = keyExpansion(key, keyLength, nbRound);
+    byte *extandedKey = keyExpansion(keyAes, keyLength, nbRound);
     
+    byte initVector[16] = "";
+    getInitVector(initVector);
 
     stateXor(state, key);
     cipher_cbc(extandedKey, state, nbRound);
@@ -45,19 +47,19 @@ void chiffrer_cbc() {
     }
 
     free(extandedKey);
-    ecriture(state, fileLength, 0);
+    ecriture(output, state, fileLength, 0);
     free(data);
     
 }
-void dechiffrer_cbc(){
+void dechiffrer_cbc(char input[100], char output[100], byte keyAes[65]){
     // Key
-    int keyLength = strlen(key)/4;
+    int keyLength = strlen(keyAes)/4;
 
 
     int fileLength = 0;
     byte *data = NULL;
 
-    data = lecture(&fileLength, 0);
+    data = lecture(input, &fileLength, 0);
 
     byte *state = data;
 
@@ -71,21 +73,30 @@ void dechiffrer_cbc(){
         nbRound = 14;
     }
 
-    byte *extandedKey = keyExpansion(key, keyLength, nbRound);
+    byte *extandedKey = keyExpansion(keyAes, keyLength, nbRound);
 
-    
+    byte initVector[16] = "";
+    getInitVector(initVector);
+
     for (long long int i = (fileLength-16); (i > 0) && (fileLength>16); i -= 16)
     {
         invcipher_cbc(extandedKey, &state[i], nbRound);
         stateXor(&state[i], &state[i-16]);
     }
     invcipher_cbc(extandedKey, state, nbRound);
-    stateXor(state, key);
+    stateXor(state, initVector);
 
     free(extandedKey);
-    ecriture(state, fileLength, 1);
+    ecriture(output, state, fileLength, 1);
     free(data);
 
+}
+
+void getInitVector(byte *vector){
+    memcpy(vector, "0123456789abcdef", 16);
+    // ATTENTION, l'init vector est fixé de façon simple
+    // Si l'on veut une meilleure sécurité le generer aléatoirement
+    // On pourrais également prendre la fin du fichier en tant que vecteur d'initialisation.
 }
 
 

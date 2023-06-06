@@ -13,9 +13,9 @@ extern char sortie[100];
 //char sortie[100];
 
 
-void ecriture(byte *data, int taille, int decryption) {
+void ecriture(char output[100], byte *data, int taille, int decryption) {
             FILE* out = NULL;
-            out = fopen((sortie), "w");
+            out = fopen((output), "w");
             
             //byte test1[16] = {0xd4, 0x27, 0x11, 0xae, 0xe0, 0xbf, 0x98, 0xf1, 0xb8, 0xb4, 0x5d, 0xe5, 0x1e, 0x41, 0x52, 0x32};
             
@@ -44,11 +44,11 @@ void afficher_state(byte *state) {
 }
 
 
-byte *lecture(int *taille, int encryption) {
+byte *lecture(char input[100], int *taille, int encryption) {
     byte *flux;
         //if (strcmp((entree), "") && strcmp((sortie), "")){
             FILE* out = NULL;
-            out = fopen((entree), "r+");
+            out = fopen((input), "r+");
             fseek(out, 0, SEEK_END);
             int file_length = ftell(out);
 
