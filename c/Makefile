@@ -28,6 +28,8 @@ graphic_aes: graphic_aes.o io.o callbacks.o aes.o conversion.o cbc.o
 
 cbc_aes: cbc_aes.o aes.o conversion.o cbc.o io.o
 	gcc -o $@ $^ $(gcc_options)
+ecb_aes: ecb_aes.o aes.o conversion.o cbc.o io.o ecb.o
+	gcc -o $@ $^ $(gcc_options)
 
 
 main.o: src/main.c include/main.h
@@ -55,10 +57,16 @@ callbacks.o : src/callbacks.c include/callbacks.h include/graphic_aes.h include/
 io.o :src/io.c include/io.h include/graphic_aes.h
 	gcc $(gcc_options) -c $< $(flags) $(f)
 
-cbc.o : src/cbc.c include/aes.h include/conversion.h include/cbc.h include/io.h
+cbc.o : src/cbc.c include/aes.h include/cbc.h include/io.h
 	gcc $(gcc_options) -c $< $(flags) $(f)
 
 cbc_aes.o: src/cbc_aes.c include/cbc.h include/io.h include/aes.h
+	gcc -c $(gcc_options) $<
+
+ecb.o: src/ecb.c include/ecb.h include/aes.h include/cbc.h include/io.h
+	gcc $(gcc_options) -c $< $(flags) $(f)
+
+ecb_aes.o: src/ecb_aes.c include/ecb.h
 	gcc -c $(gcc_options) $<
 
 
