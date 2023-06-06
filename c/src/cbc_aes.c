@@ -13,7 +13,7 @@ int main(int argc,char *argv[]){
         printf("Mauvaise entrée !\n");
         printf("Usage : <mode> <path entree> <path sortie> <cle>\n");
         printf("mode : \"encode\", \"decode\" \n");
-        return 0;
+        return 1;
     }
 
 
@@ -34,7 +34,7 @@ int main(int argc,char *argv[]){
     }
 
 
-    return 1;
+    return 0;
 }
 
 

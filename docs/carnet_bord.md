@@ -122,15 +122,36 @@ Nous avons passé beaucoup de temps a debuggé nos programmes.
 
 Durant cette deuxième séance de la deuxième période, nous allons continuer a implémenter la version CBC d'aes.
 
-![Alt text](opti.png "a title")
+Nous avons commencé par utiliser l'outil callgrind, utilisé comme ceci :
+
+> ```valgrind --tool=callgrind <programme>```
+
+Ce qui permet de générer un fichier contenant tout les points de mesures du logiciel. Nous avons eu des problèmes car il n'executait pas le fichier, cer nous avions laissé fsanitize dans les options de compilations. <br> Une fois le fichier de mesures obtenu, nous avons utilisé l'interface de kcachegrind et ouvert le fichier. <br> Nous avons obtenu le graph ci-dessous.
+![Alt text](opti.png "perf")
+
+Nous avons alors essayé de trouver des solutions pour optimiser le code, notement de multpoly qui est appelé plus de 33 millions de fois pour encoder un fichier de 1,8mo. <br> <br>
+
+Après avoir recu l'extension de sujet par mail, nous avons implémenté le mode ECB en mode cryptage et décryptage. <br> <br>
+
+Nous avons ensuite codé une fonction pour encoder des fichiers BMP selon les deux modes : ECB et CBC. Nous avons observé le défaut de ECB en observant l'image. <br> <br> <br>
+
+Image Originale
+![Alt text](entree.bmp "origine")
+Image encodée ECB
+![Alt text](sortie_ecb.bmp "ecb")
+Image encodée CBC
+![Alt text](sortie_cbc.bmp "cbc")
+
 
 
 **Objectifs de la séance :**
 - Ronan :
     - [x] Algorithme CBC
-    - [x] Correction AES version terminal
+    - [x] Algorithme ECB
+    - [x] Essai optimisation registre processeur
 
 - Etienne :
-    - [x] Continuer l'interface graphique et l'integrer dans le code
-    - [x] Gérer la lecture et l'écriture des fichiers
+    - [x] Optimisation du code
+    - [x] Coder des fichiers bmp en ecb et cbc
+    - [x] ui
   

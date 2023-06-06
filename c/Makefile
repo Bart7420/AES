@@ -1,5 +1,5 @@
-gcc_options =  -I include/
-#gcc_options = -g -Wall -Wextra -I include/ -fsanitize=address #-O3 -mavx2 -march=native
+#gcc_options =  -I include/
+gcc_options = -g -Wall -Wextra -I include/ -fsanitize=address #-O3 -mavx2 -march=native
 
 flags = `pkg-config --cflags gtk+-3.0`
 libs = `pkg-config --libs gtk+-3.0`
@@ -29,6 +29,8 @@ graphic_aes: graphic_aes.o io.o callbacks.o aes.o conversion.o cbc.o
 cbc_aes: cbc_aes.o aes.o conversion.o cbc.o io.o
 	gcc -o $@ $^ $(gcc_options)
 ecb_aes: ecb_aes.o aes.o conversion.o cbc.o io.o ecb.o
+	gcc -o $@ $^ $(gcc_options)
+offset_aes: offset_aes.o io.o ecb.o aes.o cbc.o
 	gcc -o $@ $^ $(gcc_options)
 
 
@@ -67,6 +69,9 @@ ecb.o: src/ecb.c include/ecb.h include/aes.h include/cbc.h include/io.h
 	gcc $(gcc_options) -c $< $(flags) $(f)
 
 ecb_aes.o: src/ecb_aes.c include/ecb.h
+	gcc -c $(gcc_options) $<
+
+offset_aes.o : src/offset_aes.c include/offset_aes.h include/io.h include/ecb.h
 	gcc -c $(gcc_options) $<
 
 
