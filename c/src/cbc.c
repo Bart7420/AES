@@ -37,7 +37,7 @@ void chiffrer_cbc(char input[100], char output[100], byte keyAes[65]) {
     byte initVector[16] = "";
     getInitVector(initVector);
 
-    stateXor(state, key);
+    stateXor(state, initVector);
     cipher_cbc(extandedKey, state, nbRound);
 
     for (long long int i = 16; i < fileLength; i+=16)
