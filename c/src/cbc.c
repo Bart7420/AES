@@ -92,7 +92,7 @@ void dechiffrer_cbc(char input[100], char output[100], byte keyAes[65]){
 }
 
 void getInitVector(byte *vector){
-    memcpy(vector, "0123456789abcdef", 16);
+    memcpy(vector, "DDDDDDDDDDDDDDDD", 16);
     // ATTENTION, l'init vector est fixé de façon simple
     // Si l'on veut une meilleure sécurité le generer aléatoirement
     // On pourrais également prendre la fin du fichier en tant que vecteur d'initialisation.

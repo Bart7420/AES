@@ -172,10 +172,10 @@ int main(int argc, char **argv){
 
     widgets.p_vte = vte_terminal_new();
     gtk_box_pack_start(GTK_BOX (widgets.p_right_box), widgets.p_vte, FALSE, FALSE, 10);
-    //vte_terminal_set_size(widgets.p_vte, 40, 10);
+    //vte_terminal_set_size(widgets.key, 40, 10);
     gtk_window_set_default_size(widgets.p_window, 900, 700);
     gtk_window_set_resizable(widgets.p_window, FALSE);
-    //gtk_widget_set_size_request(widgets.p_vte, 40, 40);
+    //gtk_widget_set_size_request(widgets.p_text, 40, 40);
     vte_terminal_set_rewrap_on_resize(widgets.p_vte, TRUE);
 
 

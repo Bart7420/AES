@@ -1,4 +1,4 @@
-gcc_options =  -I include/ -O3 -mavx2 -march=native#-fsanitize=address -fsanitize=undefined -fsanitize=shift -fsanitize=shift-exponent -fsanitize=shift-base -fsanitize=integer-divide-by-zero -fsanitize=unreachable -fsanitize=vla-bound -fsanitize=null -fsanitize=return -fsanitize=signed-integer-overflow -fsanitize=bounds -fsanitize=bounds-strict -fsanitize=bool -fsanitize=enum
+gcc_options =  -I include/ -O3 -mavx2 -march=native -fsanitize=address -fsanitize=undefined -fsanitize=shift -fsanitize=shift-exponent -fsanitize=shift-base -fsanitize=integer-divide-by-zero -fsanitize=unreachable -fsanitize=vla-bound -fsanitize=null -fsanitize=return -fsanitize=signed-integer-overflow -fsanitize=bounds -fsanitize=bounds-strict -fsanitize=bool -fsanitize=enum
 #gcc_options = -g -Wall -Wextra -I include/ -fsanitize=address #-O3 -mavx2 -march=native
 
 flags = `pkg-config --cflags gtk+-3.0`
@@ -31,7 +31,7 @@ cbc_aes: cbc_aes.o aes.o conversion.o cbc.o io.o
 ecb_aes: ecb_aes.o aes.o conversion.o cbc.o io.o ecb.o
 	gcc -o $@ $^ $(gcc_options)
 bmp_aes: bmp_aes.o io.o ecb.o aes.o cbc.o bmp.o
-	gcc -o $@ $^ $(gcc_options)
+	gcc -o $@ $^ $(gcc_options) -lm
 
 
 main.o: src/main.c include/main.h

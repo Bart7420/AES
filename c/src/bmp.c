@@ -2,11 +2,97 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 
 #include "io.h"
 #include "bmp.h"
 #include "cbc.h"
 #include "ecb.h"
+
+int count(byte *entree, int taille, byte code) {
+
+    int c = 0;
+    for (int i =0; i < taille; i++) {
+        if (entree[i] == code) {
+            c++;
+        }
+        
+    }
+
+    return c;
+
+}
+
+void set_zero(byte *entree, int taille, byte code) {
+    for (int i = 0; i < taille; i++) {
+        if (entree[i] == code) {
+            entree[i] = 0x00;
+        }
+    }
+}
+
+void entropie(byte *entree, int taille) {
+
+    int coefs[256];
+
+    coefs[0] = count(entree, taille, 0x00);
+
+    for (int i = 0; i < 255; i++)
+    {
+        for (int j = 0; i < taille; j++) {   
+            if (entree[j] == i) {
+                coefs[i]++;
+            }
+            
+        }
+        
+
+        //coefs[i] = count(entree, taille, i);
+        //set_zero(entree, taille, i);
+    }
+
+    int nb_symboles = 0;
+    for (int i = 0; i < 256; i++) {
+        if (coefs[i] != 0) {   
+            nb_symboles++;
+        }  
+    }
+
+    
+    double entropie = 0;
+    int indice = 0;
+    for (int i = 0; i < nb_symboles; i++) {
+        if (indice>256) {
+            break;
+        }
+        while (coefs[indice] == 0x00){
+            indice++;
+        }
+        int pi = coefs[indice]/ taille;
+        entropie -= pi*(/*log(pi)/log(2)*/ log2(pi));
+    }
+    printf("entropie : %.3f\n", entropie);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* mode : 1=encode, 2=decode
  * version : 1=ecb, 2=cbc*/
@@ -21,7 +107,7 @@ void bmp(int mode, int version, char path_entree[100], char path_sortie[100], by
 
     entree = realloc(entree, taille_fichier+offset2);
     byte *entree2;
-    entree2 = entree+offset2;
+    entree2 = entree+offset2; // le fichier sans l'en tete
     ecriture("temp.offset", entree2, taille_fichier, 0);
 
     if (mode == 1) {
@@ -49,13 +135,27 @@ void bmp(int mode, int version, char path_entree[100], char path_sortie[100], by
     
 
     int bin = 0;
-    byte* entreecodee = lecture("temp.offset2", &bin, 0);
+    byte* entreecodee = lecture("temp.offset2", &bin, 0); // le fichier sans l'en tete
     memcpy(entree2, entreecodee, taille_fichier);
     ecriture(path_sortie, entree, taille_fichier+offset2, 0);
+
+    // entreecodee : data du fichiern encodé (sans l'én tete)
+
+    entropie(entreecodee, taille_fichier);
+
+    // calcul de l'entropie
+
+    
+
+
     free(entree);
     free(entreecodee);
     
 }
+
+
+
+
 
 
 
