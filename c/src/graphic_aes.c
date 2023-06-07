@@ -12,7 +12,6 @@
 
 
 
-
 void getEntree(char *gentree) {
   strcpy(gentree, entree);
 }
