@@ -1,6 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
-
+#include <wmmintrin.h> 
 
 #include "cbc.h"
 #include "aes.h"
@@ -112,6 +112,7 @@ void stateXor(byte state[16], byte xorwith[16]){
 
 void cipher_cbc(byte *extandedKey, byte *state, int nbRound){
 
+    #ifndef TEST
     addRoundKey(state, &extandedKey[0]);
 
     for(int round = 1; round < nbRound; round++){
@@ -125,9 +126,33 @@ void cipher_cbc(byte *extandedKey, byte *state, int nbRound){
     shiftRows(state);
     addRoundKey(state, &extandedKey[4*(4*nbRound)]);
 
+    #endif
+
+    #ifdef PERF
+
+    __m128i* state128 = (__m128i*) state;
+    __m128i* key128 = (__m128i*) extandedKey;
+
+    //addroundkey
+    __m128i temp = _mm_xor_si128(*state128, *key128);
+    _mm_store_si128(state128, temp);
+
+    for(int round = 1; round < nbRound; round++){
+        key128 = (__m128i*) &extandedKey[4*(round*4)];
+        temp = _mm_aesenc_si128(*state128, *key128);
+        _mm_store_si128(state128, temp);
+    }
+    key128 = (__m128i*) &extandedKey[4*(4*nbRound)];
+    temp = _mm_aesenclast_si128(*state128, *key128);
+    _mm_store_si128(state128, temp);
+
+    #endif
 }
 
+
 void invcipher_cbc(byte *extandedKey, byte *state, int nbRound){
+
+    #ifndef PERF
 
     addRoundKey(state, &extandedKey[4*(4*nbRound)]);
 
@@ -141,4 +166,28 @@ void invcipher_cbc(byte *extandedKey, byte *state, int nbRound){
     invShiftRows(state);
     invSubBytes(state);
     addRoundKey(state, &extandedKey[0]);
+
+    #endif
+
+    #ifdef PERF
+
+    __m128i* state128 = (__m128i*) state;
+    __m128i* key128 = (__m128i*) extandedKey;
+
+    //addroundkey
+    key128 = (__m128i*) &extandedKey[4*(4*nbRound)];
+    __m128i temp = _mm_xor_si128(*state128, *key128);
+    _mm_store_si128(state128, temp);
+
+    for(int round = 1; round <= nbRound-1; round++){
+    //for(int round = nbRound-1; round > 0; round--){
+        key128 = (__m128i*) &extandedKey[4*(round*4)];
+        temp = _mm_aesdec_si128(*state128, *key128);
+        _mm_store_si128(state128, temp);
+    }
+    key128 = (__m128i*) extandedKey;
+    temp = _mm_aesdeclast_si128(*state128, *key128);
+    _mm_store_si128(state128, temp);
+
+    #endif
 }
