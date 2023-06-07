@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <emmintrin.h>
 #include "aes.h"
 
 // en c on peut utiliser les char (8 bits) pour representer un polynomes de Z2562 d'haskell
@@ -58,6 +59,10 @@ void addRoundKey(byte *state, byte *key) {
     {
         state[i] = state[i] ^ key[i];
     }
+    /*__m128i* state128 = (__m128i*) state;
+    __m128i* key128 = (__m128i*) key;
+    __m128i xor_result = _mm_xor_si128(*state128, *key128);
+    _mm_store_si128(state128, xor_result);*/
 }
 
 
@@ -143,7 +148,7 @@ byte multPoly(byte poly1, byte poly2) {
 }
 
 
-void mixColumn(byte *state){
+void mixColumn(byte state[16]){
     byte output[16];
 
     // application de l'opétation décrite dans FIPS 197

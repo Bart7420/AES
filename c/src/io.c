@@ -51,6 +51,7 @@ void afficher_state(byte *state) {
 byte *lecture(char input[100], int *taille, int mode) {
     byte *flux;
         //if (strcmp((entree), "") && strcmp((sortie), "")){
+            printf("1\n");
             FILE* out = NULL;
             out = fopen((input), "r+");
             fseek(out, 0, SEEK_END);
@@ -78,7 +79,7 @@ byte *lecture(char input[100], int *taille, int mode) {
 
             //fwrite(test1, sizeof(test1), 1, out);
             fclose(out);
-
+            printf("2\n");
     //}
     *taille = length;
     return flux;
