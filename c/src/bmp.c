@@ -34,15 +34,12 @@ void set_zero(byte *entree, int taille, byte code) {
 void entropie(byte *entree, int taille) {
 
     int coefs[256] = {0};
-    int coefs[256] = {0};
 
     // /coefs[0] = count(entree, taille, 0x00);
 
     for (int i = 0; i < 256; i++)
-    for (int i = 0; i < 256; i++)
     {
-        for (int j = 0; j < taille; j++) {   
-        for (int j = 0; j < taille; j++) {   
+        for (int j = 0; j < taille; j++) {      
             if (entree[j] == i) {
                 coefs[i]++;
             }
