@@ -106,6 +106,31 @@ int main(int argc, char **argv){
     gtk_box_pack_start(GTK_BOX (p_modes_box), widgets.p_case_bmp, FALSE, FALSE, 10);
 
 
+    // box choix modes aes
+    GtkWidget *p_modes_box_aes;
+    p_modes_box_aes = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_box_set_homogeneous(p_modes_box, TRUE);
+    gtk_box_pack_start(GTK_BOX (widgets.p_left_box), p_modes_box_aes, FALSE, FALSE, 10);
+
+
+    // label mode
+    GtkWidget *p_modes_aes_label;
+    p_modes_aes_label = gtk_label_new ("Mode AES");
+    gtk_box_pack_start(GTK_BOX (p_modes_box_aes), p_modes_aes_label, FALSE, FALSE, 10);
+
+
+    // les trois boutons radio mode AAES 128, 192, 256
+    widgets.p_radio_btn_aes_128 = gtk_radio_button_new_with_label(FALSE, "AES - 128");
+    gtk_box_pack_start(GTK_BOX (p_modes_box_aes), widgets.p_radio_btn_aes_128, FALSE, FALSE, 10);
+    widgets.p_radio_btn_aes_192 = gtk_radio_button_new_with_label_from_widget(widgets.p_radio_btn_aes_128, "AES - 192");
+    gtk_box_pack_start(GTK_BOX (p_modes_box_aes), widgets.p_radio_btn_aes_192, FALSE, FALSE, 10);
+    widgets.p_radio_btn_aes_256 = gtk_radio_button_new_with_label_from_widget(widgets.p_radio_btn_aes_192, "AES - 256");
+    gtk_box_pack_start(GTK_BOX (p_modes_box_aes), widgets.p_radio_btn_aes_256, FALSE, FALSE, 10);
+
+
+
+
+
     //conteneur droite
     widgets.p_right_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     //gtk_box_set_homogeneous(p_right_box, TRUE);
@@ -151,6 +176,10 @@ int main(int argc, char **argv){
     
     gtk_entry_set_placeholder_text(GTK_ENTRY(widgets.p_text),"Clé");
 
+    // case a cocher clé en hexa
+    widgets.p_case_hexa = gtk_check_button_new_with_label("HEXA");
+    
+
 
     // bouton save
     widgets.p_label_save = gtk_label_new ("no file");
@@ -164,6 +193,7 @@ int main(int argc, char **argv){
     g_signal_connect(G_OBJECT(widgets.p_button_decode), "clicked", G_CALLBACK(cb_decode), &widgets);
     gtk_box_pack_start(GTK_BOX (p_key_box), widgets.p_label_cle, FALSE, FALSE, 10);
     gtk_box_pack_start(GTK_BOX (p_key_box), widgets.p_text, FALSE, FALSE, 10);
+    gtk_box_pack_start(GTK_BOX (p_key_box), widgets.p_case_hexa, FALSE, FALSE, 10);
     gtk_box_pack_start(GTK_BOX (p_choose_file_box_right), widgets.p_button_open, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX (p_choose_file_box_right), widgets.p_label_open, FALSE, FALSE, 10);
     gtk_box_pack_start(GTK_BOX (p_choose_file_box_right), widgets.p_button_save, FALSE, FALSE, 0);

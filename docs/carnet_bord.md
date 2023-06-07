@@ -154,4 +154,4 @@ Image encodée CBC
     - [x] Optimisation du code
     - [x] Coder des fichiers bmp en ecb et cbc
     - [x] ui
-  
+
