@@ -3,6 +3,7 @@
 #include <stddef.h>
 #include "io.h"
 #include <stdlib.h>
+#include <string.h>
 
 //#include "main.h"
 
@@ -14,22 +15,31 @@ extern char sortie[100];
 
 
 void ecriture(char output[100], byte *data, int taille, int decryption) {
-            FILE* out = NULL;
+            printf("Ecriture du fichier\n");
+            /*FILE* out = NULL;
             out = fopen((output), "w");
             
             //byte test1[16] = {0xd4, 0x27, 0x11, 0xae, 0xe0, 0xbf, 0x98, 0xf1, 0xb8, 0xb4, 0x5d, 0xe5, 0x1e, 0x41, 0x52, 0x32};
             
             int difference = 0;
+            int eval = 0;
             if(decryption == 1) {
+                #ifndef EVAL
                 difference = data[taille-1]+1;
+                #endif
+                #ifdef EVAL
+                long int *fileLen = data; 
+                difference = taille - *fileLen;
+                eval = 4;
+                #endif
             }
 
             if (difference>16) {
                 difference = 0; // si la clé n'est pas la bonne, le padding est faux, on écrit alors jsute le résultat
             } 
             
-            fwrite(data, (taille-difference), 1, out);
-            fclose(out);
+            fwrite(&data[eval], (taille-difference), 1, out);
+            fclose(out);*/
 }
 
 
@@ -48,39 +58,59 @@ void afficher_state(byte *state) {
 }
 
 
-byte *lecture(char input[100], int *taille, int mode) {
+byte *lecture(char input[100], long long int *taille, int mode) {
+    /* mode
+    = 0 ajoute uniquement des zeros a la fin
+    = 1 ajoute des zeros et code le nombre de zeros sur le dernier octet
+    = 2 ajoute aucun zero
+    */
     byte *flux;
-        //if (strcmp((entree), "") && strcmp((sortie), "")){
-            printf("1\n");
-            FILE* out = NULL;
-            out = fopen((input), "r+");
-            fseek(out, 0, SEEK_END);
-            int file_length = ftell(out);
+    FILE* out = NULL;
+    out = fopen((input), "r+");
+    if(out == NULL){
+        printf("Erreur lors de l'ouverture du fichier");
+        return NULL;
+    }
+    fseek(out, 0, SEEK_END);
+    long long int file_length = ftell(out);
 
-            if(mode == 1) {
-                file_length++; // Ajout d'un byte pour coder le padding
-            }
-            printf("%d\n", file_length);
-            
-            int difference = 0;
-            if (((file_length %16) != 0) && (mode !=2)) {
-                difference = 16-(file_length % 16);
-            }
-            
-            int length;
-            length = file_length + difference;
+    #ifndef EVAL
+    if(mode == 1) {
+        file_length++; // Ajout d'un byte pour coder le padding
+    }
+    #else
+    file_length += 4;
+    #endif
+    
+    int difference = 0;
+    if (((file_length %16) != 0) && (mode !=2)) {
+        difference = 16-(file_length % 16);
+    }
+    
+    long long int length;
+    length = file_length + difference;
 
-            flux= calloc(sizeof(byte)* length, 1);
-            fseek(out, 0, SEEK_SET);
-            fread(flux, 1, file_length, out);
-            if(mode == 1) {
-                flux[length-1] = difference; //Ajout du padding sur le dernier byte
-            }
+    // Place pour encode la taille au début du fichier
+    // Mode eval pour respecter la facon de coder la taille du fichier
+    int eval = 0;
+    #ifdef EVAL
+        eval = 4;
+    #endif
+    flux= calloc(sizeof(byte)* length, 1);
+    fseek(out, 0, SEEK_SET);
+    fread(&flux[eval], 1, file_length, out);
+    if(mode == 1) {
+        #ifndef EVAL
+        flux[length-1] = difference; //Ajout du padding sur le dernier byte
+        #endif
+        #ifdef EVAL
+        long int fileLen = (long int) file_length;
+        memcpy(flux, &fileLen, 4);
+        #endif
 
-            //fwrite(test1, sizeof(test1), 1, out);
-            fclose(out);
-            printf("2\n");
-    //}
+    }
+    fclose(out);
+    printf("Lecture du fichier terminée\n");
     *taille = length;
     return flux;
 }

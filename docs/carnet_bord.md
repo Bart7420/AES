@@ -155,3 +155,29 @@ Image encodée CBC
     - [x] Coder des fichiers bmp en ecb et cbc
     - [x] ui
   
+
+## Séance 7 (6/06/2023)
+
+Durant cette troisième séance de la deuxième période, nous avons continuer à optimiser le code, et à améliorer l'ihm.
+
+Nous avons essayé de calculer l'entropie de l'encodage des pixel de l'image ci dessus pour comparer les versions cbc et ecb d'encodage de fichier.
+Nous n'avons pas réussi à la calculer, cependant on a pu remarquer que les pixel était plus uniformément réparti avec la version cbc.
+
+Nous avons également adapté notre code afin de gérer l'encodage des fichiers de la même manière que celle attendue lors de l'évaluation, c'est-à-dire encoder la taille des fichiers sur 4 octets en début de fichier.
+
+Pour l'optimisation, nous avons implémenté une version d'aes utilisant les instructions aes du processeur ce qui nous a permis d'atteindre des vitesses dépassant le Go/s. Cependant nous devons adapter notre mesure des performances d'AES car la lecture et l'écriture des fichiers est lente (mesurer entre la  fin de la lecture et le début de l'écriture).
+Nous nous sommmes appuyés sur la documentation des instructions fournie par Intel : 
+> https://www.intel.com/content/dam/doc/white-paper/advanced-encryption-standard-new-instructions-set-paper.pdf
+
+Nous avons aussi essayé d'implémenter un système de hash en sha256 afin de pouvoir rentrer un mot de passe de n'importe quelle longueur en guise de "clé".
+
+
+**Objectifs de la séance :**
+- Ronan :
+    - [x] Implémentation AES avec les instructions processeur
+    - [x] Adaptation du code pour l'encodage des fichiers
+
+- Etienne :
+    - [x] Finaliser l'encodage des fichiers bmp
+    - [x] Calculer l'entropie
+    - [x] Améliorer l'ihm

@@ -33,13 +33,13 @@ void set_zero(byte *entree, int taille, byte code) {
 
 void entropie(byte *entree, int taille) {
 
-    int coefs[256];
+    int coefs[256] = {0};
 
-    coefs[0] = count(entree, taille, 0x00);
+    //coefs[0] = count(entree, taille, 0x00);
 
-    for (int i = 0; i < 255; i++)
+    for (int i = 0; i < 256; i++)
     {
-        for (int j = 0; i < taille; j++) {   
+        for (int j = 0; j < taille; j++) {   
             if (entree[j] == i) {
                 coefs[i]++;
             }
@@ -68,8 +68,11 @@ void entropie(byte *entree, int taille) {
         while (coefs[indice] == 0x00){
             indice++;
         }
-        int pi = coefs[indice]/ taille;
-        entropie -= pi*(/*log(pi)/log(2)*/ log2(pi));
+        printf("%d\n", coefs[indice]);
+        double pi = ((float) coefs[indice])/((float) taille);
+        printf("%f\n", pi);
+        entropie -= (pi==0)?0:pi*(/*log(pi)/log(2)*/ log2(pi));
+        indice++;
     }
     printf("entropie : %.3f\n", entropie);
 }
@@ -97,7 +100,7 @@ void entropie(byte *entree, int taille) {
 /* mode : 1=encode, 2=decode
  * version : 1=ecb, 2=cbc*/
 void bmp(int mode, int version, char path_entree[100], char path_sortie[100], byte cle[65]) {
-    int taille_fichier = 0;
+    long long int taille_fichier = 0;
     //printf("%s\n", argv[1]);
 
     byte *entree = lecture(path_entree, &taille_fichier, 2);
@@ -134,7 +137,7 @@ void bmp(int mode, int version, char path_entree[100], char path_sortie[100], by
     
     
 
-    int bin = 0;
+    long long int bin = 0;
     byte* entreecodee = lecture("temp.offset2", &bin, 0); // le fichier sans l'en tete
     memcpy(entree2, entreecodee, taille_fichier);
     ecriture(path_sortie, entree, taille_fichier+offset2, 0);

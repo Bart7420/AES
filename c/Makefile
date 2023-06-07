@@ -1,7 +1,5 @@
-gcc_options =  -I include/ -O3 -mavx2 -march=native#-fsanitize=address -fsanitize=undefined -fsanitize=shift -fsanitize=shift-exponent -fsanitize=shift-base -fsanitize=integer-divide-by-zero -fsanitize=unreachable -fsanitize=vla-bound -fsanitize=null -fsanitize=return -fsanitize=signed-integer-overflow -fsanitize=bounds -fsanitize=bounds-strict -fsanitize=bool -fsanitize=enum
-#gcc_options = -g -Wall -Wextra -I include/ -fsanitize=address -O3 -mavx2 -march=native
-gcc_options =  -I include/ -O3 -mavx2 -march=native -fsanitize=address -fsanitize=undefined -fsanitize=shift -fsanitize=shift-exponent -fsanitize=shift-base -fsanitize=integer-divide-by-zero -fsanitize=unreachable -fsanitize=vla-bound -fsanitize=null -fsanitize=return -fsanitize=signed-integer-overflow -fsanitize=bounds -fsanitize=bounds-strict -fsanitize=bool -fsanitize=enum
-#gcc_options = -g -Wall -Wextra -I include/ -fsanitize=address #-O3 -mavx2 -march=native
+#gcc_options =  -I include/ -O3 -mavx2 -march=native#-fsanitize=address -fsanitize=undefined -fsanitize=shift -fsanitize=shift-exponent -fsanitize=shift-base -fsanitize=integer-divide-by-zero -fsanitize=unreachable -fsanitize=vla-bound -fsanitize=null -fsanitize=return -fsanitize=signed-integer-overflow -fsanitize=bounds -fsanitize=bounds-strict -fsanitize=bool -fsanitize=enum
+gcc_options = -g -Wall -Wextra -I include/ -msse4.1 -maes -O3 -mavx2 -march=native #-fsanitize=address
 
 flags = `pkg-config --cflags gtk+-3.0`
 libs = `pkg-config --libs gtk+-3.0`
@@ -26,12 +24,17 @@ ifeq ($(perf), 1)
 gcc_options += -D PERF=1
 endif
 
+eval = 0 # Perf
+ifeq ($(eval), 1)
+gcc_options += -D EVAL=1
+endif
+
 
 main: main.o aes.o tests.o conversion.o cmd_aes.o
 	gcc -o $@ $^ $(gcc_options)
 
 graphic_aes: graphic_aes.o io.o callbacks.o aes.o conversion.o cbc.o ecb.o bmp.o
-	gcc -o $@ $^ $(gcc_options) $(libs) $(flags) $(l) $(f)
+	gcc -o $@ $^ $(gcc_options) $(libs) $(flags) $(l) $(f) -lm
 
 cbc_aes: cbc_aes.o aes.o conversion.o cbc.o io.o
 	gcc -o $@ $^ $(gcc_options)

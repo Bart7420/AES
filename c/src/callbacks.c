@@ -139,12 +139,12 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
     
 
     //taille fichier
-    int file_length;
+    long long int file_length;
     byte *data = NULL; // on utilise pas ici
     data = lecture(entree, &file_length, 0);
 
     char text_taille[100] = "";
-    sprintf(text_taille, "Taille encodé :%d\n\r", file_length);
+    sprintf(text_taille, "Taille encodé :%lld\n\r", file_length);
 
     char text_temps[100] = "";
     sprintf(text_temps, "Temps : %.3f s\n\r", temps);
@@ -214,19 +214,19 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
   
 
     //taille fichier
-    int file_length;
+    long long int file_length;
     byte *data = NULL; // on utilise pas ici
     data = lecture(entree, &file_length, 0);
 
     char text_taille[100] = "";
-    sprintf(text_taille, "Taille décodé :%d\n\r", file_length);
+    sprintf(text_taille, "Taille décodé :%lld\n\r", file_length);
 
     char text_temps[100] = "";
     sprintf(text_temps, "Temps : %ld s\n\r", temps);
 
     char text_vitesse[100] = "";
     if(temps == 0) {temps++;}
-    sprintf(text_vitesse, "Vitesse : %ld mo/s\n\r", ((file_length / 1000000) / temps));
+    sprintf(text_vitesse, "Vitesse : %lld mo/s\n\r", ((file_length / 1000000) / temps));
 
     vte_terminal_feed(term, text_taille, 100);
     vte_terminal_feed(term, text_temps, 100);

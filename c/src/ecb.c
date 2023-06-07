@@ -12,7 +12,7 @@ void chiffrer_ecb(char input[100], char output[100], byte keyAes[65]){
     // Key
     int keyLength = strlen((char*) keyAes)/4;
 
-    int fileLength = 0;
+    long long int fileLength = 0;
     byte *data = NULL;
 
     data = lecture(input, &fileLength, 1);
@@ -28,7 +28,7 @@ void chiffrer_ecb(char input[100], char output[100], byte keyAes[65]){
         nbRound = 14;
     }
 
-    byte *extandedKey = keyExpansion(keyAes, keyLength, nbRound);
+    const byte *extandedKey = keyExpansion(keyAes, keyLength, nbRound);
 
 
     for (long long int i = 0; i < fileLength; i+=16)
@@ -45,7 +45,7 @@ void dechiffrer_ecb(char input[100], char output[100], byte keyAes[65]){
     // Key
     int keyLength = strlen((char*) keyAes)/4;
 
-    int fileLength = 0;
+    long long int fileLength = 0;
     byte *data = NULL;
 
     data = lecture(input, &fileLength, 0);
@@ -62,7 +62,7 @@ void dechiffrer_ecb(char input[100], char output[100], byte keyAes[65]){
         nbRound = 14;
     }
 
-    byte *extandedKey = keyExpansion(keyAes, keyLength, nbRound);
+    const byte *extandedKey = keyExpansion(keyAes, keyLength, nbRound);
 
     for (long long int i = (fileLength-16); (i >= 0) && (fileLength>16); i -= 16)
     {

@@ -1,7 +1,7 @@
 typedef unsigned char byte;
 void subBytes(byte *state);
 void invSubBytes(byte *state);
-void addRoundKey(byte *state, byte *key);
+void addRoundKey(byte *state, const byte *key);
 void shiftRows(byte *state);
 void invShiftRows(byte *state);
 void mixColumn(byte *state);
