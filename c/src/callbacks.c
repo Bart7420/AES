@@ -103,6 +103,7 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
     //mesure du temps
     struct timeval debut;
     struct timeval fin;
+    double tempsAes = 0;
     VteTerminal *term = widgets->p_vte;
     vte_terminal_feed(term, "Endodage ...\n\r", 14);
     sleep(1);
@@ -116,7 +117,7 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
       if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_case_bmp))==TRUE) {
         bmp(1, 2, entree, sortie, key);
       } else {
-        chiffrer_cbc(entree, sortie, key);
+        tempsAes = chiffrer_cbc(entree, sortie, key);
       }
       
     }
@@ -125,7 +126,7 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
       if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_case_bmp))==TRUE) {
         bmp(1, 1, entree, sortie, key);
       } else {
-        chiffrer_ecb(entree, sortie, key);
+        tempsAes = chiffrer_ecb(entree, sortie, key);
       }
       
     }
@@ -142,22 +143,30 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
     long long int file_length;
     byte *data = NULL; // on utilise pas ici
     data = lecture(entree, &file_length, 0);
+    free(data);
 
     char text_taille[100] = "";
     sprintf(text_taille, "Taille encodé :%lld\n\r", file_length);
 
     char text_temps[100] = "";
-    sprintf(text_temps, "Temps : %.3f s\n\r", temps);
+    sprintf(text_temps, "Temps total : %.3f s\n\r", temps);
 
     char text_vitesse[100] = "";
     if (temps == 0) { temps++;}
-    sprintf(text_vitesse, "Vitesse : %.6f mo/s\n\r", ((file_length / 1e6) / temps));
+    sprintf(text_vitesse, "Vitesse totale : %.3f mo/s\n\r", ((file_length / 1e6) / temps));
+
+    char text_temps2[100] = "";
+    sprintf(text_temps2, "Temps AES : %.3f s\n\r", tempsAes);
+
+    char text_vitesse2[100] = "";
+    if (tempsAes == 0) { tempsAes++;}
+    sprintf(text_vitesse2, "Vitesse AES : %.3f mo/s\n\r", ((file_length / 1e6) / tempsAes));
 
     vte_terminal_feed(term, text_taille, 100);
     vte_terminal_feed(term, text_temps, 100);
     vte_terminal_feed(term, text_vitesse, 100);
-
-    vte_terminal_feed(term, text_vitesse, 100);
+    vte_terminal_feed(term, text_temps2, 100);
+    vte_terminal_feed(term, text_vitesse2, 100);
 
   }
   (void) appelant;
@@ -185,20 +194,22 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
 
 
     //mesure du temps
-    time_t debut;
-    time_t fin;
+    struct timeval debut;
+    struct timeval fin;
+    double tempsAes = 0;
 
     VteTerminal *term = widgets->p_vte;
     vte_terminal_feed(term, "Decodage ...\n\r", 14);
 
     memcpy(key, cle, taille_cle);
-    time(&debut);
+    gettimeofday(&debut, 0);
+
     if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_radio_btn_cbc))==TRUE) {
       printf("mode choisi : cbc\n");
       if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_case_bmp))==TRUE) {
         bmp(2, 2, entree, sortie, key);
       } else {
-        dechiffrer_cbc(entree, sortie, key);
+        tempsAes = dechiffrer_cbc(entree, sortie, key);
       }
     }
     if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_radio_btn_ebc))==TRUE) {
@@ -206,11 +217,13 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
       if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_case_bmp))==TRUE) {
         bmp(2, 1, entree, sortie, key);
       } else {
-        dechiffrer_ecb(entree, sortie, key);
+        tempsAes = dechiffrer_ecb(entree, sortie, key);
       }
     }
-    time(&fin);
-    time_t temps = fin-debut;
+    gettimeofday(&fin, 0);
+    long secondes = fin.tv_sec - debut.tv_sec;
+    long microsecondes = fin.tv_usec - debut.tv_usec;
+    double temps = secondes + microsecondes*1e-6;
   
 
     //taille fichier
@@ -222,16 +235,24 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
     sprintf(text_taille, "Taille décodé :%lld\n\r", file_length);
 
     char text_temps[100] = "";
-    sprintf(text_temps, "Temps : %ld s\n\r", temps);
+    sprintf(text_temps, "Temps total : %.3f s\n\r", temps);
 
     char text_vitesse[100] = "";
     if(temps == 0) {temps++;}
-    sprintf(text_vitesse, "Vitesse : %lld mo/s\n\r", ((file_length / 1000000) / temps));
+    sprintf(text_vitesse, "Vitesse totale : %.3f mo/s\n\r", ((file_length / 1000000) / temps));
+
+    char text_temps2[100] = "";
+    sprintf(text_temps2, "Temps AES : %.3f s\n\r", tempsAes);
+
+    char text_vitesse2[100] = "";
+    if(tempsAes == 0) {tempsAes++;}
+    sprintf(text_vitesse2, "Vitesse AES : %.3f mo/s\n\r", ((file_length / 1000000) / tempsAes));
 
     vte_terminal_feed(term, text_taille, 100);
     vte_terminal_feed(term, text_temps, 100);
     vte_terminal_feed(term, text_vitesse, 100);
-
+    vte_terminal_feed(term, text_temps2, 100);
+    vte_terminal_feed(term, text_vitesse2, 100);
 
   }
   

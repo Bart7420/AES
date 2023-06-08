@@ -61,8 +61,8 @@ void addRoundKey(byte *state, const byte *key) {
     }*/
     __m128i* state128 = (__m128i*) state;
     __m128i* key128 = (__m128i*) key;
-    __m128i xor_result = _mm_xor_si128(*state128, *key128);
-    _mm_store_si128(state128, xor_result);
+    *state128 = _mm_xor_si128(*state128, *key128);
+    //_mm_store_si128(state128, xor_result);
 }
 
 
@@ -226,13 +226,14 @@ byte *keyExpansion(byte *key, int keyLength, int nbRound) {
 
     byte *w = malloc(4*(nbRound+1)*4*(sizeof (byte)));
 
-    int i = 0;
+    /*int i = 0;
     while ( i < keyLength) {
         memcpy(&w[4*i], &key[4*i], 4*sizeof (byte));
         i++;
-    }
+    }*/
+    memcpy(w, key, keyLength*4);
 
-    i = keyLength;
+    int i = keyLength;
 
     byte temp[4];
     while (i < 4 * (nbRound+1))

@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <wmmintrin.h> 
+#include <sys/time.h>
 
 #include "cbc.h"
 #include "aes.h"
@@ -9,7 +10,7 @@
 
 extern byte key[65];
 
-void chiffrer_cbc(char input[100], char output[100], byte keyAes[65]) {
+double chiffrer_cbc(char input[100], char output[100], byte keyAes[65]) {
 
     // Key
     int keyLength = strlen((char*) keyAes)/4;
@@ -19,6 +20,11 @@ void chiffrer_cbc(char input[100], char output[100], byte keyAes[65]) {
     byte *data = NULL;
 
     data = lecture(input, &fileLength, 1);
+
+    //Mesure du temps
+    struct timeval debut;
+    struct timeval fin;
+    gettimeofday(&debut, 0);
 
     byte *state = data;
 
@@ -31,7 +37,7 @@ void chiffrer_cbc(char input[100], char output[100], byte keyAes[65]) {
         nbRound = 14;
     }
 
-    const byte *extandedKey = keyExpansion(keyAes, keyLength, nbRound);
+    byte *extandedKey = keyExpansion(keyAes, keyLength, nbRound);
     
     byte initVector[16] = "";
     getInitVector(initVector);
@@ -46,11 +52,18 @@ void chiffrer_cbc(char input[100], char output[100], byte keyAes[65]) {
     }
 
     free(extandedKey);
+
+    gettimeofday(&fin, 0);
+    long secondes = fin.tv_sec - debut.tv_sec;
+    long microsecondes = fin.tv_usec - debut.tv_usec;
+    double temps = secondes + microsecondes*1e-6;
+
     ecriture(output, state, fileLength, 0);
     free(data);
-    
+
+    return temps;
 }
-void dechiffrer_cbc(char input[100], char output[100], byte keyAes[65]){
+double dechiffrer_cbc(char input[100], char output[100], byte keyAes[65]){
     // Key
     int keyLength = strlen((char*) keyAes)/4;
 
@@ -59,6 +72,11 @@ void dechiffrer_cbc(char input[100], char output[100], byte keyAes[65]){
     byte *data = NULL;
 
     data = lecture(input, &fileLength, 0);
+
+    //Mesure du temps
+    struct timeval debut;
+    struct timeval fin;
+    gettimeofday(&debut, 0);
 
     byte *state = data;
 
@@ -72,7 +90,7 @@ void dechiffrer_cbc(char input[100], char output[100], byte keyAes[65]){
         nbRound = 14;
     }
 
-    const byte *extandedKey = keyExpansion(keyAes, keyLength, nbRound);
+    byte *extandedKey = keyExpansion(keyAes, keyLength, nbRound);
 
     byte initVector[16] = "";
     getInitVector(initVector);
@@ -85,10 +103,18 @@ void dechiffrer_cbc(char input[100], char output[100], byte keyAes[65]){
     invcipher_cbc(extandedKey, state, nbRound);
     stateXor(state, initVector);
 
+
     free(extandedKey);
+
+    gettimeofday(&fin, 0);
+    long secondes = fin.tv_sec - debut.tv_sec;
+    long microsecondes = fin.tv_usec - debut.tv_usec;
+    double temps = secondes + microsecondes*1e-6;
+
     ecriture(output, state, fileLength, 1);
     free(data);
 
+    return temps;
 }
 
 void getInitVector(byte *vector){
@@ -111,8 +137,8 @@ void stateXor(byte state[16], byte xorwith[16]){
 
     __m128i* state128 = (__m128i*) state;
     __m128i* xorwith128 = (__m128i*) xorwith;
-    __m128i xor_result = _mm_xor_si128(*state128, *xorwith128);
-    _mm_store_si128(state128, xor_result);
+    *state128 = _mm_xor_si128(*state128, *xorwith128);
+    //_mm_store_si128(state128, xor_result);
     
     
 }
@@ -141,17 +167,17 @@ void cipher_cbc(byte *extandedKey, byte *state, int nbRound){
     __m128i* key128 = (__m128i*) extandedKey;
 
     //addroundkey
-    __m128i temp = _mm_xor_si128(*state128, *key128);
-    _mm_store_si128(state128, temp);
+    *state128 = _mm_xor_si128(*state128, *key128);
+    //_mm_store_si128(state128, temp);
 
     for(int round = 1; round < nbRound; round++){
-        key128 = (__m128i*) &extandedKey[4*(round*4)];
-        temp = _mm_aesenc_si128(*state128, *key128);
-        _mm_store_si128(state128, temp);
+        //key128 = (__m128i*) &extandedKey[4*(round*4)];
+        *state128 = _mm_aesenc_si128(*state128, key128[round]);
+        //_mm_store_si128(state128, temp);
     }
-    key128 = (__m128i*) &extandedKey[4*(4*nbRound)];
-    temp = _mm_aesenclast_si128(*state128, *key128);
-    _mm_store_si128(state128, temp);
+    //key128 = (__m128i*) &extandedKey[4*(4*nbRound)];
+    *state128 = _mm_aesenclast_si128(*state128, key128[nbRound]);
+    //_mm_store_si128(state128, temp);
 
     #endif
 }
@@ -225,20 +251,20 @@ void invcipher_cbc(byte *extandedKey, byte *state, int nbRound){
     //addroundkey
     //key128 = (__m128i*) &extandedKey[4*(4*nbRound)];
     key128 = (__m128i*) key_schedule_decrypt;
-    __m128i temp = _mm_xor_si128(*state128, *key128);
-    _mm_store_si128(state128, temp);
+    *state128 = _mm_xor_si128(*state128, *key128);
+   // _mm_store_si128(state128, temp);
 
 
     for(int round = 1; round < nbRound; round++){
         //key128 = (__m128i*) &extandedKey[4*(round*4)];
-        key128 = (__m128i*) &key_schedule_decrypt[4*(round*4)];
-        temp = _mm_aesdec_si128(*state128, *key128);
-        _mm_store_si128(state128, temp);
+        //key128 = (__m128i*) &key_schedule_decrypt[4*(round*4)];
+        *state128 = _mm_aesdec_si128(*state128, key128[round]);
+        //_mm_store_si128(state128, temp);
     }
     //key128 = (__m128i*) extandedKey;
-    key128 = (__m128i*) &key_schedule_decrypt[4*(4*nbRound)];
-    temp = _mm_aesdeclast_si128(*state128, *key128);
-    _mm_store_si128(state128, temp);
+    //key128 = (__m128i*) &key_schedule_decrypt[4*(4*nbRound)];
+    *state128 = _mm_aesdeclast_si128(*state128, key128[nbRound]);
+    //_mm_store_si128(state128, temp);
 
     #endif
 }

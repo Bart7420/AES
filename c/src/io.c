@@ -16,7 +16,7 @@ extern char sortie[100];
 
 void ecriture(char output[100], byte *data, int taille, int decryption) {
             printf("Ecriture du fichier\n");
-            /*FILE* out = NULL;
+            FILE* out = NULL;
             out = fopen((output), "w");
             
             //byte test1[16] = {0xd4, 0x27, 0x11, 0xae, 0xe0, 0xbf, 0x98, 0xf1, 0xb8, 0xb4, 0x5d, 0xe5, 0x1e, 0x41, 0x52, 0x32};
@@ -39,7 +39,7 @@ void ecriture(char output[100], byte *data, int taille, int decryption) {
             } 
             
             fwrite(&data[eval], (taille-difference), 1, out);
-            fclose(out);*/
+            fclose(out);
 }
 
 
@@ -78,7 +78,8 @@ byte *lecture(char input[100], long long int *taille, int mode) {
     if(mode == 1) {
         file_length++; // Ajout d'un byte pour coder le padding
     }
-    #else
+    #endif
+    #ifdef EVAL
     file_length += 4;
     #endif
     
