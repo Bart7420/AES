@@ -203,6 +203,7 @@ void xor(byte word1[4], byte word2[4], byte result[4]) {
 
 byte *keyExpansion(byte *key, int keyLength, int nbRound) {
 
+
     byte *w = malloc(4*(nbRound+1)*4*(sizeof (byte)));
 
     /*int i = 0;

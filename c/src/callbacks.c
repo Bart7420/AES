@@ -182,17 +182,8 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
   // gestioon de la clé
 
   //int taille_cle = (int) gtk_entry_get_text_length(widgets->p_text);
-  int taille_cle = 32; // 32 char qui font 256 bits
+  int taille_cle = 64; // 32 char qui font 256 bits
   char *cle_utilisateur = gtk_entry_get_text(widgets->p_text);
-
-
-
-
-
-
-
-
-
 
 
 /*
@@ -280,6 +271,7 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
     
 
     memcpy(key, cle, taille_cle);
+    printf("taille de la clé :::::::::::: %d\n", taille_cle);
     for (int i = 0; i < 32; i++)
     {
       printf("%x", cle[i]);
@@ -362,7 +354,7 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
 
 
   int ok = 1;
-  int taille_cle = 32;
+  int taille_cle = 64;
   char *cle_utilisateur = gtk_entry_get_text(widgets->p_text);
   char cle[65] = "";
   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgets->p_case_hexa))==TRUE) {

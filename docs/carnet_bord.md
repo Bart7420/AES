@@ -281,6 +281,8 @@ Sans le for :
 
 ```
 
+Nous comprenons alors la différence obtenue au temps d'execution. Il y a beaucoup moins d'appels avec les instructions processeur.
+
 **Objectifs de la séance :**
 - Ronan :
     - [x] 
