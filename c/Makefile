@@ -1,5 +1,5 @@
 #gcc_options =  -I include/ -O3 -mavx2 -march=native#-fsanitize=address -fsanitize=undefined -fsanitize=shift -fsanitize=shift-exponent -fsanitize=shift-base -fsanitize=integer-divide-by-zero -fsanitize=unreachable -fsanitize=vla-bound -fsanitize=null -fsanitize=return -fsanitize=signed-integer-overflow -fsanitize=bounds -fsanitize=bounds-strict -fsanitize=bool -fsanitize=enum
-gcc_options =  -I include/ -msse4.1 -maes -O3 -mavx2 -march=native  -Wall -Wextra -fsanitize=address -g -fsanitize=address -fsanitize=undefined -fsanitize=shift -fsanitize=shift-exponent -fsanitize=shift-base -fsanitize=integer-divide-by-zero -fsanitize=unreachable -fsanitize=vla-bound -fsanitize=null -fsanitize=return -fsanitize=signed-integer-overflow -fsanitize=bounds -fsanitize=bounds-strict -fsanitize=bool -fsanitize=enum 
+gcc_options =  -I include/ -msse4.1 -maes -O2 -g#-mavx2 -march=native#-Wall -Wextra -fsanitize=address -g -fsanitize=address -fsanitize=undefined -fsanitize=shift -fsanitize=shift-exponent -fsanitize=shift-base -fsanitize=integer-divide-by-zero -fsanitize=unreachable -fsanitize=vla-bound -fsanitize=null -fsanitize=return -fsanitize=signed-integer-overflow -fsanitize=bounds -fsanitize=bounds-strict -fsanitize=bool -fsanitize=enum 
 
 flags = `pkg-config --cflags gtk+-3.0`
 libs = `pkg-config --libs gtk+-3.0`
@@ -36,9 +36,9 @@ main: main.o aes.o tests.o conversion.o cmd_aes.o
 graphic_aes: graphic_aes.o io.o callbacks.o aes.o conversion.o cbc.o ecb.o bmp.o
 	gcc -o $@ $^ $(gcc_options) $(libs) $(flags) $(l) $(f) -lm
 
-cbc_aes: cbc_aes.o aes.o conversion.o cbc.o io.o
+cbc_aes: cbc_aes.o aes.o conversion.o cbc.o io.o conversion.o cbc.o
 	gcc -o $@ $^ $(gcc_options)
-ecb_aes: ecb_aes.o aes.o conversion.o cbc.o io.o ecb.o
+ecb_aes: ecb_aes.o aes.o conversion.o cbc.o io.o ecb.o conversion.o
 	gcc -o $@ $^ $(gcc_options)
 bmp_aes: bmp_aes.o io.o ecb.o aes.o cbc.o bmp.o conversion.o
 	gcc -o $@ $^ $(gcc_options) -lm

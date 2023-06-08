@@ -284,12 +284,14 @@ Sans le for :
 Nous comprenons alors la différence obtenue au temps d'execution. Il y a beaucoup moins d'appels avec les instructions processeur.
 
 
-De plus, nous avons résolu beaucoup de problèmes, notament des warngins pour rendre plus robuste notre code et rarifier les bugs.
+De plus, nous avons résolu beaucoup de problèmes, notament des warnings pour rendre plus robuste notre code et rarifier les bugs.
 
 
 **Objectifs de la séance :**
 - Ronan :
+    - [x] Optimisation et affichage performance AES
     - [x] Corrections de bugs
+    - [x] Correction warnings
 
 - Etienne :
     - [x] Gestion de l'entrée de mdp
