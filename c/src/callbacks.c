@@ -294,7 +294,7 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
     if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_radio_btn_cbc))==TRUE) {
       printf("mode choisi : cbc\n");
       if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_case_bmp))==TRUE) {
-        bmp(1, 2, entree, sortie, key);
+        bmp(1, 2, entree, sortie, key, taille_cle);
       } else {
         tempsAes = chiffrer_cbc(entree, sortie, key, taille_cle);
       }
@@ -425,7 +425,7 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
       printf("mode choisi : cbc\n");
       if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_case_bmp))==TRUE) {
         
-        bmp(2, 2, entree, sortie, key);
+        bmp(2, 2, entree, sortie, key, taille_cle);
       } else {
         tempsAes = dechiffrer_cbc(entree, sortie, key, taille_cle);
       }
