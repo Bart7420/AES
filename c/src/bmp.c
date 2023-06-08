@@ -117,7 +117,7 @@ void entropie(byte *entree, int taille) {
 
 /* mode : 1=encode, 2=decode
  * version : 1=ecb, 2=cbc*/
-void bmp(int mode, int version, char path_entree[100], char path_sortie[100], byte cle[65]) {
+void bmp(int mode, int version, char path_entree[100], char path_sortie[100], byte cle[65], int taille) {
     long long int taille_fichier = 0;
     //printf("%s\n", argv[1]);
 
@@ -133,9 +133,9 @@ void bmp(int mode, int version, char path_entree[100], char path_sortie[100], by
 
     if (mode == 1) {
         if (version == 2) {
-            chiffrer_cbc("temp.offset", "temp.offset2", cle, strlen((char*) cle));
+            chiffrer_cbc("temp.offset", "temp.offset2", cle, taille);
         } else if (version == 1) {
-            chiffrer_ecb("temp.offset", "temp.offset2", cle, strlen((char*) cle));
+            chiffrer_ecb("temp.offset", "temp.offset2", cle, taille);
         } /*else {
             printf("erreur dans la version");
             return 1;
