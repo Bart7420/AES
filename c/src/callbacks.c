@@ -182,7 +182,7 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
   // gestioon de la clé
 
   //int taille_cle = (int) gtk_entry_get_text_length(widgets->p_text);
-  int taille_cle = 32; // 32 char qui font 256 bits
+  int taille_cle = 64; // 32 char qui font 256 bits
   char *cle_utilisateur = gtk_entry_get_text(widgets->p_text);
 
 
@@ -394,7 +394,6 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
     printf("bbbbbbbbbbbbbbb\n");
     sha256(cle_utilisateur, taille_cle, cle);
     ok=1;
-    
   }
 
   
