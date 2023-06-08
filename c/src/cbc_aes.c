@@ -23,14 +23,14 @@ int main(int argc,char *argv[]){
 
     memcpy(input, argv[2], strlen(argv[2]));
     memcpy(output, argv[3], strlen(argv[3]));
-    memcpy(cle, argv[4], strlen(argv[4]));
+    strToWords(argv[4], cle, strlen(argv[4]));
 
 
     if (!strcmp(argv[1], "encode")) {
-        chiffrer_cbc(input, output, cle, strlen((char*) cle));
+        chiffrer_cbc(input, output, cle, strlen(argv[4]));
     }
     if (!strcmp(argv[1], "decode")) {
-        dechiffrer_cbc(input, output, cle, strlen((char*) cle));
+        dechiffrer_cbc(input, output, cle, strlen(argv[4]));
     }
 
 
