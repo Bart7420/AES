@@ -26,10 +26,10 @@ int main(int argc,char *argv[]){
 
 
     if (!strcmp(argv[1], "encode")) {
-        chiffrer_ecb(input, output, cle);
+        chiffrer_ecb(input, output, cle, strlen((char*) cle));
     }
     if (!strcmp(argv[1], "decode")) {
-        dechiffrer_ecb(input, output, cle);
+        dechiffrer_ecb(input, output, cle, strlen((char*) cle));
     }
 
 
