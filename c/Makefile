@@ -40,7 +40,7 @@ cbc_aes: cbc_aes.o aes.o conversion.o cbc.o io.o
 	gcc -o $@ $^ $(gcc_options)
 ecb_aes: ecb_aes.o aes.o conversion.o cbc.o io.o ecb.o
 	gcc -o $@ $^ $(gcc_options)
-bmp_aes: bmp_aes.o io.o ecb.o aes.o cbc.o bmp.o
+bmp_aes: bmp_aes.o io.o ecb.o aes.o cbc.o bmp.o conversion.o
 	gcc -o $@ $^ $(gcc_options) -lm
 
 
@@ -81,7 +81,7 @@ ecb.o: src/ecb.c include/ecb.h include/aes.h include/cbc.h include/io.h
 ecb_aes.o: src/ecb_aes.c include/ecb.h
 	gcc -c $(gcc_options) $<
 
-bmp_aes.o : src/bmp_aes.c include/bmp_aes.h include/bmp.h include/bmp.h
+bmp_aes.o : src/bmp_aes.c include/bmp_aes.h include/bmp.h include/bmp.h include/conversion.h
 	gcc -c $(gcc_options) $<
 
 bmp.o : src/bmp.c include/bmp.h include/io.h include/ecb.h
