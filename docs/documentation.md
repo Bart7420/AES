@@ -103,12 +103,12 @@ Permet de transformer une chaine de caractères hexacécimaux en liste de polyno
 Permet de changer la position des polynomes dans la liste des polynômes pour avoir la même configuration que la documentation
 
 
-## C
+## Deuxième parite en C
 
 Voici le fonctionnement et les modes de compilation possibles pour la parite c du projet.
 
 
-### AES sur un block
+### <u>AES sur un bloc </u>
 
 Compilation du main :
 
@@ -186,3 +186,27 @@ Usage : "mode" "version" "path entree" "path sortie" "cle" <br>
 
 C'est avec cette methode que l'on peut calculer l'entropie et observer le défaut de la méthode ecb, qui ne cache pas réelement les informations.
 
+
+
+### <u>Interface graphique</u>
+
+Nous avons implémenté une interface graphique pour rendre plus facile les manipulations de fichiers et le gestion de tous les modes d'AES. Elle se compile comme il suit :
+
+>```make graphic_aes -B``` <br>
+>```make cbc_graphic_aes eval=1 -B```
+
+Pulsieurs fonctionnalitées sont disponibles :
+
+- Choix de fichier d'entrée et de sortie
+- Deux modes d'entrée de clé d'encodage
+- Choix du mode d'encryption (ECB ou CBC)
+- Un mode l'encryption des fichiers BMP
+- Un affichage des statistiques d'encryption
+  
+#### Entrée de la clé :
+
+Deux options sont disponibles. Par défaut, l'utilisateur peut entrer un mot de passe de 100 caractère max pour l'encodage de ses fichiers. <br> Si la case ```HEXA``` est cochée, la clé entrée devra être en hexadécimal. Selon la taille de la clé, 32, 48 ou 64, le mode d'AES correspondant est choisi pour l'encodage.
+
+#### Mode BMP
+
+Si la case ```BMP``` est cochée, l'encodage garde l'en-tête du fichier bmp pour pouvoir l'ouvrir une fois codé pour visualiser la différence entre cbc et ecb.
