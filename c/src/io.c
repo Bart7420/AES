@@ -28,7 +28,7 @@ void ecriture(char output[100], byte *data, long long int taille, int decryption
                 difference = data[taille-1]+1;
                 #endif
                 #ifdef EVAL
-                int *fileLen = data; 
+                unsigned int *fileLen = (unsigned int*) data; 
                 difference = taille - *fileLen + 4; // Décalage des 4 premiers octets
                 eval = 4;
                 #endif
@@ -107,7 +107,7 @@ byte *lecture(char input[100], long long int *taille, int mode) {
         flux[length-1] = difference; //Ajout du padding sur le dernier byte
         #endif
         #ifdef EVAL
-        long int fileLen = (long int) file_length;
+        unsigned int fileLen = (unsigned int) file_length;
         memcpy(flux, &fileLen, 4);
         #endif
 
