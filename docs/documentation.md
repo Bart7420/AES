@@ -128,4 +128,45 @@ Ce mode de compilation execute la série de tests sur le programme aes
 
 ### Codage de fichiers
 
+
+Deux mode de codage des fichiers sont disponibles, le mode standard et le mode eval.
+
+__Mode standard__ <br>
+Le fichier est lu en ajoutant des zéros à la fin pour le completer de la taille d'une state, et le nombre de zéro rajoutés est placé comme valeur du dernier. Comme cela, lors du décodage, il suffit de récupérer cette valeur pour connaitre le nombre d'octets à retirer.
+
+__Mode éval__ <br>
+Ici, le fichier est lu sans prendre en compte la taille. On ajoute ensuite la taille du fichier sur les 4 premiers octets. On commplète alors avec des zero pour atteindre un multiple de 16 qui correspond à un nombre entier de state d'aes. C'est alors qu'on encode le résultat. Pour le décodage, c'est une fois tout décodé que l'on récupère la taille et récupérer le fichier d'origine.
+
+
 *__ECB__*
+
+Différents modes, mode eval et mode normal :
+
+>```make ecb_aes -B``` <br>
+>```make ecb_aes eval=1 -B```
+
+
+Usage : "mode" "path entree" "path sortie" "cle" <br>
+mode : "encode", "decode"
+
+Permet d'encoder et de décoder un fichier en utilisant la méthode ecb.<br>
+Le mode eval place le taille du fichier sur les 4 premiers octects du fichier encodé.
+Sans ce mode, c'est le méthode standard qui est utilisée.
+
+
+*__CBC__*
+
+Différents modes, mode eval et mode normal :
+
+>```make cbc_aes -B``` <br>
+>```make cbc_aes eval=1 -B```
+
+
+Usage : "mode" "path entree" "path sortie" "cle" <br>
+mode : "encode", "decode"
+
+Permet d'encoder et de décoder un fichier en utilisant la méthode ecb.<br>
+Le mode eval place le taille du fichier sur les 4 premiers octects du fichier encodé.
+Sans ce mode, c'est le méthode standard qui est utilisée.
+
+
