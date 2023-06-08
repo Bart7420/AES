@@ -142,9 +142,9 @@ void bmp(int mode, int version, char path_entree[100], char path_sortie[100], by
         }*/
     } else if (mode == 2) {
         if (version == 2) {
-            dechiffrer_cbc("temp.offset", "temp.offset2", cle, strlen((char*) cle));
+            dechiffrer_cbc("temp.offset", "temp.offset2", cle, taille);
         } else if (version == 1) {
-            dechiffrer_ecb("temp.offset", "temp.offset2", cle, strlen((char*) cle));
+            dechiffrer_ecb("temp.offset", "temp.offset2", cle, taille);
         }/* else {
             printf("erreur dans la version");
             return 1;
