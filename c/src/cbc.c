@@ -10,11 +10,7 @@
 
 extern byte key[65];
 
-double chiffrer_cbc(char input[100], char output[100], byte keyAes[65]) {
-
-    // Key
-    int keyLength = strlen((char*) keyAes)/4;
-
+double chiffrer_cbc(char input[100], char output[100], byte keyAes[65], int keyLength) {
 
     long long int fileLength = 0;
     byte *data = NULL;
@@ -63,10 +59,7 @@ double chiffrer_cbc(char input[100], char output[100], byte keyAes[65]) {
 
     return temps;
 }
-double dechiffrer_cbc(char input[100], char output[100], byte keyAes[65]){
-    // Key
-    int keyLength = strlen((char*) keyAes)/4;
-
+double dechiffrer_cbc(char input[100], char output[100], byte keyAes[65], int keyLength){
 
     long long int fileLength = 0;
     byte *data = NULL;
