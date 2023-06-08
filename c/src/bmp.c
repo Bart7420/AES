@@ -158,7 +158,7 @@ void bmp(int mode, int version, char path_entree[100], char path_sortie[100], by
     long long int bin = 0;
     byte* entreecodee = lecture("temp.offset2", &bin, 0); // le fichier sans l'en tete
     memcpy(entree2, entreecodee, taille_fichier);
-    ecriture(path_sortie, entree, taille_fichier+offset2, 0);
+    ecriture(path_sortie, entree, taille_fichier, 0);
 
     // entreecodee : data du fichiern encodé (sans l'én tete)
 

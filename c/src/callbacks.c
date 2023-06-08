@@ -270,7 +270,7 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
     double tempsAes = 0;
     VteTerminal *term = widgets->p_vte;
     vte_terminal_feed(term, "Endodage ...\n\r", 14);
-    sleep(1);
+    sleep(2);
     
 
     memcpy(key, cle, taille_cle/2);

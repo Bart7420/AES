@@ -17,3 +17,12 @@ make -B cbc_aes
 diff -s 100M.iso 100decode.cbc
 
 make bmp_aes -B
+./bmp_aes encode ecb entree.bmp bmpcode.ecb aaaaaaaaaaaaaaaa
+./bmp_aes decode ecb bmpcode.ecb bmpdecode.ecb aaaaaaaaaaaaaaaa
+diff -s entree.bmp bmpdecode.ecb
+
+
+./bmp_aes encode cbc entree.bmp bmpcode.cbc aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+./bmp_aes decode cbc bmpcode.cbc bmpdecode.cbc aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+diff -s entree.bmp bmpdecode.cbc
+
