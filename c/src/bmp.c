@@ -135,18 +135,18 @@ void bmp(int mode, int version, char path_entree[100], char path_sortie[100], by
 
     if (mode == 1) {
         if (version == 2) {
-            chiffrer_cbc("temp.offset", "temp.offset2", cle );
+            chiffrer_cbc("temp.offset", "temp.offset2", cle, strlen(cle));
         } else if (version == 1) {
-            chiffrer_ecb("temp.offset", "temp.offset2", cle );
+            chiffrer_ecb("temp.offset", "temp.offset2", cle, strlen(cle));
         } /*else {
             printf("erreur dans la version");
             return 1;
         }*/
     } else if (mode == 2) {
         if (version == 2) {
-            dechiffrer_cbc("temp.offset", "temp.offset2", cle );
+            dechiffrer_cbc("temp.offset", "temp.offset2", cle, strlen(cle));
         } else if (version == 1) {
-            dechiffrer_ecb("temp.offset", "temp.offset2", cle );
+            dechiffrer_ecb("temp.offset", "temp.offset2", cle, strlen(cle));
         }/* else {
             printf("erreur dans la version");
             return 1;

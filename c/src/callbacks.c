@@ -301,7 +301,7 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
       if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_case_bmp))==TRUE) {
         bmp(1, 2, entree, sortie, key);
       } else {
-        tempsAes = chiffrer_cbc(entree, sortie, key);
+        tempsAes = chiffrer_cbc(entree, sortie, key, taille_cle);
       }
       
     }
@@ -310,7 +310,7 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
       if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_case_bmp))==TRUE) {
         bmp(1, 1, entree, sortie, key);
       } else {
-        tempsAes = chiffrer_ecb(entree, sortie, key);
+        tempsAes = chiffrer_ecb(entree, sortie, key, taille_cle);
       }
       
     }
@@ -433,7 +433,7 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
         
         bmp(2, 2, entree, sortie, key);
       } else {
-        tempsAes = dechiffrer_cbc(entree, sortie, key);
+        tempsAes = dechiffrer_cbc(entree, sortie, key, taille_cle);
       }
     }
     if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_radio_btn_ebc))==TRUE) {
@@ -441,7 +441,7 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
       if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_case_bmp))==TRUE) {
         bmp(2, 1, entree, sortie, key);
       } else {
-        tempsAes = dechiffrer_ecb(entree, sortie, key);
+        tempsAes = dechiffrer_ecb(entree, sortie, key, taille_cle);
       }
     }
     gettimeofday(&fin, 0);
