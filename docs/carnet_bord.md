@@ -158,7 +158,7 @@ Image encodée CBC
 
 ## Séance 7 (6/06/2023)
 
-Durant cette troisième séance de la deuxième période, nous avons continuer à optimiser le code, et à améliorer l'ihm.
+Durant cette troisième séance de la deuxième période, nous avons continué à optimiser le code, et à améliorer l'ihm.
 
 Nous avons essayé de calculer l'entropie de l'encodage des pixel de l'image ci dessus pour comparer les versions cbc et ecb d'encodage de fichier.
 Nous n'avons pas réussi à la calculer, cependant on a pu remarquer que les pixel était plus uniformément réparti avec la version cbc.
@@ -181,3 +181,48 @@ Nous avons aussi essayé d'implémenter un système de hash en sha256 afin de po
     - [x] Finaliser l'encodage des fichiers bmp
     - [x] Calculer l'entropie
     - [x] Améliorer l'ihm
+
+
+## Séance 8 (7/06/2023)
+
+Durant cette dernière séance de projet, nous allons finaliser l'encrypatge des fichiers pour correspondre au mode d'encryptage de l'évaluation, nettoyer et réorganiser le code
+
+Nous avons mesurer l'augmentation des performances avec l'ajout des instructions processeur. Ci-dessous deux implémentations de addRoundKey, une avec une boucle for de base, et une autre avec des instructions processeur qui permettent dirrectement de faire un XOR sur 128 bits.
+
+Voici le code avec un for :
+
+```c
+void addRoundKey(byte *state, const byte *key) { 
+    for (int i = 0; i < 16; i++) {
+        state[i] = state[i] ^ key[i];
+    }
+}
+```
+
+Et le code avec les instrucations processeurs :
+
+```c
+void addRoundKey(byte *state, const byte *key) {
+    __m128i* state128 = (__m128i*) state;
+    __m128i* key128 = (__m128i*) key;
+    __m128i xor_result = _mm_xor_si128(*state128, *key128);
+    _mm_store_si128(state128, xor_result);
+}
+```
+
+Les tests sont effectués sur 100.000.000 de tours.
+| Mode |  Temps |
+|--:|:----------|
+| for                    | 0.274662 |
+| instruction processeur | 0.062970 |
+
+Nous observons bien que le temps est ralativement diminué avec les instructions processeurs. En effet, pour encoder un fichier de 1.8mo, nous avions trouvé à l'aide de vallgrind que 1.000.000
+
+**Objectifs de la séance :**
+- Ronan :
+    - [x] 
+
+- Etienne :
+    - [x] Gestion de l'entrée de mdp
+    - [x] Mesure des performances et comparaison
+    - [ ] 

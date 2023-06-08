@@ -1,5 +1,5 @@
 #gcc_options =  -I include/ -O3 -mavx2 -march=native#-fsanitize=address -fsanitize=undefined -fsanitize=shift -fsanitize=shift-exponent -fsanitize=shift-base -fsanitize=integer-divide-by-zero -fsanitize=unreachable -fsanitize=vla-bound -fsanitize=null -fsanitize=return -fsanitize=signed-integer-overflow -fsanitize=bounds -fsanitize=bounds-strict -fsanitize=bool -fsanitize=enum
-gcc_options = -g -Wall -Wextra -I include/ -msse4.1 -maes -O3 -mavx2 -march=native #-fsanitize=address
+gcc_options =  -I include/ -msse4.1 -maes -O3 -mavx2 -march=native -fsanitize=address
 
 flags = `pkg-config --cflags gtk+-3.0`
 libs = `pkg-config --libs gtk+-3.0`

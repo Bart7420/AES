@@ -354,7 +354,7 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
   int ok = 1;
   int taille_cle = 32;
   char *cle_utilisateur = gtk_entry_get_text(widgets->p_text);
-  char cle[65];
+  char cle[65] = "";
   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgets->p_case_hexa))==TRUE) {
     
     taille_cle = (int) gtk_entry_get_text_length(widgets->p_text);
@@ -371,10 +371,11 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
       } 
     }
     if (ok==1) {
-      for (int i = 0; i < taille_cle; i++) {
-        cle[i] = transform(cle_utilisateur[i]);
-        printf("%x", cle[i]);
-      }
+      //for (int i = 0; i < taille_cle; i++) {
+        //cle[i] = transform(cle_utilisateur[i]);
+      //  printf("%x", cle[i]);
+      //}
+      strToWords(cle_utilisateur, cle, taille_cle);
     }
     
 
@@ -411,7 +412,7 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
     printf("taille de la key : %d\n", strlen(key));
     printf("taille de la cle : %d\n", strlen(cle));
     for (int i = 0; i < taille_cle; i++) {
-        printf("%x", cle[i]);
+        printf("%x ", cle[i]);
       }
     time(&debut);
     if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_radio_btn_cbc))==TRUE) {
