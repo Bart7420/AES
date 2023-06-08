@@ -1,10 +1,13 @@
-# Documentation du projet AES partie Haskell
+# Documentation du projet AES 
+
+
+## Haskell
 
 Dans ce document est présenté nos choix de code ainsi que des exemples expliquant le fonctionnement de notre programme
 
 <br>
 
-## Fonctionnement AES
+### Fonctionnement AES
 
 Les deux fonctions principales sont les suivantes, **cipher_aes** et **invcipher_aes**.
 
@@ -35,7 +38,7 @@ Pour changer de mode, il faut commenter et décommenter les bonnes lignes de con
 >```
 **Note :** les "lettres" représentant les caractères hedadécimaux doivent êtres en majuscules
 
-## Choix de la représentation des données
+### Choix de la représentation des données
 
 Nous avons plusieurs fonctions annexes autres que les fonctions de base d'aes :
 
@@ -86,7 +89,7 @@ Premet d'extraire une clé de trour de la clé étendue
 
 <br>
 
-## Autres fonctions permettant l'affichage et la manipulation des élements
+### Autres fonctions permettant l'affichage et la manipulation des élements
 
 <br>
 
@@ -100,3 +103,29 @@ Permet de transformer une chaine de caractères hexacécimaux en liste de polyno
 Permet de changer la position des polynomes dans la liste des polynômes pour avoir la même configuration que la documentation
 
 
+## C
+
+Voici le fonctionnement et les modes de compilation possibles pour la parite c du projet.
+
+
+### AES sur un block
+
+Compilation du main :
+
+deux options pour compiler le main :
+
+*__Simple AES__*
+
+>```make main saes=1 -B```
+
+Codage simmple d'une state avec unterface utilisateur sur le terminal
+
+>```make main test=1 -B```
+
+Ce mode de compilation execute la série de tests sur le programme aes
+
+
+
+### Codage de fichiers
+
+*__ECB__*
