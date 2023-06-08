@@ -205,8 +205,7 @@ Et le code avec les instrucations processeurs :
 void addRoundKey(byte *state, const byte *key) {
     __m128i* state128 = (__m128i*) state;
     __m128i* key128 = (__m128i*) key;
-    __m128i xor_result = _mm_xor_si128(*state128, *key128);
-    _mm_store_si128(state128, xor_result);
+    *state128 = _mm_xor_si128(*state128, *key128);
 }
 ```
 
@@ -216,7 +215,71 @@ Les tests sont effectués sur 100.000.000 de tours.
 | for                    | 0.274662 |
 | instruction processeur | 0.062970 |
 
-Nous observons bien que le temps est ralativement diminué avec les instructions processeurs. En effet, pour encoder un fichier de 1.8mo, nous avions trouvé à l'aide de vallgrind que 1.000.000
+Nous observons bien que le temps est ralativement diminué avec les instructions processeurs. En effet, pour encoder un fichier de 1.8mo, nous avions trouvé à l'aide de vallgrind que la fonction addRoundKey esrt appelée 1.000.000 fois, ce qui change grandement le temps d'execution. <br>
+Nous avons ensuite observé le code assembleur généré à l'aide de la commande :
+>```objdump -M intel -dS monprogramme > monprogramme.dump```
+
+Nous obtenons des résultats bien différents qui sont résumés ci-dessous :
+
+Avec le for :
+
+```asm
+0000000000001570 <f1>:
+    1570:	48 8d 56 01          	lea    rdx,[rsi+0x1]
+    1574:	48 89 f8             	mov    rax,rdi
+    1577:	48 29 d0             	sub    rax,rdx
+    157a:	48 83 f8 0e          	cmp    rax,0xe
+    157e:	76 10                	jbe    1590 <f1+0x20>
+    1580:	c5 fa 6f 06          	vmovdqu xmm0,XMMWORD PTR [rsi]
+    1584:	c5 f9 ef 07          	vpxor  xmm0,xmm0,XMMWORD PTR [rdi]
+    1588:	c5 fa 7f 07          	vmovdqu XMMWORD PTR [rdi],xmm0
+    158c:	c3                   	ret    
+    158d:	0f 1f 00             	nop    DWORD PTR [rax]
+    1590:	0f b6 06             	movzx  eax,BYTE PTR [rsi]
+    1593:	30 07                	xor    BYTE PTR [rdi],al
+    1595:	0f b6 46 01          	movzx  eax,BYTE PTR [rsi+0x1]
+    1599:	30 47 01             	xor    BYTE PTR [rdi+0x1],al
+    159c:	0f b6 46 02          	movzx  eax,BYTE PTR [rsi+0x2]
+    15a0:	30 47 02             	xor    BYTE PTR [rdi+0x2],al
+    15a3:	0f b6 46 03          	movzx  eax,BYTE PTR [rsi+0x3]
+    15a7:	30 47 03             	xor    BYTE PTR [rdi+0x3],al
+    15aa:	0f b6 46 04          	movzx  eax,BYTE PTR [rsi+0x4]
+    15ae:	30 47 04             	xor    BYTE PTR [rdi+0x4],al
+    15b1:	0f b6 46 05          	movzx  eax,BYTE PTR [rsi+0x5]
+    15b5:	30 47 05             	xor    BYTE PTR [rdi+0x5],al
+    15b8:	0f b6 46 06          	movzx  eax,BYTE PTR [rsi+0x6]
+    15bc:	30 47 06             	xor    BYTE PTR [rdi+0x6],al
+    15bf:	0f b6 46 07          	movzx  eax,BYTE PTR [rsi+0x7]
+    15c3:	30 47 07             	xor    BYTE PTR [rdi+0x7],al
+    15c6:	0f b6 46 08          	movzx  eax,BYTE PTR [rsi+0x8]
+    15ca:	30 47 08             	xor    BYTE PTR [rdi+0x8],al
+    15cd:	0f b6 46 09          	movzx  eax,BYTE PTR [rsi+0x9]
+    15d1:	30 47 09             	xor    BYTE PTR [rdi+0x9],al
+    15d4:	0f b6 46 0a          	movzx  eax,BYTE PTR [rsi+0xa]
+    15d8:	30 47 0a             	xor    BYTE PTR [rdi+0xa],al
+    15db:	0f b6 46 0b          	movzx  eax,BYTE PTR [rsi+0xb]
+    15df:	30 47 0b             	xor    BYTE PTR [rdi+0xb],al
+    15e2:	0f b6 46 0c          	movzx  eax,BYTE PTR [rsi+0xc]
+    15e6:	30 47 0c             	xor    BYTE PTR [rdi+0xc],al
+    15e9:	0f b6 46 0d          	movzx  eax,BYTE PTR [rsi+0xd]
+    15ed:	30 47 0d             	xor    BYTE PTR [rdi+0xd],al
+    15f0:	0f b6 46 0e          	movzx  eax,BYTE PTR [rsi+0xe]
+    15f4:	30 47 0e             	xor    BYTE PTR [rdi+0xe],al
+    15f7:	0f b6 46 0f          	movzx  eax,BYTE PTR [rsi+0xf]
+    15fb:	30 47 0f             	xor    BYTE PTR [rdi+0xf],al
+    15fe:	c3                   	ret    
+    15ff:	90                   	nop
+```
+Sans le for :
+
+```asm
+    1600:	c5 f9 6f 0f          	vmovdqa xmm1,XMMWORD PTR [rdi]
+    1604:	c5 f1 ef 06          	vpxor  xmm0,xmm1,XMMWORD PTR [rsi]
+    1608:	c5 f9 7f 07          	vmovdqa XMMWORD PTR [rdi],xmm0
+    160c:	c3                   	ret    
+    160d:	0f 1f 00             	nop    DWORD PTR [rax]
+
+```
 
 **Objectifs de la séance :**
 - Ronan :
