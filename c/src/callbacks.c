@@ -20,7 +20,7 @@
 
 extern char entree[100];
 extern char sortie[100];
-extern char key[65];
+extern byte key[65];
 struct Widgets {
   GtkWidget *p_vte;
   GtkWidget *p_button_open;
@@ -50,7 +50,7 @@ struct Widgets {
 
 // sortie du programme
 void cb_exit(GtkWidget *p_widget, gpointer label) {
-  struct Widgets *widgets = (struct Widgets*) label;
+  //struct Widgets *widgets = (struct Widgets*) label;
   //gtk_widget_destroy(widgets->p_window);
   gtk_main_quit(); // fonction de base de gtk qui kill tous les composants
 
@@ -103,7 +103,7 @@ void sha256(char *cle_utilisateur, int taille_cle, char cle[33]) {
   pclose(term);
 
 
-  printf("taille de sortie term : %d\n", strlen(sortie_term));
+  printf("taille de sortie term : %ld\n", strlen(sortie_term));
   snprintf(cle, 33, sortie_term);
   //strcpy(cle, sortie_term);
   printf("taille_cle : %d\n", taille_cle);
@@ -248,7 +248,7 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
       //}
 
 
-      strToWords(cle_utilisateur, cle, taille_cle);
+      strToWords(cle_utilisateur, (byte*) cle, taille_cle);
     }
     
 
@@ -288,7 +288,7 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
     
 
 
-    printf("taille de la key : %d\n", strlen(key));
+    printf("taille de la key : %ld\n", strlen((char*) key));
     gettimeofday(&debut, 0);
     
     if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_radio_btn_cbc))==TRUE) {
@@ -380,7 +380,7 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
         //cle[i] = transform(cle_utilisateur[i]);
       //  printf("%x", cle[i]);
       //}
-      strToWords(cle_utilisateur, cle, taille_cle);
+      strToWords(cle_utilisateur, (byte*) cle, taille_cle);
     }
     
 
@@ -414,8 +414,8 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
 
     memcpy(key, cle, taille_cle/2);
     printf("taille de la taille_cle : %d\n", taille_cle);
-    printf("taille de la key : %d\n", strlen(key));
-    printf("taille de la cle : %d\n", strlen(cle));
+    printf("taille de la key : %ld\n", strlen((char*) key));
+    printf("taille de la cle : %ld\n", strlen((char*) cle));
     for (int i = 0; i < taille_cle; i++) {
         printf("%x ", cle[i]);
       }
@@ -448,7 +448,7 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
     long long int file_length;
     byte *data = NULL; // on utilise pas ici
     data = lecture(entree, &file_length, 0);
-
+    free(data);
     char text_taille[100] = "";
     sprintf(text_taille, "Taille décodé :%lld\n\r", file_length);
 

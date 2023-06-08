@@ -27,10 +27,10 @@ int main(int argc,char *argv[]){
 
 
     if (!strcmp(argv[1], "encode")) {
-        chiffrer_cbc(input, output, cle, strlen(cle));
+        chiffrer_cbc(input, output, cle, strlen((char*) cle));
     }
     if (!strcmp(argv[1], "decode")) {
-        dechiffrer_cbc(input, output, cle, strlen(cle));
+        dechiffrer_cbc(input, output, cle, strlen((char*) cle));
     }
 
 
