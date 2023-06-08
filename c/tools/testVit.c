@@ -23,12 +23,19 @@ void afficher_state(byte *state) {
 }
 
 void f1(byte *state, byte *key) {
-    
+
+    for (int i = 0; i < 16; i++)
+    {
+        state[i] = state[i] ^ key[i];
+    }
     
 }
 
 void f2(byte *state, byte *key) {
-    
+    __m128i* state128 = (__m128i*) state;
+    __m128i* key128 = (__m128i*) key;
+    __m128i xor_result = _mm_xor_si128(*state128, *key128);
+    _mm_store_si128(state128, xor_result);
 }
 
 

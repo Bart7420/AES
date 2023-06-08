@@ -24,4 +24,8 @@ struct Widgets {
   GtkWidget* p_radio_btn_cbc;
   GtkWidget* p_radio_btn_ebc;
   GtkWidget *p_case_bmp;
+  GtkWidget *p_radio_btn_aes_128;
+  GtkWidget *p_radio_btn_aes_192;
+  GtkWidget *p_radio_btn_aes_256;
+  GtkWidget *p_case_hexa;
 };

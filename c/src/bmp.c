@@ -35,11 +35,11 @@ void entropie(byte *entree, int taille) {
 
     int coefs[256] = {0};
 
-    //coefs[0] = count(entree, taille, 0x00);
+    // /coefs[0] = count(entree, taille, 0x00);
 
     for (int i = 0; i < 256; i++)
     {
-        for (int j = 0; j < taille; j++) {   
+        for (int j = 0; j < taille; j++) {      
             if (entree[j] == i) {
                 coefs[i]++;
             }
@@ -58,8 +58,17 @@ void entropie(byte *entree, int taille) {
         }  
     }
 
+    /*
+    int sum = 0;
+    for (int i = 0; i < 256; i++) {
+        printf("elemeent %d, %d\n", i, coefs[i]);
+        sum = sum + coefs[i];
+    }*/
     
-    double entropie = 0;
+
+    float sumprob = 0;
+    
+    float entropie = 0;
     int indice = 0;
     for (int i = 0; i < nb_symboles; i++) {
         if (indice>256) {
@@ -68,13 +77,24 @@ void entropie(byte *entree, int taille) {
         while (coefs[indice] == 0x00){
             indice++;
         }
-        printf("%d\n", coefs[indice]);
-        double pi = ((float) coefs[indice])/((float) taille);
-        printf("%f\n", pi);
-        entropie -= (pi==0)?0:pi*(/*log(pi)/log(2)*/ log2(pi));
+        float pi = (float)coefs[indice] / (float)taille;
+        
+       //if (pi != 0.0) // pas besoin car tri avant
+       {
+          entropie = entropie - pi * log2f(pi);
+       }
+       
+        
+        
+        //printf("les prob %f\n", pi);
+        //sumprob += pi;
         indice++;
     }
-    printf("entropie : %.3f\n", entropie);
+
+    printf("entropie : %.9f\n", entropie);
+    //printf("taille %d\n", taille);
+    //printf("sum %d\n", sum);
+    //printf("sum %f\n", sumprob);
 }
 
 

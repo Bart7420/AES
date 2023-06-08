@@ -41,6 +41,10 @@ struct Widgets {
   GtkWidget* p_radio_btn_cbc;
   GtkWidget* p_radio_btn_ebc;
   GtkWidget *p_case_bmp;
+  GtkWidget *p_radio_btn_aes_128;
+  GtkWidget *p_radio_btn_aes_192;
+  GtkWidget *p_radio_btn_aes_256;
+  GtkWidget *p_case_hexa;
 };
 
 
@@ -57,6 +61,79 @@ void cb_exit(GtkWidget *p_widget, gpointer label) {
   (void)p_widget;
   (void)label;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void sha256(char *cle_utilisateur, int taille_cle, char cle[33]) {
+  char input_term[33+100] = ""; // taille max de la clé de 100
+  strcpy(input_term, "echo -n ");
+  strcat(input_term, cle_utilisateur);
+  strcat(input_term, " | openssl sha256 -binary");
+
+  printf("cdm : %s\n", input_term);
+
+  FILE *term;
+  char sortie_term[1035] = "";
+  //ouverture du terminal
+
+  term = popen(input_term, "r");
+  if (term == NULL) {
+    printf("Arret. Commande non trouvée\n" );
+    exit(1);
+  }
+
+  while (fgets(sortie_term, sizeof(sortie_term), term) != NULL) {
+    printf("%x", sortie_term);
+  }
+  fgets(sortie_term, sizeof(sortie_term), term);
+  //printf("%x\n", sortie_term);
+  puts(sortie_term);
+
+  pclose(term);
+
+
+  printf("taille de sortie term : %d\n", strlen(sortie_term));
+  snprintf(cle, 33, sortie_term);
+  //strcpy(cle, sortie_term);
+  printf("taille_cle : %d\n", taille_cle);
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 void cb_encode(GtkWidget *appelant, gpointer *label) {
@@ -85,19 +162,112 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
   printf("clé :: %s\n", gtk_entry_get_text(label));
 
   */
+  /*
+  // ENCODAGE DU MOT DE PASSE EN CLé AES
+  FILE *term;
+  char sortie_term[1035] = "";
+  //ouverture du terminal
+  term = popen("echo -n coucou | openssl sha256 -binary", "r");
+  if (term == NULL) {
+    printf("Arret. Commande non trouvée\n" );
+    exit(1);
+  }
+  while (fgets(sortie_term, sizeof(path), term) != NULL) {
+    printf("%s", sortie_term);
+  }
+  fgets(sortie_term, sizeof(sortie_term), term);
+  pclose(term);
+  */
 
-  int taille_cle = (int) gtk_entry_get_text_length(widgets->p_text);
-  char *cle = gtk_entry_get_text(widgets->p_text);
-  int ok = 0;
-  if ((taille_cle ==16) || (taille_cle == 24) || (taille_cle == 32)) {
+  // gestioon de la clé
+
+  //int taille_cle = (int) gtk_entry_get_text_length(widgets->p_text);
+  int taille_cle = 32; // 32 char qui font 256 bits
+  char *cle_utilisateur = gtk_entry_get_text(widgets->p_text);
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+  char input_term[33+100] = ""; // taille max de la clé de 100
+  strcpy(input_term, "echo -n ");
+  strcat(input_term, cle_utilisateur);
+  strcat(input_term, " | openssl sha256 -binary");
+
+  printf("cdm : %s\n", input_term);
+
+  FILE *term;
+  char sortie_term[1035] = "";
+  //ouverture du terminal
+
+  term = popen(input_term, "r");
+  if (term == NULL) {
+    printf("Arret. Commande non trouvée\n" );
+    exit(1);
+  }
+
+  while (fgets(sortie_term, sizeof(sortie_term), term) != NULL) {
+    printf("%x", sortie_term);
+  }
+  fgets(sortie_term, sizeof(sortie_term), term);
+  //printf("%x\n", sortie_term);
+  puts(sortie_term);
+  pclose(term);
+
+  char cle[33];
+  printf("taille de sortie term : %d\n", strlen(sortie_term));
+  snprintf(cle, 33, sortie_term);
+  
+  //strcpy(cle, sortie_term);
+  printf("taille_cle : %d\n", taille_cle);
+
+
+*/
+  char cle[33];
+  int ok = 1;
+
+
+
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgets->p_case_hexa))==TRUE) {
+    
+    taille_cle = (int) gtk_entry_get_text_length(widgets->p_text);
+    if ((taille_cle !=32) && (taille_cle != 48) && (taille_cle != 64)) {
+      ok=0;
+      printf("la clé n'est pas de la bonne taille\n");
+    }
     // on encode si :
     for (int i =0; i<taille_cle; i++) {
-      if ((cle[i] == '0') || (cle[i] == '1') || (cle[i] == '2') || (cle[i] == '3') || (cle[i] == '4') || (cle[i] == '5') || (cle[i] == '6') || (cle[i] == '7') || (cle[i] == '8') || (cle[i] == '9') || (cle[i] == 'a') || (cle[i] == 'b') || (cle[i] == 'c') || (cle[i] == 'd') || (cle[i] == 'e') || (cle[i] == 'f') ) {
-          // on encode
-          ok = 1;
+      if ((cle_utilisateur[i] != '0') && (cle_utilisateur[i] != '1') && (cle_utilisateur[i] != '2') && (cle_utilisateur[i] != '3') && (cle_utilisateur[i] != '4') && (cle_utilisateur[i] != '5') && (cle_utilisateur[i] != '6') && (cle_utilisateur[i] != '7') && (cle_utilisateur[i] != '8') && (cle_utilisateur[i] != '9') && (cle_utilisateur[i] != 'a') && (cle_utilisateur[i] != 'b') && (cle_utilisateur[i] != 'c') && (cle_utilisateur[i] != 'd') && (cle_utilisateur[i] != 'e') && (cle_utilisateur[i] != 'f') ) {
+
+          ok = 0;
+          printf("la clé n'est pas dans le bon format\n");
       } 
     }
+    if (ok==1) {
+      for (int i = 0; i < taille_cle; i++) {
+        cle[i] = transform(cle_utilisateur[i]);
+      }
+    }
+    
+
+  } else {
+    // mode mot de passe de l'utilisateur
+    printf("bbbbbbbbbbbbbbb\n");
+    sha256(cle_utilisateur, taille_cle, cle);
+    ok=1;
+    
   }
+
+
+
   if (ok == 1) {
 
     //mesure du temps
@@ -110,6 +280,20 @@ void cb_encode(GtkWidget *appelant, gpointer *label) {
     
 
     memcpy(key, cle, taille_cle);
+    for (int i = 0; i < 32; i++)
+    {
+      printf("%x", cle[i]);
+    }
+    printf ("\n");
+    for (int i = 0; i < 32; i++)
+    {
+      printf("%x", key[i]);
+    }
+    printf ("\n");
+    
+
+
+    printf("taille de la key : %d\n", strlen(key));
     gettimeofday(&debut, 0);
     
     if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_radio_btn_cbc))==TRUE) {
@@ -177,19 +361,52 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
   struct Widgets *widgets = (struct Widgets*) label;
 
 
-
-  int taille_cle = (int) gtk_entry_get_text_length(widgets->p_text);
-  char *cle = gtk_entry_get_text(widgets->p_text);
-  int ok = 0;
-  if ((taille_cle ==16) || (taille_cle == 24) || (taille_cle == 32)) {
+  int ok = 1;
+  int taille_cle = 32;
+  char *cle_utilisateur = gtk_entry_get_text(widgets->p_text);
+  char cle[65] = "";
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgets->p_case_hexa))==TRUE) {
+    
+    taille_cle = (int) gtk_entry_get_text_length(widgets->p_text);
+    if ((taille_cle !=32) && (taille_cle != 48) && (taille_cle != 64)) {
+      ok=0;
+      printf("la clé n'est pas de la bonne taille\n");
+    }
     // on encode si :
     for (int i =0; i<taille_cle; i++) {
-      if ((cle[i] == '0') || (cle[i] == '1') || (cle[i] == '2') || (cle[i] == '3') || (cle[i] == '4') || (cle[i] == '5') || (cle[i] == '6') || (cle[i] == '7') || (cle[i] == '8') || (cle[i] == '9') || (cle[i] == 'a') || (cle[i] == 'b') || (cle[i] == 'c') || (cle[i] == 'd') || (cle[i] == 'e') || (cle[i] == 'f') ) {
-          // on encode
-          ok = 1;
+      if ((cle_utilisateur[i] != '0') && (cle_utilisateur[i] != '1') && (cle_utilisateur[i] != '2') && (cle_utilisateur[i] != '3') && (cle_utilisateur[i] != '4') && (cle_utilisateur[i] != '5') && (cle_utilisateur[i] != '6') && (cle_utilisateur[i] != '7') && (cle_utilisateur[i] != '8') && (cle_utilisateur[i] != '9') && (cle_utilisateur[i] != 'a') && (cle_utilisateur[i] != 'b') && (cle_utilisateur[i] != 'c') && (cle_utilisateur[i] != 'd') && (cle_utilisateur[i] != 'e') && (cle_utilisateur[i] != 'f') ) {
+
+          ok = 0;
+          printf("la clé n'est pas dans le bon format\n");
       } 
     }
+    if (ok==1) {
+      //for (int i = 0; i < taille_cle; i++) {
+        //cle[i] = transform(cle_utilisateur[i]);
+      //  printf("%x", cle[i]);
+      //}
+      strToWords(cle_utilisateur, cle, taille_cle);
+    }
+    
+
+  } else {
+    // mode mot de passe de l'utilisateur
+    printf("bbbbbbbbbbbbbbb\n");
+    sha256(cle_utilisateur, taille_cle, cle);
+    ok=1;
+    
   }
+
+  
+
+  //int taille_cle = (int) gtk_entry_get_text_length(widgets->p_text);
+  
+  
+  
+  
+  
+  
+  
   if (ok == 1) {
 
 
@@ -202,11 +419,18 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
     vte_terminal_feed(term, "Decodage ...\n\r", 14);
 
     memcpy(key, cle, taille_cle);
+    printf("taille de la taille_cle : %d\n", taille_cle);
+    printf("taille de la key : %d\n", strlen(key));
+    printf("taille de la cle : %d\n", strlen(cle));
+    for (int i = 0; i < taille_cle; i++) {
+        printf("%x ", cle[i]);
+      }
     gettimeofday(&debut, 0);
 
     if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_radio_btn_cbc))==TRUE) {
       printf("mode choisi : cbc\n");
       if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widgets->p_case_bmp))==TRUE) {
+        
         bmp(2, 2, entree, sortie, key);
       } else {
         tempsAes = dechiffrer_cbc(entree, sortie, key);

@@ -7,3 +7,4 @@ ecb_aes
 computeMixColumnTable
 callgrind*
 bmp_aes
+testVit

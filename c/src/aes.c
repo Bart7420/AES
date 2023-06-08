@@ -55,10 +55,19 @@ void invSubBytes(byte *state) {
 
 void addRoundKey(byte *state, const byte *key) {
     // addRoundKey se résume à l'opération XOR (^) entre les elements de state et de la clé
-    /*for (int i = 0; i < 16; i++)
+    
+    /* Méthode de base
+    
+    for (int i = 0; i < 16; i++)
     {
         state[i] = state[i] ^ key[i];
-    }*/
+    }
+
+    */
+
+
+    // test d'optimisation processeur (testé)
+
     __m128i* state128 = (__m128i*) state;
     __m128i* key128 = (__m128i*) key;
     *state128 = _mm_xor_si128(*state128, *key128);
@@ -67,19 +76,6 @@ void addRoundKey(byte *state, const byte *key) {
 
 
 void shiftRows(byte *state){
-    /*
-    for (int i = 4, j = 1; i < 16; i+=4, j++)
-    {
-        for (int k = 0; k < j; k++)
-        {
-            unsigned char temp = state[i];
-            for (int l = 3; l >= 0; l--) {
-                state[i+l] = state[i+l+1];
-            }
-            state[i+3] = temp;
-        }
-    }
-    */
     byte temp;
     for (int i=1; i<4; i++) { // la ligne
         for (int k = 0; k<i;k++) { // nombres de décalages selon i la ligne
@@ -90,23 +86,9 @@ void shiftRows(byte *state){
             state[i+12] = temp;        
         }
     }
-
 }
 
 void invShiftRows(byte *state){
-    /*
-    for (int i = 4, j = 1; i < 16; i+=4, j++)
-    {
-        for (int k = 0; k < j; k++)
-        {
-            unsigned char temp = state[i+3];
-            for (int l = 3; l >= 0; l--) {
-                state[i+l] = state[i+l-1];
-            }
-            state[i] = temp;
-        }
-    }
-    */
    byte temp;
    for (int i=13; i<16; i++) { // la ligne
         for (int k = 0; k<i-12;k++) { // nombres de décalages selon i la ligne
@@ -121,9 +103,7 @@ void invShiftRows(byte *state){
 
 
 byte multPoly(byte poly1, byte poly2) {
-
     byte result = 0;
-
     for (int i = 0; i < 8; i++) {
         if ((poly2 & 1) == 1) {
             result = result ^ poly1;
@@ -131,27 +111,26 @@ byte multPoly(byte poly1, byte poly2) {
         // test l'état du bit de poid le plus fort
         if ((poly1 & 0x80) == 0x80) {
 
-            poly1<<=1;
+            poly1<<=1; // décalage
 
             poly1 = poly1 ^ 0x1b; // on multiplie (xor dans l'ensemble fini) par l'élément irréductible
 
         } else {
 
-            poly1<<=1;
+            poly1<<=1; // décalage
         }
         
 
         poly2 >>= 1; // on décale b pour obtenir le prochain bit en position la plus faible
     }
     return result;
-    
 }
 
 
 void mixColumn(byte state[16]){
     byte output[16];
 
-    // application de l'opétation décrite dans FIPS 197
+    // application directe de l'opération décrite dans FIPS 197
     /*for (int i = 0; i < 4; i++) {
         output[i*4] = multPoly(0x02, state[i*4]) ^ multPoly(0x03, state[(i*4)+1]) ^ state[((i*4)+2)] ^ state[((i*4)+3)];
         output[(i*4)+1] = (state[i*4]) ^ multPoly(0x02, state[(i*4)+1]) ^ multPoly(0x03, state[(i*4+2)]) ^ (state[(i*4+3)]);
@@ -166,19 +145,19 @@ void mixColumn(byte state[16]){
         output[(i*4)+2] = (state[i*4]) ^ (state[(i*4)+1]) ^ mixTable02[state[(i*4+2)]] ^ mixTable03[state[(i*4+3)]];
         output[(i*4)+3] = (mixTable03[state[i*4]]) ^ (state[(i*4)+1]) ^ (state[(i*4+2)]) ^ mixTable02[state[(i*4+3)]];
     }
-
-    // copie du resultat obtenu dans output à la sortie   
-    /*
+ 
+    /* copie du resultat obtenu dans output à la sortie  
     for (int i = 0; i < 16; i++) {
         state[i] = output[i];
     } */
+
     memcpy(state, output, 16); // optimisation
 }
 
 void invMixColumn(byte *state){
     byte output[16];
 
-    // application de l'opétation décrite dans FIPS 197
+    // application directe de l'opération décrite dans FIPS 197
     /*for (int i = 0; i < 4; i++) {
         output[i*4] = multPoly(0x0e, state[i*4]) ^ multPoly(0x0b, state[(i*4)+1]) ^ multPoly(0x0d, state[((i*4)+2)]) ^ multPoly(0x09, state[((i*4)+3)]);
         output[(i*4)+1] = multPoly(0x09, state[i*4]) ^ multPoly(0x0e, state[(i*4)+1]) ^ multPoly(0x0b, state[(i*4+2)]) ^ multPoly(0x0d, state[(i*4+3)]);
