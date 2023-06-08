@@ -126,7 +126,7 @@ Ce mode de compilation execute la série de tests sur le programme aes
 
 
 
-### Codage de fichiers
+### <u>Codage de fichiers</u>
 
 
 Deux mode de codage des fichiers sont disponibles, le mode standard et le mode eval.
@@ -163,10 +163,26 @@ Différents modes, mode eval et mode normal :
 
 
 Usage : "mode" "path entree" "path sortie" "cle" <br>
-mode : "encode", "decode"
+&ensp; mode : "encode", "decode"
 
 Permet d'encoder et de décoder un fichier en utilisant la méthode ecb.<br>
 Le mode eval place le taille du fichier sur les 4 premiers octects du fichier encodé.
 Sans ce mode, c'est le méthode standard qui est utilisée.
 
+
+
+### <u>Codage des bmp</u>
+
+Pour coder des images bmp et pouvoir les ouvrir une fois codées, il nous afut conserver l'en-tête du fichier identique pour la reconnaissance du fichier.
+
+Nous utilisons alors un nouveau mode de compilation.
+
+>```make bmp_aes -B``` <br>
+>```make cbc_aes eval=1 -B```
+
+Usage : "mode" "version" "path entree" "path sortie" "cle" <br>
+&ensp; mode : "encode", "decode"  <br>
+&ensp; version : "ecb", "cbc" 
+
+C'est avec cette methode que l'on peut calculer l'entropie et observer le défaut de la méthode ecb, qui ne cache pas réelement les informations.
 
