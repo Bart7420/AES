@@ -14,7 +14,7 @@ extern char sortie[100];
 //char sortie[100];
 
 
-void ecriture(char output[100], byte *data, int taille, int decryption) {
+void ecriture(char output[100], byte *data, long long int taille, int decryption) {
             printf("Ecriture du fichier\n");
             FILE* out = NULL;
             out = fopen((output), "w");
@@ -28,13 +28,13 @@ void ecriture(char output[100], byte *data, int taille, int decryption) {
                 difference = data[taille-1]+1;
                 #endif
                 #ifdef EVAL
-                long int *fileLen = data; 
-                difference = taille - *fileLen;
+                int *fileLen = data; 
+                difference = taille - *fileLen + 4; // Décalage des 4 premiers octets
                 eval = 4;
                 #endif
             }
 
-            if (difference>16) {
+            if (difference>16 || difference < 0) {
                 difference = 0; // si la clé n'est pas la bonne, le padding est faux, on écrit alors jsute le résultat
             } 
             
@@ -74,14 +74,21 @@ byte *lecture(char input[100], long long int *taille, int mode) {
     fseek(out, 0, SEEK_END);
     long long int file_length = ftell(out);
 
-    #ifndef EVAL
+
+    // Place pour encode la taille au début du fichier
+    // Mode eval pour respecter la facon de coder la taille du fichier
+    int eval = 0;
+
     if(mode == 1) {
+        #ifndef EVAL
         file_length++; // Ajout d'un byte pour coder le padding
+        #endif
+        #ifdef EVAL
+        file_length += 4;
+        eval = 4;
+        #endif
     }
-    #endif
-    #ifdef EVAL
-    file_length += 4;
-    #endif
+    
     
     int difference = 0;
     if (((file_length %16) != 0) && (mode !=2)) {
@@ -91,12 +98,7 @@ byte *lecture(char input[100], long long int *taille, int mode) {
     long long int length;
     length = file_length + difference;
 
-    // Place pour encode la taille au début du fichier
-    // Mode eval pour respecter la facon de coder la taille du fichier
-    int eval = 0;
-    #ifdef EVAL
-        eval = 4;
-    #endif
+
     flux= calloc(sizeof(byte)* length, 1);
     fseek(out, 0, SEEK_SET);
     fread(&flux[eval], 1, file_length, out);
