@@ -10,6 +10,8 @@
 
 double chiffrer_ecb(char input[100], char output[100], byte keyAes[65], int keyLength){
 
+    keyLength = keyLength/8; // Conversion longueur cle vers taille de cle AES
+
     long long int fileLength = 0;
     byte *data = NULL;
 
@@ -54,6 +56,8 @@ double chiffrer_ecb(char input[100], char output[100], byte keyAes[65], int keyL
 }
 
 double dechiffrer_ecb(char input[100], char output[100], byte keyAes[65], int keyLength){
+
+    keyLength = keyLength/8; // Conversion longueur cle vers taille de cle AES
 
     long long int fileLength = 0;
     byte *data = NULL;

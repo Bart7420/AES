@@ -12,6 +12,8 @@ extern byte key[65];
 
 double chiffrer_cbc(char input[100], char output[100], byte keyAes[65], int keyLength) {
 
+    keyLength = keyLength/8; // Conversion longueur cle vers taille de cle AES
+
     long long int fileLength = 0;
     byte *data = NULL;
 
@@ -60,6 +62,8 @@ double chiffrer_cbc(char input[100], char output[100], byte keyAes[65], int keyL
     return temps;
 }
 double dechiffrer_cbc(char input[100], char output[100], byte keyAes[65], int keyLength){
+
+    keyLength = keyLength/8; // Conversion longueur cle vers taille de cle AES
 
     long long int fileLength = 0;
     byte *data = NULL;

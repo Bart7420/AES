@@ -386,7 +386,6 @@ void cb_decode(GtkWidget *appelant, gpointer *label) {
     printf("bbbbbbbbbbbbbbb\n");
     sha256(cle_utilisateur, taille_cle, cle);
     ok=1;
-    
   }
 
   
