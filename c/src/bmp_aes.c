@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 
+#include "conversion.h"
 #include "io.h"
 #include "ecb.h"
 #include "cbc.h"
@@ -25,11 +26,11 @@ int main(int argc,char *argv[]){
 
     memcpy(input, argv[3], strlen(argv[3]));
     memcpy(output, argv[4], strlen(argv[4]));
-    memcpy(cle, argv[5], strlen(argv[5]));
+    strToWords(argv[5], cle, strlen(argv[5]));
     printf("%s\n", argv[1]);
     // il faudrait teset si offset est bien un nombre
     //int offset = atoi(argv[1]);
-
+    int taille = strlen(argv[5]);
     int mode = 0;
     int version = 0;
     if (!strcmp(argv[1], "encode")) {
@@ -53,7 +54,7 @@ int main(int argc,char *argv[]){
 
 
 
-    bmp(mode, version, input, output, cle);
+    bmp(mode, version, input, output, cle, taille);
 
     return 0;
 
