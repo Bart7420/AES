@@ -96,3 +96,13 @@ clean:
 	rm -rf cbe_aes
 	rm -rf graphic_aes
 	rm -rf bmp_aes
+	rm -rf 100code.ecb
+	rm -rf 100decode.ecb
+	rm -rf 100code.cbc
+	rm -rf 100decode.cbc
+	rm -rf bmpcode.ecb
+	rm -rf bmpdecode.ecb
+	rm -rf bmpcode.cbc
+	rm -rf bmpdecode.cbc
+	rm -rf temp.offset
+	rm -rf temp.offset2

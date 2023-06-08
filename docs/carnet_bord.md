@@ -156,7 +156,7 @@ Image encodée CBC
     - [x] ui
   
 
-## Séance 7 (6/06/2023)
+## Séance 8 (7/06/2023)
 
 Durant cette troisième séance de la deuxième période, nous avons continué à optimiser le code, et à améliorer l'ihm.
 
@@ -183,7 +183,7 @@ Nous avons aussi essayé d'implémenter un système de hash en sha256 afin de po
     - [x] Améliorer l'ihm
 
 
-## Séance 8 (7/06/2023)
+## Séance 9 (8/06/2023)
 
 Durant cette dernière séance de projet, nous allons finaliser l'encrypatge des fichiers pour correspondre au mode d'encryptage de l'évaluation, nettoyer et réorganiser le code
 
@@ -283,11 +283,16 @@ Sans le for :
 
 Nous comprenons alors la différence obtenue au temps d'execution. Il y a beaucoup moins d'appels avec les instructions processeur.
 
+
+De plus, nous avons résolu beaucoup de problèmes, notament des warngins pour rendre plus robuste notre code et rarifier les bugs.
+
+
 **Objectifs de la séance :**
 - Ronan :
-    - [x] 
+    - [x] Corrections de bugs
 
 - Etienne :
     - [x] Gestion de l'entrée de mdp
     - [x] Mesure des performances et comparaison
-    - [ ] 
+    - [x] Corrections de bugs
+    - [x] Fichiers de tests
