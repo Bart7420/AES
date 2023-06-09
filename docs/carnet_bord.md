@@ -136,11 +136,11 @@ Après avoir recu l'extension de sujet par mail, nous avons implémenté le mode
 Nous avons ensuite codé une fonction pour encoder des fichiers BMP selon les deux modes : ECB et CBC. Nous avons observé le défaut de ECB en observant l'image. <br> <br> <br>
 
 Image Originale
-![Alt text](entree.bmp "origine")
+![Alt text](entree.png "origine")
 Image encodée ECB
-![Alt text](sortie_ecb.bmp "ecb")
+![Alt text](sortie_ecb.png "ecb")
 Image encodée CBC
-![Alt text](sortie_cbc.bmp "cbc")
+![Alt text](sortie_cbc.png "cbc")
 
 
 
