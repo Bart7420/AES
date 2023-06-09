@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-
+#include "conversion.h"
 #include "ecb.h"
 
 

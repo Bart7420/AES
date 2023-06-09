@@ -36,9 +36,9 @@ main: main.o aes.o tests.o conversion.o cmd_aes.o
 graphic_aes: graphic_aes.o io.o callbacks.o aes.o conversion.o cbc.o ecb.o bmp.o
 	gcc -o $@ $^ $(gcc_options) $(libs) $(flags) $(l) $(f) -lm
 
-cbc_aes: cbc_aes.o aes.o conversion.o cbc.o io.o
+cbc_aes: cbc_aes.o aes.o conversion.o cbc.o io.o conversion.o cbc.o
 	gcc -o $@ $^ $(gcc_options)
-ecb_aes: ecb_aes.o aes.o conversion.o cbc.o io.o ecb.o
+ecb_aes: ecb_aes.o aes.o conversion.o cbc.o io.o ecb.o conversion.o
 	gcc -o $@ $^ $(gcc_options)
 bmp_aes: bmp_aes.o io.o ecb.o aes.o cbc.o bmp.o conversion.o
 	gcc -o $@ $^ $(gcc_options) -lm
