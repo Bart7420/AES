@@ -24,11 +24,17 @@ ifeq ($(perf), 1)
 gcc_options += -D PERF=1
 endif
 
-eval = 0 # Perf
+eval = 0 # Eval
 ifeq ($(eval), 1)
 gcc_options += -D EVAL=1
 endif
 
+lib = 0 # Lib
+ifeq ($(lib), 1)
+flags =
+f =
+l =
+endif
 
 main: main.o aes.o tests.o conversion.o cmd_aes.o
 	gcc -o $@ $^ $(gcc_options)
