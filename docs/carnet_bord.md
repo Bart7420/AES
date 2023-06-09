@@ -350,3 +350,15 @@ Sans utiliser les instructions processeur:
 
 On voit que la différence de performance est de x18.
 Pour le décodage, les vitesse sont similaires.
+
+**Performances encodage 1Go en AES 128 en ECB:**
+
+En utilisant les instructions processeur:
+- Temps AES : 0,298 s
+- Vitesse AES : 3352,420 mo/s
+
+Sans utiliser les instructions processeur:
+- Temps AES : 14,242 s
+- Vitesse AES : 70.215 mo/s
+
+On voit que la différence de performance est de x48.
