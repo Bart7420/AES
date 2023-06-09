@@ -10,6 +10,15 @@ Etapes :
 
 <br>
 
+## Description fonctionnalités
+
+- Encodages AES disponibles : 128, 192, 256
+- Mode encodage des fichiers : CBC, ECB
+- Clé d'encodage : HEXA ou texte (uniquement en AES 256 pour le moment)
+- Encodage des BMP sans header + calcul entropie
+
+<br> Note : toute les combinaisons sont possible
+<br>
 ## Compilation
 
 Pour compiler l'interface graphique, il faut installer la librarie gtk indiqué ci-dessous :

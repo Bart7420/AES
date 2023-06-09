@@ -137,6 +137,14 @@ Le fichier est lu en ajoutant des zéros à la fin pour le completer de la taill
 __Mode éval__ <br>
 Ici, le fichier est lu sans prendre en compte la taille. On ajoute ensuite la taille du fichier sur les 4 premiers octets. On commplète alors avec des zero pour atteindre un multiple de 16 qui correspond à un nombre entier de state d'aes. C'est alors qu'on encode le résultat. Pour le décodage, c'est une fois tout décodé que l'on récupère la taille et récupérer le fichier d'origine.
 
+__Mode performance__ <br>
+Pour améliorer les performances, on peut ajouter ```perf=1``` dans la commande make pour utiliser les instructions processeur aes.
+
+__Attention : librairie graphique__ <br>
+Si la librairie graphique n'est pas installée (gtk 3), il faut ajouter ```lib=1``` pour compiler sans la librairie.
+De nombreux warnings peuvent apparaitre a la compilation, notamment sur des problèmes de type. Ceux-ci sont "normaux" ce sont des problèmes de cast entre les types des éléments graphique, qui sont nécessaires pour le bon fonctionnement de l'interface.
+
+
 
 *__ECB__*
 
@@ -205,8 +213,11 @@ Pulsieurs fonctionnalitées sont disponibles :
   
 #### Entrée de la clé :
 
-Deux options sont disponibles. Par défaut, l'utilisateur peut entrer un mot de passe de 100 caractère max pour l'encodage de ses fichiers. <br> Si la case ```HEXA``` est cochée, la clé entrée devra être en hexadécimal. Selon la taille de la clé, 32, 48 ou 64, le mode d'AES correspondant est choisi pour l'encodage.
+Deux options sont disponibles. Par défaut, l'utilisateur peut entrer un mot de passe de 100 caractère max pour l'encodage de ses fichiers. La clé sera le SHA256 du mot de passe et AES 256 sera utilisé.<br> Si la case ```HEXA``` est cochée, la clé entrée devra être en hexadécimal. Selon la taille de la clé, 32, 48 ou 64, le mode d'AES correspondant est choisi pour l'encodage.
 
 #### Mode BMP
 
 Si la case ```BMP``` est cochée, l'encodage garde l'en-tête du fichier bmp pour pouvoir l'ouvrir une fois codé pour visualiser la différence entre cbc et ecb.
+
+#### Note : 
+Les boutons de séléction de la version aes ne sont pas fonctionnels, la version sera séléctionnée en fonction de la taille de la clé héxadécimale.

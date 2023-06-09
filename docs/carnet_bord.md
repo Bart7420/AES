@@ -298,3 +298,55 @@ De plus, nous avons résolu beaucoup de problèmes, notament des warnings pour r
     - [x] Mesure des performances et comparaison
     - [x] Corrections de bugs
     - [x] Fichiers de tests
+
+# Séance 10 (9/06/23)
+
+Regardons le gain de performance de mixColumn en précalculant les valeurs.
+
+Voici le code optimisé avec les multiplications précalculées:
+
+```c
+    byte output[16];
+
+    for (int i = 0; i < 4; i++) {
+        output[i*4] = mixTable02[state[i*4]] ^ mixTable03[state[(i*4)+1]] ^ state[((i*4)+2)] ^ state[((i*4)+3)];
+        output[(i*4)+1] = (state[i*4]) ^ mixTable02[state[(i*4)+1]] ^ mixTable03[state[(i*4+2)]] ^ (state[(i*4+3)]);
+        output[(i*4)+2] = (state[i*4]) ^ (state[(i*4)+1]) ^ mixTable02[state[(i*4+2)]] ^ mixTable03[state[(i*4+3)]];
+        output[(i*4)+3] = (mixTable03[state[i*4]]) ^ (state[(i*4)+1]) ^ (state[(i*4+2)]) ^ mixTable02[state[(i*4+3)]];
+    }
+```
+
+Et le code avec les multiplications:
+
+```c
+    byte output[16];
+
+    for (int i = 0; i < 4; i++) {
+        output[i*4] = multPoly(0x02, state[i*4]) ^ multPoly(0x03, state[(i*4)+1]) ^ state[((i*4)+2)] ^ state[((i*4)+3)];
+        output[(i*4)+1] = (state[i*4]) ^ multPoly(0x02, state[(i*4)+1]) ^ multPoly(0x03, state[(i*4+2)]) ^ (state[(i*4+3)]);
+        output[(i*4)+2] = (((state[i*4]) ^ (state[(i*4)+1]) ^ multPoly(0x02, state[(i*4+2)]) ^ multPoly(0x03, state[(i*4+3)])));
+        output[(i*4)+3] = ((multPoly(0x03, state[i*4]) ^ (state[(i*4)+1]) ^ (state[(i*4+2)]) ^ multPoly(0x02, state[(i*4+3)])));
+    }
+```
+
+Les tests sont effectués sur 100.000.000 de tours.
+| Mode |  Temps |
+|--:|:----------|
+| Multiplications précalculées          | 0.945364 |
+| Multiplications non précalculées      | 7.636789 |
+
+On voit que le temps d'execution est grandement diminué, on divise le temps par 7. On enleve 8 opérations de multiplication à chaque appel de mixColumn, ce qui laisse uniquement des xor.
+<br>*Pour la mesure des performances, toutes les optimisations sont activées*<br>
+
+**Performances encodage 1Go en AES 128 en CBC:**
+
+En utilisant les instructions processeur:
+- Temps AES : 0,789 s
+- Vitesse AES : 1267,922 mo/s
+
+Sans utiliser les instructions processeur:
+- Temps AES : 14,559 s
+- Vitesse AES : 68,685 mo/s
+
+On voit que la différence de performance est de x18.
+Pour le décodage, les vitesse sont similaires.
