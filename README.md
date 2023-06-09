@@ -17,6 +17,8 @@ Pour compiler l'interface graphique, il faut installer la librarie gtk indiqué 
 
 > ```sudo apt install gtk-3-dev libvte-2.91-dev```
 
+Pour compiler sans la lib graphique, il faut rajouter lib=1 dans la commande make.
+
 
 ## Documents
 - [Carnet de bord](./docs/carnet_bord.md)
