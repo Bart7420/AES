@@ -50,23 +50,6 @@ Séance 1, 2, 3 -> Haskell, algèbre et doc
 
 Séances 4, 5 -> début d'appropriation des tâches liées au c
 
-<br>
-
-## Jalons
-
-|no |  action   |                                        nom                                                 |
-|:--|:---------:|:-------------------------------------------------------------------------------------------|
-| 1 |    ok     |  définition de classes de types pour Anneaux, Corps.                                       |
-| 2 |    ok     |  implémentation du corps à 2 éléments F2 = GF(2) = Z/2Z                                    |
-| 3 |    ok     |  Implémentation (types, +,-,x) des anneaux des polynômes à coefficients dans un corps.     |
-| 4 |    ok     |  tests de 3) sur des polynômes à coefficients dans F2                                      |
-| 5 |    ok     |  implémentation du calcul modulo un polynôme (+,-,x)                                       |
-| 6 |    ok     |  tests de 5) avec le polynôme m d'AES                                                      |
-| 7 | ok  |  implémentation de l'inverse modulo m dans F2[X]                                           |
-| 8 |      ok    |  tests du 7                                                                                |
-| 9 |           |                                                                                            |
-| 10|           |                                                                                            |
-
 
 <br>
 

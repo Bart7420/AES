@@ -188,7 +188,7 @@ Pulsieurs fonctionnalitées sont disponibles :
 
 Deux options sont disponibles. Par défaut, l'utilisateur peut entrer un mot de passe de 100 caractère max pour l'encodage de ses fichiers. La clé sera le SHA256 du mot de passe et AES 256 sera utilisé.<br> Si la case ```HEXA``` est cochée, la clé entrée devra être en hexadécimal. Selon la taille de la clé, 32, 48 ou 64, le mode d'AES correspondant est choisi pour l'encodage.
 
-#### Mode BMP
+### Mode BMP
 
 Si la case ```BMP``` est cochée, l'encodage garde l'en-tête du fichier bmp pour pouvoir l'ouvrir une fois codé pour visualiser la différence entre cbc et ecb.
 
