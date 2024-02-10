@@ -19,14 +19,21 @@ Etapes :
 
 <br> Note : toute les combinaisons sont possible
 <br>
-## Compilation
+## Compilation graphique
 
 Pour compiler l'interface graphique, il faut installer la librarie gtk indiqué ci-dessous :
 
 
 > ```sudo apt install gtk-3-dev libvte-2.91-dev```
 
-Pour compiler sans la lib graphique, il faut rajouter lib=1 dans la commande make.
+Ensuite, dans le dossier c, compiler avec la commande :
+> ```make graphic_aes -B```
+
+Pour lancer : 
+
+> ```./graphic_aes```
+
+Pour les autres modes de compilation, voir le fichier de documentation.
 
 
 ## Documents

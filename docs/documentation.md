@@ -47,35 +47,8 @@ Nous avons choisi de représenter les "words" d'aes en "ligne" pour plus de lisi
 <br>
 
 >*__Exemple avec une clé d'aes 128 :__*
-$$
-w1 = \begin{pmatrix}
-                                A1 \\
-                                B1 \\
-                                C1 \\
-                                D1
-                                \end{pmatrix}
 
-w2 = \begin{pmatrix}
-                                A2 \\
-                                B2 \\
-                                C2 \\
-                                D2
-                                \end{pmatrix}
-
-w2 = \begin{pmatrix}
-                                A3 \\
-                                B3 \\
-                                C3 \\
-                                D3
-                                \end{pmatrix}
-
-w4 = \begin{pmatrix}
-                                A4 \\
-                                B4 \\
-                                C4 \\
-                                D4
-                                \end{pmatrix}
-$$
+![Alt text](matrix.png "perf")
 >On les "lis" en ligne en les convertissant en polynome de Z256Z (ici on garde la représentation hexadécimal pour une meillleure lisibilité)
 >```
 >[A1, A2, A3, A4, B1, B2, B3, B4, C1, C2, C3, C4, D1, D2, D3, D4]
